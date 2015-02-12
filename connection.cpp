@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@
 #include <assert.h>
 #include <signal.h>
 #include <thread>
+#include <mutex>
 
 const int MAX_LINE_LENGTH = 65534;
 
@@ -78,12 +80,15 @@ void readInput() {
     }
 }
 
-void output(char data[]) {
+static std::mutex output_mutex;
 
-    // SET MUTEX-LOCK!
+void output(char data[]) {
 
     int buffer = strlen(data) + 1;
     char *writePos = data;
+
+    output_mutex.lock();
+
     if (!finished && buffer > 0) {
         res = write(s0, writePos, buffer);
 
@@ -102,8 +107,8 @@ void output(char data[]) {
             buffer -= res;
         }
     }
-    // Sends a "null"-byte
-    res = write(s0, 0, 1);
+
+    output_mutex.unlock();
 }
 
 void disconnect() {
@@ -150,7 +155,7 @@ void connectToServer() {
 
     // Print a resolved address of server (the first IP of the host)
     printf(
-        "peer addr = %d.%d.%d.%d, port %d\n",
+        "peer address = %d.%d.%d.%d, port %d\n",
         host->h_addr_list[0][0] & 0xff,
         host->h_addr_list[0][1] & 0xff,
         host->h_addr_list[0][2] & 0xff,
@@ -166,7 +171,7 @@ void connectToServer() {
     if (res < 0) {
         perror("Cannot connect"); exit(1);
     }
-    printf("Connected. Type a message and press \"Enter\".\n");
+    printf("Connection established!!\n");
 
     // Define socket as non-blocking
     // res = fcntl(s0, F_SETFL, O_NONBLOCK);
@@ -174,4 +179,9 @@ void connectToServer() {
     //     perror("Cannot set a socket as non-blocking");
     //     exit(1);
     // }
+
+
+    // Starts reading data from server.
+    std::thread reader(readInput);
+    reader.detach();
 }
