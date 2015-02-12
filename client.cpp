@@ -31,16 +31,9 @@
 #include "connection.h"
 
 // Socket
-static int s0;  // Network socket
-
 const int MAX_LINE_LENGTH = 65534;
 
-static char readBuffer[MAX_LINE_LENGTH + 2];  // Read buffer
-
 static char writeBuffer[MAX_LINE_LENGTH + 2]; // Write buffer
-static char *writePos = writeBuffer;          // current position
-static int writeBufferLen = 0;                // write buffer length
-
 static int finished = 0;            // Finish the program
 
 static void sigHandler(int sigID) {
@@ -58,7 +51,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Create a socket
-    s0 = socket(AF_INET, SOCK_STREAM, 0);
+    int s0 = socket(AF_INET, SOCK_STREAM, 0);
     if (s0 < 0) {
         perror("Cannot create a socket"); exit(1);
     }
@@ -109,43 +102,19 @@ int main(int argc, char *argv[]) {
     //     exit(1);
     // }
 
+    connectToServer(s0, res);
+
     // Starts reading data from server.
-    Connection connection(s0, res);
-    std::thread reader(&Connection::readInput, &connection);
+    std::thread reader(readInput);
 
     while (!finished) {      
 
-        if (writeBufferLen == 0) {
-            printf("Message: ");
-
-            if (fgets(writeBuffer, MAX_LINE_LENGTH, stdin) != NULL) {
-                writeBufferLen = strlen(writeBuffer) + 1;
-                writePos = writeBuffer;
-            } else {
-                break;  // Break on Ctrl+D
-            }
+        printf("Message: ");
+        if (fgets(writeBuffer, MAX_LINE_LENGTH, stdin) != NULL) {
+            output(writeBuffer);
+        } else {
+            break;  // Break on Ctrl+D
         }
-        if (!finished && writeBufferLen > 0) {
-            res = write(s0, writePos, writeBufferLen);
-
-            if (res < 0) {
-                if (errno != EAGAIN) {
-                    perror("Write error");
-                    break;              // Write error
-                } else {
-                    perror("Incompleted send");
-                }
-            } else if (res == 0) {
-                printf("Connection closed");
-                break;
-            } else if (res > 0) {
-                writePos += res;
-                writeBufferLen -= res;
-            }
-        }
-        // Sends a "null"-byte
-        res = write(s0, 0, 1);
-
     } // end while
 
     shutdown(s0, 2);

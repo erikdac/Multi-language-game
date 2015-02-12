@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,26 +10,22 @@
 #include <assert.h>
 #include <signal.h>
 #include <thread>
-#include "connection.h"
 
 const int MAX_LINE_LENGTH = 65534;
 
 static char readBuffer[MAX_LINE_LENGTH + 2];  // Read buffer
 
-static char writeBuffer[MAX_LINE_LENGTH + 2]; // Write buffer
-static char *writePos = writeBuffer;          // current position
-static int writeBufferLen = 0;                // write buffer length
-
 static int finished = 0;            // Finish the program
 
+static int s0;
 static int res;
 
-Connection::Connection(int s0, int _res) {
-	this->s0 = s0;
-	res = _res;
+void connectToServer(int _s0, int _res) {
+    s0 = _s0;
+    res = _res;
 }
 
-void Connection::readInput() {
+void readInput() {
 
     fd_set readfds;     // Set of socket descriptors for select
     struct timeval tv;  // Timeout value
@@ -87,4 +82,32 @@ void Connection::readInput() {
             fprintf(stderr, "Received %d bytes:\n%s", received, readBuffer);
         }
     }
+}
+
+void output(char data[]) {
+
+    // SET MUTEX-LOCK!
+
+    int buffer = strlen(data) + 1;
+    char *writePos = data;
+    if (!finished && buffer > 0) {
+        res = write(s0, writePos, buffer);
+
+        if (res < 0) {
+            if (errno != EAGAIN) {
+                perror("Write error");
+                return;              // Write error
+            } else {
+                perror("Incompleted send");
+            }
+        } else if (res == 0) {
+            printf("Connection closed");
+            return;
+        } else if (res > 0) {
+            writePos += res;
+            buffer -= res;
+        }
+    }
+    // Sends a "null"-byte
+    res = write(s0, 0, 1);
 }
