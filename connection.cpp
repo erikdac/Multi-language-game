@@ -15,8 +15,6 @@
 
 const int MAX_LINE_LENGTH = 65534;
 
-static char readBuffer[MAX_LINE_LENGTH + 2];  // Read buffer
-
 static int finished = 0;            // Finish the program
 
 static int s0;
@@ -26,6 +24,8 @@ void readInput() {
 
     fd_set readfds;     // Set of socket descriptors for select
     struct timeval tv;  // Timeout value
+    char readBuffer[MAX_LINE_LENGTH + 2];  // Read buffer
+
 
     while(!finished) {
         int received = 0;
