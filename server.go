@@ -119,12 +119,12 @@ func handleRequest(client Client) {
  */
 func (client *Client) writer() {
     for {
-        line, isConnected := <- client.output
+        data, isConnected := <- client.output
         if !isConnected {
             break
         }
-        client.connection.Write(line)
-        client.connection.Write([]byte{0})  
+        data = append(data, 0)
+        client.connection.Write(data) 
     }
 }
 
