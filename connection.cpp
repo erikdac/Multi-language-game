@@ -12,46 +12,41 @@
 #include <signal.h>
 #include <thread>
 #include <mutex>
+#include "connection.h"
 
 const int MAX_LINE_LENGTH = 65534;
-
-static int finished = 0;            // Finish the program
 
 static int s0;
 static int res;
 
+int isRunning = true;            // Finish the program
+
 void readInput() {
 
-    fd_set readfds;     // Set of socket descriptors for select
-    struct timeval tv;  // Timeout value
-    char readBuffer[MAX_LINE_LENGTH + 2];  // Read buffer
+    fd_set readfds;                         // Set of socket descriptors for select
+    struct timeval tv = {0, 100000};        // Timeout value to for the reading to finish.
+    char readBuffer[MAX_LINE_LENGTH + 2];   // Read buffer
 
-
-    while(!finished) {
+    while(isRunning) {
         int received = 0;
-        while (received < MAX_LINE_LENGTH) {
-            FD_ZERO(&readfds);    // Erase the set of socket descriptors
-            FD_SET(s0, &readfds); // Add the socket "s0" to the set
+        FD_ZERO(&readfds);    // Erase the set of socket descriptors
+        FD_SET(s0, &readfds); // Add the socket "s0" to the set
 
-            tv = {0, 100000};   // Timeout value to for the reading to finish.
+        //=== "select" is the key poit of the program! ============
+        res = select(
+            s0 + 1,   // Max. number of socket in all sets + 1
+            &readfds, // Set of socket descriptors for reading
+            NULL,     // Set of sockets for writing -- not used
+            NULL,     // Set of sockets with exceptions -- not used
+            &tv       // Timeout value
+        );
+        //=========================================================
 
-            //=== "select" is the key poit of the program! ============
-            res = select(
-                s0 + 1,   // Max. number of socket in all sets + 1
-                &readfds, // Set of socket descriptors for reading
-                NULL,     // Set of sockets for writing -- not used
-                NULL,     // Set of sockets with exceptions -- not used
-                &tv       // Timeout value
-            );
-            //=========================================================
-
-            if (res < 0) {
-                perror("Select error");
-                finished = 1;
-                break;
-            } else if (res == 0) {
-                break;  // No data is availible yet
-            }
+        if (res < 0) {
+            perror("Select error");
+            isRunning = false;
+            break;
+        } else if (res > 0) {
 
             // At this point, we can read an incoming data
             assert(FD_ISSET(s0, &readfds));
@@ -66,14 +61,12 @@ void readInput() {
             } else {
                 if (res < 0 && errno != EAGAIN) {
                     perror("Read error");
-                    finished = 1;
+                    isRunning = false;
                 }
                 break;
             }
-        }
 
-        // Prints out the data.
-        if (received > 0) {
+            // Prints out the data.
             readBuffer[received] = 0;
             fprintf(stderr, "Received %d bytes:\n%s", received, readBuffer);
         }
@@ -82,14 +75,19 @@ void readInput() {
 
 static std::mutex output_mutex;
 
-void output(char data[]) {
+void output(Data * d) {
+
+    Message *m = dynamic_cast<Message*>(d);
+
+    char data[m->message.size()];
+    strcpy(data, m->message.c_str());
 
     int buffer = strlen(data) + 1;
     char *writePos = data;
 
     output_mutex.lock();
 
-    if (!finished && buffer > 0) {
+    if (isRunning && buffer > 0) {
         res = write(s0, writePos, buffer);
 
         if (res < 0) {
@@ -112,14 +110,14 @@ void output(char data[]) {
 }
 
 void disconnect() {
-    finished = 1;
+    isRunning = false;
     shutdown(s0, 2);
     close(s0);
 }
 
 void sigHandler(int sigID) {
     printf("The SIGPIPE signal (connection is broken).\n");
-    finished = 1;
+    isRunning = false;
 }
 
 void connectToServer() {
