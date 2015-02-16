@@ -14,8 +14,6 @@
 #include <mutex>
 #include "connection.h"
 
-const int MAX_LINE_LENGTH = 65534;
-
 static int s0;
 static int res;
 
@@ -24,13 +22,15 @@ int isRunning = true;            // Finish the program
 void readInput() {
 
     fd_set readfds;                         // Set of socket descriptors for select
-    struct timeval tv = {0, 100000};        // Timeout value to for the reading to finish.
-    char readBuffer[MAX_LINE_LENGTH + 2];   // Read buffer
+    struct timeval tv;
+    char readBuffer[BUFFER_SIZE + 2];   // Read buffer
 
     while(isRunning) {
         int received = 0;
         FD_ZERO(&readfds);    // Erase the set of socket descriptors
         FD_SET(s0, &readfds); // Add the socket "s0" to the set
+
+        tv = {100000, 100000};        // Timeout value to for the reading to finish.
 
         //=== "select" is the key poit of the program! ============
         res = select(
@@ -54,7 +54,7 @@ void readInput() {
             res = read(
                 s0,
                 readBuffer + received,
-                MAX_LINE_LENGTH - received
+                BUFFER_SIZE - received
             );
             if (res > 0) {
                 received += res;

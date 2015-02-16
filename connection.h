@@ -3,6 +3,8 @@
 
 #include "packages.h"
 
+const int BUFFER_SIZE= 65534;
+
 void connectToServer();
 void readInput();
 void output(Data * d);

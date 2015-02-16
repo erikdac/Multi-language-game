@@ -9,6 +9,7 @@ struct Data {
 
 struct Message : Data {
     std::string message;
+    Message(std::string message) : message(message) {;}
 };
 
 #endif
