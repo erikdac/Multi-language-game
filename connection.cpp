@@ -30,7 +30,7 @@ void readInput() {
         FD_ZERO(&readfds);    // Erase the set of socket descriptors
         FD_SET(s0, &readfds); // Add the socket "s0" to the set
 
-        tv = {100000, 100000};        // Timeout value to for the reading to finish.
+        tv = {0, 100000};        // Timeout value to for the reading to finish.
 
         //=== "select" is the key point of the program! ============
         res = select(
@@ -65,10 +65,10 @@ void readInput() {
                 }
                 break;
             }
-
+ 
             // Prints out the data.
-            readBuffer[received] = 0;
-            fprintf(stderr, "Received %d bytes:\n%s", received, readBuffer);
+            std::cout << readBuffer;
+//            fprintf(stderr, "Received %d bytes:\n%s", received, readBuffer);
         }
     }
 }
@@ -153,7 +153,7 @@ void connectToServer() {
 
     // Print a resolved address of server (the first IP of the host)
     printf(
-        "peer address = %d.%d.%d.%d, port %d\n",
+        "Peer address = %d.%d.%d.%d, Port %d\n",
         host->h_addr_list[0][0] & 0xff,
         host->h_addr_list[0][1] & 0xff,
         host->h_addr_list[0][2] & 0xff,
@@ -172,11 +172,11 @@ void connectToServer() {
     printf("Connection established!!\n");
 
     // Define socket as non-blocking
-    // res = fcntl(s0, F_SETFL, O_NONBLOCK);
-    // if (res < 0) {
-    //     perror("Cannot set a socket as non-blocking");
-    //     exit(1);
-    // }
+    res = fcntl(s0, F_SETFL, O_NONBLOCK);
+    if (res < 0) {
+        perror("Cannot set a socket as non-blocking");
+        exit(1);
+    }
 
 
     // Starts reading data from server.

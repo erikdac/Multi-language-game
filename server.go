@@ -77,8 +77,7 @@ func main() {
 }
 
 /**
- * Creates the client with its connection and channel. Also adds it to  
- * the clientList with its remote adress as a "key".
+ * Creates the client with its connection and channel. 
  * Returns a pointer to the client. 
  */
 func createClient(connection net.Conn) Client {
@@ -94,43 +93,41 @@ func createClient(connection net.Conn) Client {
 
 /**
  * This function is called everytime a new client has connected. 
- * It sets up writer and reader functions so that the users can 
- * talk to the servers.
+ * It calls the function 'accountManager()' so that the client can login. 
+ * If the login is successful it will set up a reader-function so the client 
+ * can talk to the server. It also adds it to the clientList with its remote 
+ * adress as a "key".
  */
 func handleRequest(client Client) {
-    go client.writer()
-    go client.reader()
-    client.output <- []byte(BANNER)
+    if client.login() == true {
+        go client.reader()
+        client.account.online = true
+        client.write([]byte(BANNER))
+    }
 }
 
 /**
- * The protocol for streaming out all the data. It starts by reading the 
- * input that the server wants to send out to the client, which includes 
- * the opcode at the beginning. If the client isn't connected anymore it
- * will break its loop. 
+ * The protocol for sending out all the data. If the client isn't connected 
+ * anymore it will break its loop. 
  * 
  * THE PROTOCOL:
  * 1. Takes the data as an byte array.
- * 2. Sends the data.
- * 3. Ends by sending a null-byte.
+ * 2. Appends a null-byte to the end of the array.
+ * 3. Sends the data. 
  *
  * The message sent will look something like:
  * ['H', 'e', 'l', 'l', 'o', \0]
  *
  */
-func (client *Client) writer() {
-    for {
-        data, isConnected := <- client.output
-        if !isConnected {
-            break
-        }
+func (client *Client) write(data []byte) {
+    if _, ok := clientList[client.connection]; ok {
         data = append(data, 0)
-        client.connection.Write(data) 
+        client.connection.Write(data)
     }
 }
 
 /**
- * This method will read the data from the client and returns it 
+ * This method will read the data from the client and return it 
  * as a byte-array. It will then read until it reaches a null-byte and 
  * call the function 'handleInput' with the data excluding the null-byte.
  */
@@ -160,8 +157,8 @@ func (client *Client) reader() {
  */
 func handleInput(client *Client, data []byte) {
     for _, c := range clientList {
-        if c.connection != client.connection {
-            c.output <- data
+        if c.connection != client.connection && client.account.online {
+            c.write(data)
         }
     }
 }
@@ -171,7 +168,6 @@ func handleInput(client *Client, data []byte) {
  * the connection with the client and removes it from the clientList.
  */
 func (client *Client) disconnect() {
-    close(client.output)
     delete(clientList, client.connection)
     client.connection.Close()
 }
