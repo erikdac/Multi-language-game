@@ -21,7 +21,7 @@ int isRunning = true;            // Finish the program
 
 void readInput() {
 
-    fd_set readfds;                         // Set of socket descriptors for select
+    fd_set readfds;                     // Set of socket descriptors for select
     struct timeval tv;
     char readBuffer[BUFFER_SIZE + 2];   // Read buffer
 
@@ -32,7 +32,7 @@ void readInput() {
 
         tv = {100000, 100000};        // Timeout value to for the reading to finish.
 
-        //=== "select" is the key poit of the program! ============
+        //=== "select" is the key point of the program! ============
         res = select(
             s0 + 1,   // Max. number of socket in all sets + 1
             &readfds, // Set of socket descriptors for reading

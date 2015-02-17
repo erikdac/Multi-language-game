@@ -41,6 +41,7 @@ var BANNER = "Welcome to server!"
 type Client struct {
     output chan []byte
     connection net.Conn
+    account Account;
 }
 
 func main() {
