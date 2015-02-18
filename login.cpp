@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <string.h>
 #include "connection.h"
 #include "login.h"
@@ -16,6 +15,7 @@ Text getInput() {
 
 void login() {
     Data * data;
+
     login_mutex.lock();
     do {
         std::cout << "Username: ";
