@@ -132,7 +132,7 @@ func (client *Client) write(data []byte) {
  * call the function 'handleInput' with the data excluding the null-byte.
  */
 func (client *Client) reader() {
-    input := make([]byte, 256)
+    input := make([]byte, 32)
     data := []byte{}
     for {
         n, err := client.connection.Read(input)

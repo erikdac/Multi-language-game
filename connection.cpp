@@ -13,15 +13,20 @@
 #include <thread>
 #include <mutex>
 #include "connection.h"
+#include "login.h"
 
 static int s0;
-static int res;
 
 int isRunning = true;            // Finish the program
+bool isOnline = false;
+
+bool online() {
+    return isOnline;
+}
 
 void readInput() {
 
-    fd_set readfds;                     // Set of socket descriptors for select
+    fd_set readfds;                         // Set of socket descriptors for select
     struct timeval tv;
     char readBuffer[BUFFER_SIZE + 2];   // Read buffer
 
@@ -33,7 +38,7 @@ void readInput() {
         tv = {0, 100000};        // Timeout value to for the reading to finish.
 
         //=== "select" is the key point of the program! ============
-        res = select(
+        int res = select(
             s0 + 1,   // Max. number of socket in all sets + 1
             &readfds, // Set of socket descriptors for reading
             NULL,     // Set of sockets for writing -- not used
@@ -65,10 +70,20 @@ void readInput() {
                 }
                 break;
             }
- 
+
             // Prints out the data.
-            std::cout << readBuffer;
-//            fprintf(stderr, "Received %d bytes:\n%s", received, readBuffer);
+
+            if(!isOnline) {
+                if(readBuffer[0] == 1) {
+                    isOnline = true;
+                } else {
+                    std::cout << readBuffer << std::endl;
+                }
+                login_mutex.unlock();
+            } else {
+                readBuffer[received] = 0;
+                std::cout << readBuffer << std::endl;
+            }
         }
     }
 }
@@ -77,10 +92,10 @@ static std::mutex output_mutex;
 
 void output(Data * d) {
 
-    Message *m = dynamic_cast<Message*>(d);
+    Text *t = dynamic_cast<Text*>(d);
 
-    char data[m->message.size()];
-    strcpy(data, m->message.c_str());
+    char data[t->text.size()];
+    strcpy(data, t->text.c_str());
 
     int buffer = strlen(data) + 1;
     char *writePos = data;
@@ -88,7 +103,7 @@ void output(Data * d) {
     output_mutex.lock();
 
     if (isRunning && buffer > 0) {
-        res = write(s0, writePos, buffer);
+        int res = write(s0, writePos, buffer);
 
         if (res < 0) {
             if (errno != EAGAIN) {
@@ -177,7 +192,6 @@ void connectToServer() {
         perror("Cannot set a socket as non-blocking");
         exit(1);
     }
-
 
     // Starts reading data from server.
     std::thread reader(readInput);

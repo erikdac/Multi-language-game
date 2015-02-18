@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include "connection.h"
+#include "login.h"
 #include "packages.h"
 
 int main(int argc, char *argv[]) {
@@ -8,14 +10,15 @@ int main(int argc, char *argv[]) {
     // Connects to the server.   
     connectToServer();
 
+    // Login to the server.
+    login();
     
-    char writeBuffer[BUFFER_SIZE + 2];
+    std::string input;
     while (true) {
-        if (fgets(writeBuffer, BUFFER_SIZE, stdin) != NULL) {
-            Message m(writeBuffer);
-            Data * data = &m;
-            output(data);
-        }
+        std::cin >> input;
+        Text username(input);
+        Data * data = &username;
+        output(data);
     }
 
     disconnect();

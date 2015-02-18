@@ -7,9 +7,9 @@ struct Data {
 	virtual ~Data() {};
 };
 
-struct Message : Data {
-    std::string message;
-    Message(std::string message) : message(message) {;}
+struct Text : Data {
+    std::string text;
+    Text(std::string text) : text(text) {;}
 };
 
 #endif

@@ -11,22 +11,20 @@ type Account struct {
 
 func (client *Client) login() bool {
     for {
-        client.write([]byte("Username: "))
         username, err := client.readInput()
         if err != nil {
             client.disconnect()
             break
         }
 
-        client.write([]byte("Password: "))
         password, err := client.readInput()
         if err != nil {
             client.disconnect()
             break
         }
 
-        if checkLogin(string(username), string(password)) {
-            client.write([]byte("Login successful!"))
+        if checkLogin(string(username), string(password)) == true {
+            client.write([]byte{1})
             return true;
         } else {
             client.write([]byte("Login failed!"))
@@ -36,7 +34,7 @@ func (client *Client) login() bool {
 }
 
 func checkLogin(username string, password string) bool {
-    if (strings.EqualFold(username, "erik\n") && strings.EqualFold(password, "no\n")) {
+    if (strings.EqualFold(username, "erik") && strings.EqualFold(password, "no")) {
         return true;
     } else {
         return false;
