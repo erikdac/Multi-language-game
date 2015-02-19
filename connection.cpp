@@ -15,6 +15,8 @@
 #include "connection.h"
 #include "login.h"
 
+const int BUFFER_SIZE= 65534;
+
 static int s0;
 
 int isRunning = true;            // Finish the program
@@ -130,8 +132,9 @@ void disconnect() {
 }
 
 void sigHandler(int sigID) {
-    printf("The SIGPIPE signal (connection is broken).\n");
+    std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
     isRunning = false;
+    exit(1);
 }
 
 void connectToServer() {
@@ -183,7 +186,6 @@ void connectToServer() {
     if (res < 0) {
         perror("Cannot connect"); exit(1);
     }
-    printf("Connection established!!\n");
 
     // Define socket as non-blocking
     res = fcntl(s0, F_SETFL, O_NONBLOCK);
