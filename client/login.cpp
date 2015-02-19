@@ -8,26 +8,36 @@ std::mutex login_mutex;
 
 Text getInput() {
     std::string input;
-    std::cin >> input;
+    std::getline (std::cin,input);
     Text text(input);
     return text;
 }
 
+/*
+template<typename T>
+void testing(T data) {
+//    Data * p = &d;
+    Text* t = dynamic_cast<Text*>(&data);
+    if(t) {
+        std::cout << t->text << std::endl;
+    } else {
+        printf("WTF");
+    }
+}
+*/
 void login() {
-    Data * data;
-
     login_mutex.lock();
+
     do {
         std::cout << "Username: ";
         Text username = getInput();
-        data = &username;
-        output(data);
+        output(username);
 
         std::cout << "Password: ";
         Text password = getInput();
-        data = &password;
-        output(data);
+        output(password);
 
         login_mutex.lock();
+
     } while(!online());
 }

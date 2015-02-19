@@ -1,7 +1,5 @@
 #include <iostream>
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -17,9 +15,9 @@
 
 const int BUFFER_SIZE= 65534;
 
-static int s0;
+int s0; // Socket.
 
-int isRunning = true;            // Finish the program
+int isRunning = true;            // Finish the program.
 bool isOnline = false;
 
 bool online() {
@@ -87,42 +85,6 @@ void readInput() {
             }
         }
     }
-}
-
-static std::mutex output_mutex;
-
-void output(Data * d) {
-
-    Text *t = dynamic_cast<Text*>(d);
-
-    char data[t->text.size()];
-    strcpy(data, t->text.c_str());
-
-    int buffer = strlen(data) + 1;
-    char *writePos = data;
-
-    output_mutex.lock();
-
-    if (isRunning && buffer > 0) {
-        int res = write(s0, writePos, buffer);
-
-        if (res < 0) {
-            if (errno != EAGAIN) {
-                perror("Write error");
-                return;              // Write error
-            } else {
-                perror("Incompleted send");
-            }
-        } else if (res == 0) {
-            printf("Connection closed");
-            return;
-        } else if (res > 0) {
-            writePos += res;
-            buffer -= res;
-        }
-    }
-
-    output_mutex.unlock();
 }
 
 void disconnect() {
