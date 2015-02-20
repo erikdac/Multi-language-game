@@ -1,12 +1,12 @@
-#ifndef LOGIN_H
-#define LOGIN_H
+#ifndef LOGIN_HPP
+#define LOGIN_HPP
 
 #include <mutex>
-#include "packages.h"
+
+using std::string;
 
 extern std::mutex login_mutex;
 
-Text getInput();
 void login();
 
 #endif

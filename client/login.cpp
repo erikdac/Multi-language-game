@@ -1,40 +1,30 @@
 #include <iostream>
 #include <string.h>
-#include "connection.h"
-#include "login.h"
-#include "packages.h"
+#include "connection.hpp"
+#include "login.hpp"
+
+using namespace json11;
+using std::string;
 
 std::mutex login_mutex;
 
-Text getInput() {
-    std::string input;
-    std::getline (std::cin,input);
-    Text text(input);
-    return text;
-}
-
-/*
-template<typename T>
-void testing(T data) {
-//    Data * p = &d;
-    Text* t = dynamic_cast<Text*>(&data);
-    if(t) {
-        std::cout << t->text << std::endl;
-    } else {
-        printf("WTF");
-    }
-}
-*/
 void login() {
     login_mutex.lock();
+    string input;
 
     do {
         std::cout << "Username: ";
-        Text username = getInput();
+        std::getline (std::cin,input);
+        Json username = Json::object {
+            {"text", input},
+        };
         output(username);
 
         std::cout << "Password: ";
-        Text password = getInput();
+        std::getline (std::cin,input);
+        Json password = Json::object {
+            {"text", input},
+        };
         output(password);
 
         login_mutex.lock();

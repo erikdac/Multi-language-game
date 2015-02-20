@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string.h>
-#include "connection.h"
-#include "login.h"
-#include "packages.h"
+#include "connection.hpp"
+#include "login.hpp"
 
-
+using namespace json11;
+using std::string;
 
 int main(int argc, char *argv[]) {
 
@@ -12,10 +12,12 @@ int main(int argc, char *argv[]) {
 
     login();
     
-    std::string input;
+    string input;
     while (true) {
         std::getline (std::cin,input);
-        Text data(input);
+        Json data = Json::object {
+            {"text", input},
+        };
         output(data);
     }
 

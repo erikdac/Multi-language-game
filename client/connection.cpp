@@ -10,8 +10,12 @@
 #include <signal.h>
 #include <thread>
 #include <mutex>
-#include "connection.h"
-#include "login.h"
+#include "connection.hpp"
+#include "login.hpp"
+#include "json11.hpp"
+
+using namespace json11;
+using std::string;
 
 const int BUFFER_SIZE= 65534;
 
@@ -83,6 +87,33 @@ void readInput() {
             } else {
                 std::cout << readBuffer << std::endl;
             }
+        }
+    }
+}
+
+static std::mutex output_mutex;
+
+void output(Json object) {
+
+    string text = object["text"].string_value();
+
+    char data[text.size()];
+    strcpy(data, text.c_str());
+    int buffer = strlen(data) + 1;
+
+    if (buffer > 0) {
+        output_mutex.lock();
+        int res = write(s0, data, buffer);
+        output_mutex.unlock();
+
+        if (res < 0) {
+            if (errno != EAGAIN)
+                perror("Write error");
+            else
+                perror("Incompleted send");
+
+        } else if (res == 0) {
+            std::cout << "Connection closed" << std::endl;
         }
     }
 }
