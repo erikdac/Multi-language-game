@@ -80,7 +80,7 @@ void readInput() {
             if(!isOnline) {
                 if(readBuffer[0] == 1) {
                     isOnline = true;
-                } else
+                } else {
                     std::cout << readBuffer << std::endl;
                 }
                 login_mutex.unlock();
