@@ -1,12 +1,17 @@
-<font size="16">
+<h4>
 	<b>Compiling server:<b>
-</font>
-</br>
+</h4>
+
+<p>
 go run server.go accountmanager.go gamestructure.go
+</p>
 
-<font size="16">
+<br>
+
+<h4>
 	<b>Compiling client:<b>
-</font>
-</br>
-g++ -std=c++11 -pthread -o client client.cpp connection.cpp login.cpp json11/json11.cpp
+</h4>
 
+<p>
+g++ -std=c++11 -pthread -o client client.cpp connection.cpp login.cpp json11/json11.cpp
+</p>
