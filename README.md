@@ -1,4 +1,4 @@
-Compiling server:
+<b>Compiling server:</b> </br>
 go run server.go accountmanager.go gamestructure.go
 
 Compiling client:
