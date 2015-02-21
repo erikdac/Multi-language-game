@@ -162,7 +162,6 @@ func handleInput(client *Client, data []byte) {
         }
     }
 }
-
 /**
  * This method is called when a client has diconnected. It closes 
  * the connection with the client and removes it from the clientList.

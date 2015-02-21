@@ -2,28 +2,36 @@ package main
 
 import (
     "strings"
-    "errors"    // lol
+    "errors"        // lol
+    "encoding/json"
 )
 
 type Account struct {
     online bool
 }
 
+type Login_request struct {
+    Username string;
+    Password string;
+}
+
 func (client *Client) login() bool {
+
     for {
-        username, err := client.readInput()
+        input, err := client.readInput()
         if err != nil {
             client.disconnect()
             break
         }
 
-        password, err := client.readInput()
-        if err != nil {
+        var request Login_request
+        err2 := json.Unmarshal(input, &request)
+
+        if err2 != nil {
             client.disconnect()
-            break
         }
 
-        if checkLogin(string(username), string(password)) == true {
+        if checkLogin(request) == true {
             client.write([]byte{1})
             return true;
         } else {
@@ -33,7 +41,9 @@ func (client *Client) login() bool {
     return false;
 }
 
-func checkLogin(username string, password string) bool {
+func checkLogin(request Login_request) bool {
+    username := request.Username
+    password := request.Password
     if (strings.EqualFold(username, "erik") && strings.EqualFold(password, "no")) {
         return true;
     } else {
@@ -48,7 +58,7 @@ func checkLogin(username string, password string) bool {
  * and returns the message without the null-byte. 
  */
 func (client *Client) readInput() ([]byte, error) {
-    input := make([]byte, 256)
+    input := make([]byte, 32)
     data := []byte{}
     for {
         n, err := client.connection.Read(input)

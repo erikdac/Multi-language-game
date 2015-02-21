@@ -1,14 +1,14 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include "json11.hpp"
+#include "json11/json11.h"
 
 extern int s0;
 
 bool online();
 void connectToServer();
 void readInput();
-void output(json11::Json object);
+void output(Json object);
 void sigHandler(int sigID);
 void disconnect();
 

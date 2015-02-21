@@ -12,9 +12,8 @@
 #include <mutex>
 #include "connection.hpp"
 #include "login.hpp"
-#include "json11.hpp"
+#include "json11/json11.h"
 
-using namespace json11;
 using std::string;
 
 const int BUFFER_SIZE= 65534;
@@ -95,10 +94,9 @@ static std::mutex output_mutex;
 
 void output(Json object) {
 
-    string text = object["text"].string_value();
-
-    char data[text.size()];
-    strcpy(data, text.c_str());
+    string temp = object.format();
+    char data[temp.size()];
+    strcpy(data, temp.c_str());
     int buffer = strlen(data) + 1;
 
     if (buffer > 0) {
