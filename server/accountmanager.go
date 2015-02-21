@@ -25,10 +25,11 @@ func (client *Client) login() bool {
         }
 
         var request Login_request
-        err2 := json.Unmarshal(input, &request)
-
-        if err2 != nil {
+        err = json.Unmarshal(input, &request)
+        if err != nil {
+            client.write([]byte("Incorrect packaging!"))
             client.disconnect()
+            break
         }
 
         if checkLogin(request) == true {
@@ -58,7 +59,7 @@ func checkLogin(request Login_request) bool {
  * and returns the message without the null-byte. 
  */
 func (client *Client) readInput() ([]byte, error) {
-    input := make([]byte, 32)
+    input := make([]byte, 64)
     data := []byte{}
     for {
         n, err := client.connection.Read(input)
@@ -68,12 +69,13 @@ func (client *Client) readInput() ([]byte, error) {
         }
 
         for i := 0; i < n; i++ {
-            if input[i] == 0 && len(data) > 0 {
+            if input[i] == 0 {
+                data = append(data, input[:i]...)
                 return data, nil
-            } else if input[i] != 0 {
-                data = append(data, input[i])
             }
         }
+        data = append(data, input...)
     }
+
     return []byte{}, errors.New("Unknown_error")
 }

@@ -142,13 +142,13 @@ func (client *Client) reader() {
         }
 
         for i := 0; i < n; i++ {
-            if input[i] == 0 && len(data) > 0 {
-                handleInput(client, []byte(data))
+            if input[i] == 0 {
+                data = append(data, input[:i]...)
+                handleInput(client, data)
                 data = data[:0] // Empty slice
-            } else if input[i] != 0 {
-                data = append(data, input[i])
             }
         }
+        data = append(data, input...)
     }
 }
 

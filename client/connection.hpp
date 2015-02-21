@@ -1,7 +1,9 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include "json11/json11.h"
+#include "json11/json11.hpp"
+
+using namespace json11;
 
 extern int s0;
 

@@ -12,8 +12,9 @@
 #include <mutex>
 #include "connection.hpp"
 #include "login.hpp"
-#include "json11/json11.h"
+#include "json11/json11.hpp"
 
+using namespace json11;
 using std::string;
 
 const int BUFFER_SIZE= 65534;
@@ -79,7 +80,7 @@ void readInput() {
             if(!isOnline) {
                 if(readBuffer[0] == 1) {
                     isOnline = true;
-                } else {
+                } else
                     std::cout << readBuffer << std::endl;
                 }
                 login_mutex.unlock();
@@ -94,25 +95,22 @@ static std::mutex output_mutex;
 
 void output(Json object) {
 
-    string temp = object.format();
-    char data[temp.size()];
+    string temp = object.dump();
+    char data[temp.size()+1];
     strcpy(data, temp.c_str());
-    int buffer = strlen(data) + 1;
 
-    if (buffer > 0) {
-        output_mutex.lock();
-        int res = write(s0, data, buffer);
-        output_mutex.unlock();
+    output_mutex.lock();
+    int res = write(s0, data, strlen(data) + 1);
+    output_mutex.unlock();
 
-        if (res < 0) {
-            if (errno != EAGAIN)
-                perror("Write error");
-            else
-                perror("Incompleted send");
+    if (res < 0) {
+        if (errno != EAGAIN)
+            perror("Write error");
+        else
+            perror("Incompleted send");
 
-        } else if (res == 0) {
-            std::cout << "Connection closed" << std::endl;
-        }
+    } else if (res == 0) {
+        std::cout << "Connection closed" << std::endl;
     }
 }
 
