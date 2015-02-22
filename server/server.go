@@ -30,7 +30,7 @@ const (
 )
 
 // A hashmap holding all the clients.
-var clientList map[net.Conn]Client
+var clientList map[net.Conn]*Client
 
 // Simple banner to be sent when clients connects.
 var BANNER = "Welcome to server!"
@@ -44,7 +44,7 @@ type Client struct {
 func main() {
 
     // Initialize clientList
-    clientList = make(map[net.Conn]Client)
+    clientList = make(map[net.Conn]*Client)
 
     // Sets up the server.
     socket, err := net.Listen(CONNECTION_TYPE, ":" + CONNECTION_PORT)
@@ -77,14 +77,14 @@ func main() {
  * Creates the client with its connection and channel. 
  * Returns a pointer to the client. 
  */
-func createClient(connection net.Conn) Client {
+func createClient(connection net.Conn) *Client {
     client := new(Client)
     client.connection = connection
 
     // Adds to clientList
-    clientList[connection] = *client
+    clientList[connection] = client
 
-    return *client
+    return client
 }
 
 /**
@@ -94,7 +94,7 @@ func createClient(connection net.Conn) Client {
  * can talk to the server. It also adds it to the clientList with its remote 
  * adress as a "key".
  */
-func handleRequest(client Client) {
+func handleRequest(client *Client) {
     if client.login() == true {
         go client.reader()
         client.online = true
@@ -153,7 +153,7 @@ func (client *Client) reader() {
  */
 func handleInput(client *Client, data []byte) {
     for _, c := range clientList {
-        if c.connection != client.connection && client.online {
+        if c.connection != client.connection && c.online {
             c.write(data)
         }
     }
@@ -176,7 +176,7 @@ func (client *Client) disconnect() {
 func serverMenu() {
     for {
         fmt.Println()
-        fmt.Println("(1) Online clients,(2) Exit")
+        fmt.Println("(1) Online clients, (2) Exit")
         choice, _ := strconv.Atoi(readKeyboard())
 
         switch choice {
