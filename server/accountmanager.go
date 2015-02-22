@@ -6,10 +6,6 @@ import (
     "encoding/json"
 )
 
-type Account struct {
-    online bool
-}
-
 type Login_request struct {
     Username string;
     Password string;
@@ -32,23 +28,26 @@ func (client *Client) login() bool {
             break
         }
 
-        if checkLogin(request) == true {
+        player, err := checkLogin(request)
+        if err != nil {
+            client.write([]byte("Login failed!"))           
+        } else { 
+            client.player = player
             client.write([]byte{1})
             return true;
-        } else {
-            client.write([]byte("Login failed!"))
         }
     }
     return false;
 }
 
-func checkLogin(request Login_request) bool {
+func checkLogin(request Login_request) (Player, error) {
     username := request.Username
     password := request.Password
     if (strings.EqualFold(username, "erik") && strings.EqualFold(password, "no")) {
-        return true;
+        player := Player{"Erik", 10, 20}
+        return player, nil
     } else {
-        return false;
+        return Player{}, errors.New("Login_Fail") 
     }
 }
 

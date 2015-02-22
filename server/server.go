@@ -35,13 +35,10 @@ var clientList map[net.Conn]Client
 // Simple banner to be sent when clients connects.
 var BANNER = "Welcome to server!"
 
-// The struct for clients. 
-// Holds the output channel which all data sent to the client will pass and 
-// the clients connection.
 type Client struct {
-    output chan []byte
     connection net.Conn
-    account Account;
+    player Player
+    online bool
 }
 
 func main() {
@@ -83,7 +80,6 @@ func main() {
 func createClient(connection net.Conn) Client {
     client := new(Client)
     client.connection = connection
-    client.output = make(chan []byte)
 
     // Adds to clientList
     clientList[connection] = *client
@@ -101,7 +97,7 @@ func createClient(connection net.Conn) Client {
 func handleRequest(client Client) {
     if client.login() == true {
         go client.reader()
-        client.account.online = true
+        client.online = true
         client.write([]byte(BANNER))
     }
 }
@@ -132,7 +128,7 @@ func (client *Client) write(data []byte) {
  * call the function 'handleInput' with the data excluding the null-byte.
  */
 func (client *Client) reader() {
-    input := make([]byte, 32)
+    input := make([]byte, 128)
     data := []byte{}
     for {
         n, err := client.connection.Read(input)
@@ -143,12 +139,12 @@ func (client *Client) reader() {
 
         for i := 0; i < n; i++ {
             if input[i] == 0 {
-                data = append(data, input[:i]...)
-                handleInput(client, data)
+                handleInput(client, []byte(data))
                 data = data[:0] // Empty slice
+            } else {
+                data = append(data, input[i])
             }
         }
-        data = append(data, input...)
     }
 }
 
@@ -157,11 +153,12 @@ func (client *Client) reader() {
  */
 func handleInput(client *Client, data []byte) {
     for _, c := range clientList {
-        if c.connection != client.connection && client.account.online {
+        if c.connection != client.connection && client.online {
             c.write(data)
         }
     }
 }
+
 /**
  * This method is called when a client has diconnected. It closes 
  * the connection with the client and removes it from the clientList.
