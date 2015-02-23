@@ -80,10 +80,7 @@ func main() {
 func createClient(connection net.Conn) *Client {
     client := new(Client)
     client.connection = connection
-
-    // Adds to clientList
-    clientList[connection] = client
-
+    client.online = false;
     return client
 }
 
@@ -97,8 +94,11 @@ func createClient(connection net.Conn) *Client {
 func handleRequest(client *Client) {
     if client.login() == true {
         go client.reader()
+        clientList[client.connection] = client
         client.online = true
         client.write([]byte(BANNER))
+    } else {
+        client.connection.Close()
     }
 }
 
@@ -116,10 +116,8 @@ func handleRequest(client *Client) {
  *
  */
 func (client *Client) write(data []byte) {
-    if _, ok := clientList[client.connection]; ok {
-        data = append(data, 0)
-        client.connection.Write(data)
-    }
+    data = append(data, 0)
+    client.connection.Write(data)
 }
 
 /**

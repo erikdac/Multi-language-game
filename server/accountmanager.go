@@ -16,16 +16,14 @@ func (client *Client) login() bool {
     for {
         input, err := client.readInput()
         if err != nil {
-            client.disconnect()
-            break
+            return false
         }
 
         var request Login_request
         err = json.Unmarshal(input, &request)
         if err != nil {
             client.write([]byte("Incorrect packaging!"))
-            client.disconnect()
-            break
+            return false
         }
 
         player, err := checkLogin(request)
@@ -54,8 +52,7 @@ func checkLogin(request Login_request) (Player, error) {
 /**
  * This method will read the data from the client and return it 
  * as a byte-array. It will read all the bytes until it reaches
- * an null byte. It will then read until it reaches a null-byte 
- * and returns the message without the null-byte. 
+ * an null byte. It will then return the message without the null-byte. 
  */
 func (client *Client) readInput() ([]byte, error) {
     input := make([]byte, 64)
