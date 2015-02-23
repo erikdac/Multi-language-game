@@ -149,7 +149,6 @@ func (client *Client) reader() {
  */
 func handleInput(client *Client, data []byte) {
 	for _, c := range clientList {
-		fmt.Println(c.player)
 		if c.connection != client.connection {
 			c.write(data)
 		}
