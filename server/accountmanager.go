@@ -60,7 +60,7 @@ func (client *Client) readInput() ([]byte, error) {
     for {
         n, err := client.connection.Read(input)
         if err != nil {
-            return []byte{}, errors.New("Read_error")
+            return []byte{}, err
             break
         }
 
