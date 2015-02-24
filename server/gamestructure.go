@@ -4,7 +4,7 @@ import (
 	"net"
 )
 
-// Binds all the players to a client.
+// Binds all the clients connections to their players.
 var playerList map[net.Conn]*Player
 
 type Player struct {
