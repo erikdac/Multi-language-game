@@ -232,7 +232,7 @@ func kickPlayer() {
 	fmt.Print("Player name: ")
 	name := readKeyboard()
 	client, exists := clientList[name]
-	if exists != false {
+	if exists == true {
 		client.write([]byte("Kicked from server!"))
 		client.disconnect()
 		fmt.Println(name, " has been successfully kicked from server.")
