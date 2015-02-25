@@ -45,6 +45,12 @@ func main() {
 	clientList = make(map[string]*Client)
 	playerList = make(map[net.Conn]*Player)
 
+	err := resetDatabaseOnlineList()
+	if err != nil {
+		fmt.Println("Error clearing the database onlinelist!")
+		os.Exit(1)
+	}
+
 	// Sets up the server.
 	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)
 	if err != nil {
@@ -155,14 +161,14 @@ func handleInput(client *Client, data []byte) {
 	}
 }
 
-/**
- * This method is called when a client has diconnected. It closes
- * the connection with the client and removes it from the clientList.
- */
+// This method is called when a client has diconnected. It closes the connection 
+// with the client, removes it from the Hashmaps and also change its 
+// online status in the database to 'false'.
 func (client *Client) disconnect() {
 	delete(clientList, client.player.name)
 	delete(playerList, client.connection)
 	client.connection.Close()
+	client.player.logOut()
 }
 
 /**
@@ -184,8 +190,7 @@ func serverMenu() {
 			kickPlayer()
 			break
 		case 3:
-			fmt.Println("SHUTTING DOWN!")
-			os.Exit(0)
+			shutdown()
 			break
 		default:
 			fmt.Println("Invalid input!")
@@ -234,4 +239,13 @@ func kickPlayer() {
 	} else {
 		fmt.Println("Player does not exists.")
 	}
+}
+
+func shutdown() {
+	fmt.Println("SHUTTING DOWN!")
+	for _, c := range clientList {
+		c.write([]byte("Server shutting down!"))
+		c.disconnect()
+	}
+	os.Exit(0)
 }
