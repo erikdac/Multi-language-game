@@ -20,6 +20,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // The connection settings.
@@ -43,7 +44,6 @@ type Client struct {
 func main() {
 
 	clientList = make(map[string]*Client)
-	playerList = make(map[net.Conn]*Player)
 
 	err := resetDatabaseOnlineList()
 	if err != nil {
@@ -99,7 +99,6 @@ func handleRequest(client *Client) {
 	if client.login() == true {
 		go client.reader()
 		clientList[client.player.name] = client
-		playerList[client.connection] = &client.player
 		client.write([]byte(BANNER))
 	} else {
 		client.connection.Close()
@@ -141,7 +140,7 @@ func (client *Client) reader() {
 
 		for i := 0; i < n; i++ {
 			if input[i] == 0 {
-				handleInput(client, []byte(data))
+				go handleInput(client, []byte(data))
 				data = data[:0] // Empty slice
 			} else {
 				data = append(data, input[i])
@@ -166,7 +165,6 @@ func handleInput(client *Client, data []byte) {
 // online status in the database to 'false'.
 func (client *Client) disconnect() {
 	delete(clientList, client.player.name)
-	delete(playerList, client.connection)
 	client.connection.Close()
 	client.player.logOut()
 }
@@ -243,9 +241,15 @@ func kickPlayer() {
 
 func shutdown() {
 	fmt.Println("SHUTTING DOWN!")
+	var wg sync.WaitGroup
 	for _, c := range clientList {
-		c.write([]byte("Server shutting down!"))
-		c.disconnect()
+		wg.Add(1)
+		go func() {
+			c.write([]byte("Server shutting down!"))
+			c.disconnect()
+			wg.Done()
+		}()
 	}
+	wg.Wait()
 	os.Exit(0)
 }
