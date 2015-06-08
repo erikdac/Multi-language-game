@@ -1,3 +1,5 @@
 <p>
-Learning to program in C++, GoLang and SQL. Will be trying to create some sort of simple game with it.
+Learning to program in C++, GoLang and SQL. 
+Will be trying to make it into some sort of simple game.
 </p>
+
