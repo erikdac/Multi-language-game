@@ -25,3 +25,5 @@ HEADERS  += mainwindow.h \
     json11/json11.hpp
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++0x

@@ -1,5 +1,8 @@
+#include <QtWidgets>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "connection.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,4 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent ( QCloseEvent * event )
+{
+    disconnect();
+    event->accept();
 }

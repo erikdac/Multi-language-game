@@ -7,12 +7,10 @@
 using namespace json11;
 using std::string;
 
-int main(int argc, char *argv[]) {
+int main2() {
 
     connectToServer();
 
-    login();
-    
     string input;
     while (true) {
         std::getline (std::cin,input);

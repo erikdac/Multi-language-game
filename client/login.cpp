@@ -13,7 +13,7 @@ void login() {
     login_mutex.lock();
 
     do {
-        std::cout << "Username: ";
+        std::cout << "Username:";
         string username;
         std::getline (std::cin, username);
 
