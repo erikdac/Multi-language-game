@@ -6,8 +6,7 @@
 #include "login.hpp"
 #include "json11/json11.hpp"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 
     connectToServer();
 

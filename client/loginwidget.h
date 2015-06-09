@@ -4,11 +4,11 @@
 #include <QWidget>
 
 namespace Ui {
-class LoginWidget;
+    class LoginWidget;
 }
 
-class LoginWidget : public QWidget
-{
+class LoginWidget : public QWidget {
+
     Q_OBJECT
 
 public:
@@ -17,6 +17,7 @@ public:
 
 private:
     Ui::LoginWidget *ui;
+
 };
 
 #endif // LOGINWIDGET_H

@@ -4,11 +4,11 @@
 #include <QWidget>
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
-class MainWindow : public QWidget
-{
+class MainWindow : public QWidget {
+
     Q_OBJECT
 
 public:
@@ -18,6 +18,7 @@ public:
 private:
     Ui::MainWindow *ui;
     void setUpLoginUi();
+
 };
 
 #endif // MAINWINDOW_H
