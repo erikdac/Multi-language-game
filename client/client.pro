@@ -17,13 +17,16 @@ SOURCES += main.cpp\
     client.cpp \
     connection.cpp \
     login.cpp \
-    json11/json11.cpp
+    json11/json11.cpp \
+    loginWidget.cpp
 
 HEADERS  += mainwindow.h \
     connection.hpp \
     login.hpp \
-    json11/json11.hpp
+    json11/json11.hpp \
+    loginwidget.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    loginwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
