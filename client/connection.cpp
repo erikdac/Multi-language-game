@@ -11,7 +11,7 @@
 #include <thread>
 #include <mutex>
 #include "connection.hpp"
-#include "login.hpp"
+#include "loginwidget.h"
 #include "json11/json11.hpp"
 
 using namespace json11;

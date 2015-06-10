@@ -14,15 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    client.cpp \
     connection.cpp \
-    login.cpp \
     json11/json11.cpp \
-    loginWidget.cpp
+    loginwidget.cpp
 
 HEADERS  += mainwindow.h \
     connection.hpp \
-    login.hpp \
     json11/json11.hpp \
     loginwidget.h
 

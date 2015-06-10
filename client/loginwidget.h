@@ -2,6 +2,9 @@
 #define LOGINWIDGET_H
 
 #include <QWidget>
+#include <mutex>
+
+extern std::mutex login_mutex;
 
 namespace Ui {
     class LoginWidget;
@@ -14,6 +17,9 @@ class LoginWidget : public QWidget {
 public:
     explicit LoginWidget(QWidget *parent = 0);
     ~LoginWidget();
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::LoginWidget *ui;
