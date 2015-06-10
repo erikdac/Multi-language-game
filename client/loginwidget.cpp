@@ -2,6 +2,7 @@
 #include "ui_loginwidget.h"
 #include "connection.hpp"
 #include "json11/json11.hpp"
+#include "mainwindow.h"
 
 #include <iostream>
 #include <QLineEdit>
@@ -12,6 +13,7 @@ using namespace json11;
 std::mutex login_mutex;
 
 LoginWidget::LoginWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LoginWidget) {
+    login_mutex.lock();
     ui->setupUi(this);
 }
 
@@ -19,8 +21,7 @@ LoginWidget::~LoginWidget() {
     delete ui;
 }
 
-void LoginWidget::on_pushButton_clicked()
-{
+void LoginWidget::on_pushButton_clicked() {
 
     QLineEdit * username = findChild<QLineEdit*>("username");
     QLineEdit * password = findChild<QLineEdit*>("password");
@@ -34,8 +35,16 @@ void LoginWidget::on_pushButton_clicked()
 
     login_mutex.lock();
 
-    QMessageBox::information(
-        this,
-        tr("Application Name"),
-        tr("An information message.") );
+    std::cout << "LOGINWIDGET" << std::endl;
+
+    if(!online()) {
+        QMessageBox::information(
+            this,
+            tr("Application Name"),
+            tr("An information message.")
+        );
+    }
+    else {
+        ((MainWindow*)parentWidget())->MainWindow::setUpGameUi();
+    }
 }
