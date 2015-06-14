@@ -1,3 +1,7 @@
+#include "connection.hpp"
+#include "loginwidget.h"
+#include "json11/json11.hpp"
+
 #include <iostream>
 #include <string.h>
 #include <unistd.h>
@@ -10,14 +14,15 @@
 #include <signal.h>
 #include <thread>
 #include <mutex>
-#include "connection.hpp"
-#include "loginwidget.h"
-#include "json11/json11.hpp"
+#include <QWidget>
 
 using namespace json11;
 using std::string;
 
 const int BUFFER_SIZE= 65534;
+
+// The widget that should recieve the input-data.
+QWidget * activeWidget;
 
 int s0; // Socket.
 

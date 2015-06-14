@@ -4,7 +4,6 @@
 #include "json11/json11.hpp"
 #include "mainwindow.h"
 
-#include <iostream>
 #include <QLineEdit>
 #include <QMessageBox>
 
@@ -34,8 +33,6 @@ void LoginWidget::on_pushButton_clicked() {
     output(data);
 
     login_mutex.lock();
-
-    std::cout << "LOGINWIDGET" << std::endl;
 
     if(!online()) {
         QMessageBox::information(

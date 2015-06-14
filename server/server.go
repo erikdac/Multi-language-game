@@ -33,9 +33,6 @@ const (
 // Binds the player names to their clients.
 var clientList map[string]*Client
 
-// Simple banner to be sent when clients connects.
-var BANNER = "Welcome to server!"
-
 type Client struct {
 	connection net.Conn
 	player     Player
@@ -99,7 +96,6 @@ func handleRequest(client *Client) {
 	if client.login() == true {
 		go client.reader()
 		clientList[client.player.name] = client
-		client.write([]byte(BANNER))
 	} else {
 		client.connection.Close()
 	}
