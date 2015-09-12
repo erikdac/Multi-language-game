@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     connection.cpp \
     json11/json11.cpp \
-    loginwidget.cpp
+    loginwidget.cpp \
+    reader.cpp
 
 HEADERS  += mainwindow.h \
     connection.hpp \
     json11/json11.hpp \
-    loginwidget.h
+    loginwidget.h \
+    reader.h
 
 FORMS    += mainwindow.ui \
     loginwidget.ui

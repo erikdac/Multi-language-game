@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include "loginwidget.h"
 #include "json11/json11.hpp"
+#include "reader.h"
 
 #include <iostream>
 #include <string.h>
@@ -15,85 +16,26 @@
 #include <thread>
 #include <mutex>
 #include <QWidget>
+#include <QThread>
 
 using namespace json11;
 using std::string;
 
-const int BUFFER_SIZE= 65534;
-
-// The widget that should recieve the input-data.
-QWidget * activeWidget;
+Reader * reader;
 
 int s0; // Socket.
 
-int isRunning = true;            // Finish the program.
-bool isOnline = false;
-
-bool online() {
-    return isOnline;
+void setReader(Reader *new_reader) {
+    reader = new_reader;
 }
 
-void readInput() {
-
-    fd_set readfds;                         // Set of socket descriptors for select
-    struct timeval tv;
-    char readBuffer[BUFFER_SIZE + 2];   // Read buffer
-
-    while(isRunning) {
-        int received = 0;
-        FD_ZERO(&readfds);    // Erase the set of socket descriptors
-        FD_SET(s0, &readfds); // Add the socket "s0" to the set
-
-        tv = {0, 100000};        // Timeout value to for the reading to finish.
-
-        //=== "select" is the key point of the program! ============
-        int res = select(
-            s0 + 1,   // Max. number of socket in all sets + 1
-            &readfds, // Set of socket descriptors for reading
-            NULL,     // Set of sockets for writing -- not used
-            NULL,     // Set of sockets with exceptions -- not used
-            &tv       // Timeout value
-        );
-        //=========================================================
-
-        if (res < 0) {
-            perror("Select error");
-            isRunning = false;
-            break;
-        } else if (res > 0) {
-
-            // At this point, we can read an incoming data
-            assert(FD_ISSET(s0, &readfds));
-
-            res = read(
-                s0,
-                readBuffer + received,
-                BUFFER_SIZE - received
+void setActiveWidget(LoginWidget * object) {
+    QObject::connect(
+            reader,
+            SIGNAL(input(std::string)),
+            object,
+            SLOT(input(std::string))
             );
-            if (res > 0) {
-                received += res;
-            } else {
-                if (res < 0 && errno != EAGAIN) {
-                    perror("Read error");
-                    isRunning = false;
-                }
-                break;
-            }
-
-            // Prints out the data.
-            readBuffer[received] = 0;
-            if(!isOnline) {
-                if(readBuffer[0] == 1) {
-                    isOnline = true;
-                } else {
-                    std::cout << readBuffer << std::endl;
-                }
-                login_mutex.unlock();
-            } else {
-                std::cout << readBuffer << std::endl;
-            }
-        }
-    }
 }
 
 static std::mutex output_mutex;
@@ -120,14 +62,14 @@ void output(Json object) {
 }
 
 void disconnect() {
-    isRunning = false;
+    reader->stopReading();
     shutdown(s0, 2);
     close(s0);
 }
 
 void sigHandler(int sigID) {
     std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
-    isRunning = false;
+    reader->stopReading();
     exit(1);
 }
 
@@ -148,7 +90,6 @@ void connectToServer() {
 
     // Fill in the address of server
     struct sockaddr_in peeraddr;
-    int peeraddr_len;
     memset(&peeraddr, 0, sizeof(peeraddr));
     const char* peerHost = "localhost";
 
@@ -158,7 +99,7 @@ void connectToServer() {
         perror("Cannot define host address"); exit(1);
     }
     peeraddr.sin_family = AF_INET;
-    short peerPort = 1337;
+    const short peerPort = 1337;
 
     peeraddr.sin_port = htons(peerPort);
 
@@ -188,7 +129,5 @@ void connectToServer() {
         exit(1);
     }
 
-    // Starts reading data from server.
-    std::thread reader(readInput);
-    reader.detach();
+    reader->start();
 }

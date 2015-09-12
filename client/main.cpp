@@ -7,8 +7,6 @@
 
 int main(int argc, char *argv[]) {
 
-    connectToServer();
-
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

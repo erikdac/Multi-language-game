@@ -3,7 +3,9 @@
 #include "connection.hpp"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
+#include "reader.h"
 
+#include <iostream>
 #include <QLineEdit>
 #include <QMessageBox>
 
@@ -12,7 +14,6 @@ using namespace json11;
 std::mutex login_mutex;
 
 LoginWidget::LoginWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LoginWidget) {
-    login_mutex.lock();
     ui->setupUi(this);
 }
 
@@ -32,16 +33,20 @@ void LoginWidget::on_pushButton_clicked() {
 
     output(data);
 
-    login_mutex.lock();
+//    login_mutex.lock();
 
-    if(!online()) {
+ //   if(!online()) {
         QMessageBox::information(
             this,
             tr("Application Name"),
             tr("An information message.")
         );
-    }
-    else {
-        ((MainWindow*)parentWidget())->MainWindow::setUpGameUi();
-    }
+//    }
+//    else {
+//        ((MainWindow*)parentWidget())->MainWindow::setUpGameUi();
+//    }
+}
+
+void LoginWidget::input(std::string result) {
+    std::cout << "JAAAAAAA" << std::endl;
 }
