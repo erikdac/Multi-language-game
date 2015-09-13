@@ -23,33 +23,20 @@ LoginWidget::~LoginWidget() {
 
 void LoginWidget::on_pushButton_clicked() {
 
-    QLineEdit * username = findChild<QLineEdit*>("username");
-    QLineEdit * password = findChild<QLineEdit*>("password");
+    const QLineEdit * username = findChild<QLineEdit*>("username");
+    const QLineEdit * password = findChild<QLineEdit*>("password");
 
-    Json data = Json::object {
+    const Json data = Json::object {
         {"Username", username->text().toStdString()},
         {"Password", password->text().toStdString()}
     };
 
     output(data);
-
-//    login_mutex.lock();
-
- //   if(!online()) {
-        QMessageBox::information(
-            this,
-            tr("Application Name"),
-            tr("An information message.")
-        );
-//    }
-//    else {
-//        ((MainWindow*)parentWidget())->MainWindow::setUpGameUi();
-//    }
 }
 
 void LoginWidget::input(std::string result) {
     if(result[0] == 1)
         std::cout << "JAAAAAAA" << std::endl;
     else
-        std::cout << result << std::endl;
+        QMessageBox::information(this, "", QString::fromStdString(result));
 }

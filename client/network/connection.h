@@ -16,7 +16,7 @@ void setActiveWidget(LoginWidget * object);
 bool online();
 void connectToServer();
 void readInput();
-void output(Json object);
+void output(const Json object);
 void sigHandler(int sigID);
 void disconnect();
 

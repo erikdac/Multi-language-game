@@ -26,8 +26,6 @@ using std::string;
 
 const int BUFFER_SIZE= 65534;
 
-int isReading = true;            // Finish the program.
-
 Network_Reader::Network_Reader(QWidget *parent) : QThread(parent) {
     qRegisterMetaType<std::string>();
 }
@@ -37,16 +35,17 @@ Network_Reader::~Network_Reader() {
 }
 
 void Network_Reader::stopReading() {
-    isReading = false;
+    _isReading = false;
 }
 
 void Network_Reader::run() {
 
-    fd_set readfds;                         // Set of socket descriptors for select
+    fd_set readfds;                     // Set of socket descriptors for select
     struct timeval tv;
     char readBuffer[BUFFER_SIZE + 2];   // Read buffer
+    _isReading = true;
 
-    while(isReading) {
+    while(_isReading) {
         int received = 0;
         FD_ZERO(&readfds);    // Erase the set of socket descriptors
         FD_SET(s0, &readfds); // Add the socket "s0" to the set
@@ -65,7 +64,7 @@ void Network_Reader::run() {
 
         if (res < 0) {
             perror("Select error");
-            isReading = false;
+            _isReading = false;
             break;
         } else if (res > 0) {
 
@@ -84,7 +83,7 @@ void Network_Reader::run() {
             } else {
                 if (res < 0 && errno != EAGAIN) {
                     perror("Read error");
-                    isReading = false;
+                    _isReading = false;
                 }
                 break;
             }

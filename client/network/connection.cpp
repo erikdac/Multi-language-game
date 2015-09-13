@@ -40,7 +40,7 @@ void setActiveWidget(LoginWidget * object) {
 
 static std::mutex output_mutex;
 
-void output(Json object) {
+void output(const Json object) {
 
     string temp = object.dump();
     char data[temp.size()+1];
