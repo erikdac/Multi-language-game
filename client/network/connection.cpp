@@ -1,7 +1,7 @@
-#include "connection.hpp"
+#include "connection.h"
 #include "loginwidget.h"
 #include "json11/json11.hpp"
-#include "reader.h"
+#include "network_reader.h"
 
 #include <iostream>
 #include <string.h>
@@ -21,17 +21,17 @@
 using namespace json11;
 using std::string;
 
-Reader * reader;
+Network_Reader * network_reader;
 
 int s0; // Socket.
 
-void setReader(Reader *new_reader) {
-    reader = new_reader;
+void setNetworkReader(Network_Reader *new_reader) {
+    network_reader = new_reader;
 }
 
 void setActiveWidget(LoginWidget * object) {
     QObject::connect(
-            reader,
+            network_reader,
             SIGNAL(input(std::string)),
             object,
             SLOT(input(std::string))
@@ -62,14 +62,14 @@ void output(Json object) {
 }
 
 void disconnect() {
-    reader->stopReading();
+    network_reader->stopReading();
     shutdown(s0, 2);
     close(s0);
 }
 
 void sigHandler(int sigID) {
     std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
-    reader->stopReading();
+    network_reader->stopReading();
     exit(1);
 }
 
@@ -129,5 +129,5 @@ void connectToServer() {
         exit(1);
     }
 
-    reader->start();
+    network_reader->start();
 }

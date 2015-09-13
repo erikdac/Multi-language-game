@@ -14,16 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    connection.cpp \
     json11/json11.cpp \
     loginwidget.cpp \
-    reader.cpp
+    network/connection.cpp \
+    network/network_reader.cpp
 
 HEADERS  += mainwindow.h \
-    connection.hpp \
     json11/json11.hpp \
     loginwidget.h \
-    reader.h
+    network/connection.h \
+    network/network_reader.h
 
 FORMS    += mainwindow.ui \
     loginwidget.ui

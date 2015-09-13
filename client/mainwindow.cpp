@@ -1,15 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "loginwidget.h"
-#include "connection.hpp"
-#include "reader.h"
+#include "network/connection.h"
+#include "network/network_reader.h"
 
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
-    Reader * reader = new Reader(this);
-    setReader(reader);
+    Network_Reader * network_reader = new Network_Reader(this);
+    setNetworkReader(network_reader);
 
     connectToServer();
 

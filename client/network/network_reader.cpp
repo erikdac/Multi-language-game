@@ -1,7 +1,7 @@
 #include "loginwidget.h"
 #include "json11/json11.hpp"
-#include "reader.h"
-#include "connection.hpp"
+#include "network/network_reader.h"
+#include "connection.h"
 #include "mainwindow.h"
 
 #include <iostream>
@@ -21,24 +21,26 @@
 #include <QObject>
 #include <QMetaType>
 
-
 using namespace json11;
 using std::string;
 
 const int BUFFER_SIZE= 65534;
 
 int isReading = true;            // Finish the program.
-int isOnline = false;
 
-Reader::Reader(QWidget *parent) : QThread(parent) {
+Network_Reader::Network_Reader(QWidget *parent) : QThread(parent) {
     qRegisterMetaType<std::string>();
 }
 
-Reader::~Reader() {
+Network_Reader::~Network_Reader() {
 
 }
 
-void Reader::run() {
+void Network_Reader::stopReading() {
+    isReading = false;
+}
+
+void Network_Reader::run() {
 
     fd_set readfds;                         // Set of socket descriptors for select
     struct timeval tv;
@@ -77,6 +79,8 @@ void Reader::run() {
             );
             if (res > 0) {
                 received += res;
+                readBuffer[received] = '\0';
+                handleInput(readBuffer);
             } else {
                 if (res < 0 && errno != EAGAIN) {
                     perror("Read error");
@@ -84,23 +88,10 @@ void Reader::run() {
                 }
                 break;
             }
-
-            // Prints out the data.
-            readBuffer[received] = 0;
-            if(!isOnline) {
-                if(readBuffer[0] == 1) {
-                    isOnline = true;
-                    emit input(readBuffer);
-                } else {
-                    std::cout << readBuffer << std::endl;
-                }
-            } else {
-                std::cout << readBuffer << std::endl;
-            }
         }
     }
 }
 
-void Reader::stopReading() {
-    isReading = false;
+void Network_Reader::handleInput(const char readBuffer[]) {
+    emit input(readBuffer);
 }

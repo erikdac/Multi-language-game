@@ -1,9 +1,9 @@
 #include "loginwidget.h"
 #include "ui_loginwidget.h"
-#include "connection.hpp"
+#include "network/connection.h"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
-#include "reader.h"
+#include "network/network_reader.h"
 
 #include <iostream>
 #include <QLineEdit>
@@ -48,5 +48,8 @@ void LoginWidget::on_pushButton_clicked() {
 }
 
 void LoginWidget::input(std::string result) {
-    std::cout << "JAAAAAAA" << std::endl;
+    if(result[0] == 1)
+        std::cout << "JAAAAAAA" << std::endl;
+    else
+        std::cout << result << std::endl;
 }
