@@ -1,19 +1,18 @@
 package main
 
+import (
+	"./network"
+)
+
 type Player struct {
 	name string
 	x    int
 	y    int
 }
 
-type Movement struct {
-	toX int
-	toY int
-}
-
-func (player *Player) movement(movement Movement) {
-	player.x = movement.toX
-	player.y = movement.toY
+func (player *Player) movement(movement network.Movement) {
+	player.x = movement.ToX
+	player.y = movement.ToY
 
 	// TODO: Inform all nearby players that the movement has happend.
 }

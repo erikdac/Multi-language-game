@@ -21,6 +21,9 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+//	"errors"
+	"encoding/json"
+	"./network"
 )
 
 // The connection settings.
@@ -39,7 +42,6 @@ type Client struct {
 }
 
 func main() {
-
 	clientList = make(map[string]*Client)
 
 	err := resetDatabaseOnlineList()
@@ -101,6 +103,9 @@ func handleRequest(client *Client) {
 	}
 }
 
+
+var output_mutex = &sync.Mutex{}
+
 /**
  * The protocol for sending out all the data. If the client isn't connected
  * anymore it will break its loop.
@@ -113,10 +118,24 @@ func handleRequest(client *Client) {
  * The message sent will look something like:
  * ['H', 'e', 'l', 'l', 'o', \0]
  *
+ * TODO: Move into network-package.
+ * 
  */
 func (client *Client) write(data []byte) {
+	fmt.Println(data)
 	data = append(data, 0)
+	output_mutex.Lock()
 	client.connection.Write(data)
+	output_mutex.Unlock()
+}
+
+/*
+ * TODO: Move into network-package.
+ */
+func (client *Client) writeError() {
+	message := network.Error{network.Type{"error"}, "test"}
+	data,  _ := json.Marshal(&message)
+	client.write(data)
 }
 
 /**

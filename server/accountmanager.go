@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -6,6 +7,7 @@ import (
 	"errors"                           // lol
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
 	"sync"
+	"fmt"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
@@ -28,6 +30,11 @@ func (client *Client) login() bool {
 		var request Login_request
 		err = json.Unmarshal(input, &request)
 		if err != nil {
+
+			// For testing
+			answer, _ := json.Marshal(map[string]int{"apple": 5, "lettuce": 7})
+			fmt.Println(answer)
+
 			client.write([]byte("Incorrect packaging!"))
 			return false
 		}
