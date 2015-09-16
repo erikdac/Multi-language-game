@@ -3,80 +3,17 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"errors"                           // lol
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
 	"sync"
-	"fmt"
+	"./network"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
 
 var database_mutex = &sync.Mutex{}
 
-type Login_request struct {
-	Username string
-	Password string
-}
-
-func (client *Client) login() bool {
-
-	for {
-		input, err := client.readInput()
-		if err != nil {
-			return false
-		}
-
-		var request Login_request
-		err = json.Unmarshal(input, &request)
-		if err != nil {
-
-			// For testing
-			answer, _ := json.Marshal(map[string]int{"apple": 5, "lettuce": 7})
-			fmt.Println(answer)
-
-			client.write([]byte("Incorrect packaging!"))
-			return false
-		}
-
-		player, err := checkLogin(request)
-		if err != nil {
-			client.write([]byte("Login failed!"))
-		} else {
-			client.player = player
-			client.write([]byte{1})
-			return true
-		}
-	}
-	return false
-}
-
-// This method reads the data from the client and iterates through it until
-// it reaches a null-byte in which case it will return all the data.
-//
-// If all the data which had been read didnt include a null-byte it will
-// append it to a byte-array read another round of data and repeat this
-// procedure until it has finally found a null-byte.
-func (client *Client) readInput() ([]byte, error) {
-	input := make([]byte, 64)
-	data := []byte{}
-	for {
-		n, err := client.connection.Read(input)
-		if err != nil {
-			return []byte{}, err
-		}
-
-		for i := 0; i < n; i++ {
-			if input[i] == 0 {
-				data = append(data, input[:i]...)
-				return data, nil
-			}
-		}
-		data = append(data, input...)
-	}
-}
-
-func checkLogin(request Login_request) (Player, error) {
+func checkLogin(request network.LoginRequest) (Player, error) {
 
 	db, err := sql.Open("mysql", database)
 	if err != nil {
@@ -84,7 +21,7 @@ func checkLogin(request Login_request) (Player, error) {
 	}
 	defer db.Close()
 
-	player_name, err := request.queryAccount(db)
+	player_name, err := queryAccount(request, db)
 	if err != nil {
 		return Player{}, errors.New("Login_Fail")
 	}
@@ -104,7 +41,7 @@ func checkLogin(request Login_request) (Player, error) {
 
 // Queries the database table 'account' with the username and password and get 
 // the username back if it exists in the database.
-func (request *Login_request) queryAccount(db *sql.DB) (string, error) {
+func queryAccount(request network.LoginRequest, db *sql.DB) (string, error) {
 	username := request.Username
 	password := request.Password
 

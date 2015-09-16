@@ -19,7 +19,6 @@
 #include <QThread>
 
 using namespace json11;
-using std::string;
 
 Network_Reader * network_reader;
 
@@ -42,7 +41,7 @@ static std::mutex output_mutex;
 
 void output(const Json object) {
 
-    string temp = object.dump();
+    std::string temp = object.dump();
     char data[temp.size()+1];
     strcpy(data, temp.c_str());
 

@@ -23,7 +23,7 @@ private:
     Ui::LoginWidget *ui;
 
 public slots:
-    void input(std::string);
+    void input(std::string result);
 
 private slots:
     void on_pushButton_clicked();

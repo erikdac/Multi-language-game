@@ -35,8 +35,10 @@ void LoginWidget::on_pushButton_clicked() {
 }
 
 void LoginWidget::input(std::string result) {
-    if(result[0] == 1)
+    std::string error;
+    Json data = Json::parse(result, error);
+    if(data["Success"].string_value().compare("yes") == 0)
         std::cout << "JAAAAAAA" << std::endl;
     else
-        QMessageBox::information(this, "", QString::fromStdString(result));
+        QMessageBox::information(this, "", QString("Login failed!"));
 }

@@ -10,9 +10,14 @@ type Error struct {
 	Message string
 }
 
+type LoginRequest struct {
+	Username string
+	Password string
+}
+
 type LoginSuccess struct {
 	Type
-	result string
+	Success string
 }
 
 type Movement struct {
