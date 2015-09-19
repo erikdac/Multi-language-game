@@ -12,7 +12,7 @@ using namespace json11;
 extern int s0;
 
 void setNetworkReader(Network_Reader * Network_Reader);
-void setActiveWidget(LoginWidget * object);
+void setActiveWidget(QWidget * object);
 bool online();
 void connectToServer();
 void readInput();

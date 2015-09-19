@@ -28,7 +28,7 @@ void setNetworkReader(Network_Reader *new_reader) {
     network_reader = new_reader;
 }
 
-void setActiveWidget(LoginWidget * object) {
+void setActiveWidget(QWidget * object) {
     QObject::connect(
             network_reader,
             SIGNAL(input(std::string)),

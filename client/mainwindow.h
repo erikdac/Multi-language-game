@@ -14,11 +14,12 @@ class MainWindow : public QWidget {
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setUpLoginUi();
     void setUpGameUi();
 
 private:
     Ui::MainWindow *ui;
-    void setUpLoginUi();
+    void removePreviousUi();
 };
 
 #endif // MAINWINDOW_H

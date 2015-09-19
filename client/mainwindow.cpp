@@ -1,6 +1,8 @@
+#include <iostream>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "loginwidget.h"
+#include "gamewidget.h"
 #include "network/connection.h"
 #include "network/network_reader.h"
 
@@ -22,11 +24,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setUpLoginUi() {
+    removePreviousUi();
     LoginWidget * loginWidget = new LoginWidget(this);
     setActiveWidget(loginWidget);
 }
 
 void MainWindow::setUpGameUi() {
-    LoginWidget * loginWidget = findChild<LoginWidget*>();
-    delete loginWidget;
+    removePreviousUi();
+    GameWidget * gameWidget = new GameWidget(this);
+    gameWidget->show();
+    setActiveWidget(gameWidget);
+}
+
+void MainWindow::removePreviousUi() {
+    while ( QWidget* w = findChild<QWidget*>() )
+        delete w;
 }

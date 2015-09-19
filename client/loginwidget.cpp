@@ -13,7 +13,10 @@ using namespace json11;
 
 std::mutex login_mutex;
 
-LoginWidget::LoginWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LoginWidget) {
+LoginWidget::LoginWidget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::LoginWidget) {
+
     ui->setupUi(this);
 }
 
@@ -37,8 +40,10 @@ void LoginWidget::on_pushButton_clicked() {
 void LoginWidget::input(std::string result) {
     std::string error;
     Json data = Json::parse(result, error);
-    if(data["Success"].string_value().compare("yes") == 0)
-        std::cout << "JAAAAAAA" << std::endl;
+    if(data["Success"].string_value().compare("yes") == 0) {
+        MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
+        w->setUpGameUi();
+    }
     else
         QMessageBox::information(this, "", QString("Login failed!"));
 }

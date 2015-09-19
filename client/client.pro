@@ -17,15 +17,18 @@ SOURCES += main.cpp\
     json11/json11.cpp \
     loginwidget.cpp \
     network/connection.cpp \
-    network/network_reader.cpp
+    network/network_reader.cpp \
+    gamewidget.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
     loginwidget.h \
     network/connection.h \
-    network/network_reader.h
+    network/network_reader.h \
+    gamewidget.h
 
 FORMS    += mainwindow.ui \
-    loginwidget.ui
+    loginwidget.ui \
+    gamewidget.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
