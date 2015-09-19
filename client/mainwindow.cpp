@@ -27,6 +27,7 @@ void MainWindow::setUpLoginUi() {
     removePreviousUi();
     LoginWidget * loginWidget = new LoginWidget(this);
     setActiveWidget(loginWidget);
+    loginWidget->show();
 }
 
 void MainWindow::setUpGameUi() {

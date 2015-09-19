@@ -21,5 +21,7 @@ private:
 public slots:
     void input(std::string result);
 
+private slots:
+    void on_pushButton_clicked();
 };
 #endif // GAMEWIDGET_H
