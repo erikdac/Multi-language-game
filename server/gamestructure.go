@@ -1,18 +1,20 @@
 package main
 
-import (
-	"./network"
-)
+import "fmt"
 
-type Player struct {
-	name string
-	x    int
-	y    int
+var mapSection [][](map[string]*Player)
+
+func Test() {
+	mapSection := [10][10](map[string]*Player){}
+	mapSection[0][1] = make(map[string]*Player)
+	player := new(Player)
+	player.name = "lol"
+	player.x = 1
+	player.y = 2
+	temp := mapSection[0][1]
+	temp["woot"] = player
+
+	temp2 := mapSection[0][1]
+	fmt.Println(temp2["woot"].x)
 }
-
-func (player *Player) movement(movement network.Movement) {
-	player.x = movement.ToX
-	player.y = movement.ToY
-
-	// TODO: Inform all nearby players that the movement has happend.
-}
+ 

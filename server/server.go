@@ -31,6 +31,9 @@ const (
 )
 
 func main() {
+
+	Test()
+
 	clientList = make(map[string]*Client)
 
 	err := resetDatabaseOnlineList()
