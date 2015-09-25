@@ -13,7 +13,7 @@ class Reader : public QThread
     Q_OBJECT
 
 public:
-    explicit Reader(QWidget *parent);
+    explicit Reader();
     ~Reader();
     void stopReading();
     void run();

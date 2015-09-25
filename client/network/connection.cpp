@@ -20,13 +20,9 @@
 
 using namespace json11;
 
-Reader * reader;
-
 int s0; // Socket.
 
-void setNetworkReader(Reader * const new_reader) {
-    reader = new_reader;
-}
+Reader * const reader = new Reader();
 
 void setActiveWidget(QWidget * object) {
     QObject::connect(
@@ -39,6 +35,15 @@ void setActiveWidget(QWidget * object) {
 
 static std::mutex output_mutex;
 
+// Private function
+void retryOutput(char * data) {
+    if(connectToServer()) {
+        output_mutex.lock();
+        write(s0, data, strlen(data) + 1);
+        output_mutex.unlock();
+    }
+}
+
 void output(const Json object) {
 
     std::string temp = object.dump();
@@ -49,14 +54,16 @@ void output(const Json object) {
     int res = write(s0, data, strlen(data) + 1);
     output_mutex.unlock();
 
-    if (res < 0) {
-        if (errno != EAGAIN)
+    if (res <= 0) {
+        if (errno != EAGAIN) {
             perror("Write error");
-        else
+            retryOutput(data);
+        } else
             perror("Incompleted send");
-
-    } else if (res == 0) {
+    }
+    else if (res == 0) {
         std::cout << "Connection closed" << std::endl;
+        retryOutput(data);
     }
 }
 
@@ -69,22 +76,22 @@ void disconnect() {
 void sigHandler(int sigID) {
     std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
     reader->stopReading();
-    exit(1);
 }
 
-void connectToServer() {
+bool connectToServer() {
 
     // Set signal handler for the "SIGPIPE" signal
     // (used to intercept the signal about broken connection).
     if (signal(SIGPIPE, &sigHandler) == SIG_ERR) {
         perror("Cannot install a signal handler");
-        exit(1);
+        return false;
     }
 
     // Create a socket
     s0 = socket(AF_INET, SOCK_STREAM, 0);
     if (s0 < 0) {
-        perror("Cannot create a socket"); exit(1);
+        perror("Cannot create a socket");
+        return false;
     }
 
     // Fill in the address of server
@@ -95,7 +102,8 @@ void connectToServer() {
     // Resolve the server address (convert from symbolic name to IP number)
     struct hostent *host = gethostbyname(peerHost);
     if (host == NULL) {
-        perror("Cannot define host address"); exit(1);
+        perror("Cannot define host address");
+        return false;
     }
     peeraddr.sin_family = AF_INET;
     const short peerPort = 1337;
@@ -118,15 +126,17 @@ void connectToServer() {
     // Connect to a remote server
     int res = connect(s0, (struct sockaddr*) &peeraddr, sizeof(peeraddr));
     if (res < 0) {
-        perror("Cannot connect"); exit(1);
+        perror("Cannot connect");
+        return false;
     }
 
     // Define socket as non-blocking
     res = fcntl(s0, F_SETFL, O_NONBLOCK);
     if (res < 0) {
         perror("Cannot set a socket as non-blocking");
-        exit(1);
+        return false;
     }
 
     reader->start();
+    return true;
 }

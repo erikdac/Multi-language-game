@@ -26,7 +26,7 @@ using std::string;
 
 const int BUFFER_SIZE= 65534;
 
-Reader::Reader(QWidget *parent) : QThread(parent) {
+Reader::Reader() {
     qRegisterMetaType<std::string>();
 }
 
