@@ -22,4 +22,4 @@ private:
     void removePreviousUi();
 };
 
-#endif // MAINWINDOW_H
+#endif

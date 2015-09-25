@@ -34,7 +34,9 @@ void LoginWidget::on_pushButton_clicked() {
         {"Password", password->text().toStdString()}
     };
 
-    output(data);
+    if(output(data) == false) {
+        popupBox("Connection failed!");
+    }
 }
 
 void LoginWidget::input(std::string result) {
@@ -45,5 +47,9 @@ void LoginWidget::input(std::string result) {
         w->setUpGameUi();
     }
     else
-        QMessageBox::information(this, "", QString("Login failed!"));
+        popupBox("Login failed!");
+}
+
+void LoginWidget::popupBox(const QString message) {
+    QMessageBox::information(this, "", message);
 }

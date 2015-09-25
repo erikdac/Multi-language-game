@@ -1,5 +1,5 @@
-#ifndef CONNECTION_HPP
-#define CONNECTION_HPP
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include <QThread>
 #include "loginwidget.h"
@@ -13,8 +13,7 @@ extern int s0;
 void setActiveWidget(QWidget *);
 bool online();
 bool connectToServer();
-void readInput();
-void output(const Json);
+bool output(const Json);
 void sigHandler(int);
 void disconnect();
 

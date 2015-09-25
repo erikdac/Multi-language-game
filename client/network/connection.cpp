@@ -36,15 +36,17 @@ void setActiveWidget(QWidget * object) {
 static std::mutex output_mutex;
 
 // Private function
-void retryOutput(char * data) {
+bool retryOutput(char * data) {
     if(connectToServer()) {
         output_mutex.lock();
-        write(s0, data, strlen(data) + 1);
+        int res = write(s0, data, strlen(data) + 1);
         output_mutex.unlock();
+        return (res > 0);
     }
+    return false;
 }
 
-void output(const Json object) {
+bool output(const Json object) {
 
     std::string temp = object.dump();
     char data[temp.size()+1];
@@ -54,17 +56,19 @@ void output(const Json object) {
     int res = write(s0, data, strlen(data) + 1);
     output_mutex.unlock();
 
-    if (res <= 0) {
+    if (res < 0) {
         if (errno != EAGAIN) {
             perror("Write error");
-            retryOutput(data);
+            return retryOutput(data);
         } else
             perror("Incompleted send");
     }
     else if (res == 0) {
         std::cout << "Connection closed" << std::endl;
-        retryOutput(data);
+        return retryOutput(data);
     }
+    else
+        return true;
 }
 
 void disconnect() {

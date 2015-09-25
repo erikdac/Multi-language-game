@@ -24,4 +24,4 @@ public slots:
 private slots:
     void on_pushButton_clicked();
 };
-#endif // GAMEWIDGET_H
+#endif

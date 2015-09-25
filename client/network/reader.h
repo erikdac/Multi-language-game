@@ -1,5 +1,5 @@
-#ifndef Reader_H
-#define Reader_H
+#ifndef READER_H
+#define READER_H
 
 #include <iostream>
 #include <QThread>
@@ -26,4 +26,4 @@ signals:
     void input(std::string);
 };
 
-#endif // Reader_H
+#endif

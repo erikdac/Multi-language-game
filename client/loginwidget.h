@@ -21,6 +21,7 @@ public:
 
 private:
     Ui::LoginWidget *ui;
+    void popupBox(const QString);
 
 public slots:
     void input(std::string result);
@@ -28,7 +29,6 @@ public slots:
 private slots:
     void on_pushButton_clicked();
 
-
 };
 
-#endif // LOGINWIDGET_H
+#endif
