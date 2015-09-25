@@ -1,6 +1,6 @@
 #include "loginwidget.h"
 #include "json11/json11.hpp"
-#include "network/network_reader.h"
+#include "network/reader.h"
 #include "connection.h"
 #include "mainwindow.h"
 
@@ -26,19 +26,19 @@ using std::string;
 
 const int BUFFER_SIZE= 65534;
 
-Network_Reader::Network_Reader(QWidget *parent) : QThread(parent) {
+Reader::Reader(QWidget *parent) : QThread(parent) {
     qRegisterMetaType<std::string>();
 }
 
-Network_Reader::~Network_Reader() {
+Reader::~Reader() {
 
 }
 
-void Network_Reader::stopReading() {
+void Reader::stopReading() {
     _isReading = false;
 }
 
-void Network_Reader::run() {
+void Reader::run() {
 
     fd_set readfds;                     // Set of socket descriptors for select
     struct timeval tv;
@@ -91,6 +91,6 @@ void Network_Reader::run() {
     }
 }
 
-void Network_Reader::handleInput(const char readBuffer[]) {
+void Reader::handleInput(const char readBuffer[]) {
     emit input(readBuffer);
 }

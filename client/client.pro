@@ -17,15 +17,15 @@ SOURCES += main.cpp\
     json11/json11.cpp \
     loginwidget.cpp \
     network/connection.cpp \
-    network/network_reader.cpp \
-    gamewidget.cpp
+    gamewidget.cpp \
+    network/reader.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
     loginwidget.h \
     network/connection.h \
-    network/network_reader.h \
-    gamewidget.h
+    gamewidget.h \
+    network/reader.h
 
 FORMS    += mainwindow.ui \
     loginwidget.ui \

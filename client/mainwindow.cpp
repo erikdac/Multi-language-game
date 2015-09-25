@@ -4,14 +4,14 @@
 #include "loginwidget.h"
 #include "gamewidget.h"
 #include "network/connection.h"
-#include "network/network_reader.h"
+#include "network/reader.h"
 
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
-    Network_Reader * network_reader = new Network_Reader(this);
-    setNetworkReader(network_reader);
+    Reader * const reader = new Reader(this);
+    setNetworkReader(reader);
 
     connectToServer();
 

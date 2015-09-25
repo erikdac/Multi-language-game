@@ -3,7 +3,7 @@
 #include "network/connection.h"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
-#include "network/network_reader.h"
+#include "network/reader.h"
 
 #include <iostream>
 #include <QLineEdit>

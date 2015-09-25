@@ -24,4 +24,5 @@ type Movement struct {
 	Type
 	ToX int
 	ToY int
+	ToZ int
 }

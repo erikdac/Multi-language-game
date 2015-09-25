@@ -105,6 +105,7 @@ func (client *Client) readSingleInput() ([]byte, error) {
 	}
 }
 
+// TODO: Only lock write() for each client, use channels instead?
 var output_mutex = &sync.Mutex{}
 
 /**
@@ -126,7 +127,7 @@ func (client *Client) write(data []byte) {
 	output_mutex.Unlock()
 }
 
-// TODO: @param error, 	should and an if-else case for different errors
+// TODO: @param error, 	should use a switch-case for different errors
 func (client *Client) writeError() {
 	message := network.Error{network.Type{"error"}, "test"}
 	data,  _ := json.Marshal(&message)

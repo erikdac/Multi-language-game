@@ -32,6 +32,7 @@ const (
 
 func main() {
 
+	InitiateMapStructure()
 	Test()
 
 	clientList = make(map[string]*Client)
