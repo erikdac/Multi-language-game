@@ -14,8 +14,9 @@ import (
 var clientList map[string]*Client
 
 type Client struct {
-	connection net.Conn
-	player     Player
+	connection 		net.Conn
+	output_mutex 	sync.Mutex
+	player     		Player
 }
 
 /**
@@ -105,9 +106,6 @@ func (client *Client) readSingleInput() ([]byte, error) {
 	}
 }
 
-// TODO: Only lock write() for each client, use channels instead?
-var output_mutex = &sync.Mutex{}
-
 /**
  * The protocol for sending out all the data. 
  *
@@ -122,9 +120,9 @@ var output_mutex = &sync.Mutex{}
  */
 func (client *Client) write(data []byte) {
 	data = append(data, 0)
-	output_mutex.Lock()
+	client.output_mutex.Lock()
 	client.connection.Write(data)
-	output_mutex.Unlock()
+	client.output_mutex.Unlock()
 }
 
 // TODO: @param error, 	should use a switch-case for different errors
