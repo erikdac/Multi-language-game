@@ -1,13 +1,9 @@
 package main
 
 import (
-
 	"net"
-	"fmt"
 	"sync"
-//	"errors"
 	"encoding/json"
-	"./network"
 )
 
 // Binds the player names to their clients.
@@ -53,27 +49,24 @@ func (client *Client) login() bool {
 			return false
 		}
 
-		var request network.LoginRequest
-		err = json.Unmarshal(input, &request)
+		var data map[string]string
+		err = json.Unmarshal(input, &data)
 		if err != nil {
-
-			// For testing
-			answer, _ := json.Marshal(map[string]int{"apple": 5, "lettuce": 7})
-			fmt.Println(answer)
-
-			client.write([]byte("Incorrect packaging!"))
-			return false
+			loginError := map[string]string {"Type:": "Error"}
+			data,  _ := json.Marshal(loginError)
+			client.write(data)
 		}
 
-		player, err := checkLogin(request)
+		player, err := checkLogin(data)
+		loginSuccess := map[string]string {"Type:": "LoginSuccess"}
 		if err != nil {
-			message := network.LoginSuccess{network.Type{"login"}, "no"}
-			data,  _ := json.Marshal(&message)
+			loginSuccess["Success"] = "no"
+			data,  _ := json.Marshal(loginSuccess)
 			client.write(data)
 		} else {
 			client.player = player
-			message := network.LoginSuccess{network.Type{"login"}, "yes"}
-			data,  _ := json.Marshal(&message)
+			loginSuccess["Success"] = "yes"
+			data,  _ := json.Marshal(loginSuccess)
 			client.write(data)
 			return true
 		}
@@ -123,13 +116,6 @@ func (client *Client) write(data []byte) {
 	client.output_mutex.Lock()
 	client.connection.Write(data)
 	client.output_mutex.Unlock()
-}
-
-// TODO: @param error, 	should use a switch-case for different errors
-func (client *Client) writeError() {
-	message := network.Error{network.Type{"error"}, "test"}
-	data,  _ := json.Marshal(&message)
-	client.write(data)
 }
 
 /**

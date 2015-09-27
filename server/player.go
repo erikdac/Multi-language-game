@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./network"
+	"strconv"
 )
 
 type Player struct {
@@ -11,10 +11,10 @@ type Player struct {
 	z 		int
 }
 
-func (player *Player) movement(movement network.Movement) {
-	player.x = movement.ToX
-	player.y = movement.ToY
-	player.z = movement.ToZ
+func (player *Player) movement(movement map[string]string) {
+	player.x, _ = strconv.Atoi(movement["ToX"])
+	player.y, _ = strconv.Atoi(movement["ToY"])
+	player.z, _ = strconv.Atoi(movement["ToZ"])
 
 	// TODO: Inform all nearby players that the movement has happend.
 }

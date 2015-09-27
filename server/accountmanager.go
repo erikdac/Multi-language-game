@@ -6,14 +6,13 @@ import (
 	"errors"                           // lol
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
 	"sync"
-	"./network"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
 
 var database_mutex = &sync.Mutex{}
 
-func checkLogin(request network.LoginRequest) (Player, error) {
+func checkLogin(request map[string]string) (Player, error) {
 
 	db, err := sql.Open("mysql", database)
 	if err != nil {
@@ -41,9 +40,9 @@ func checkLogin(request network.LoginRequest) (Player, error) {
 
 // Queries the database table 'account' with the username and password and get 
 // the username back if it exists in the database.
-func queryAccount(request network.LoginRequest, db *sql.DB) (string, error) {
-	username := request.Username
-	password := request.Password
+func queryAccount(request map[string]string, db *sql.DB) (string, error) {
+	username := request["Username"]
+	password := request["Password"]
 
 	query := "SELECT username FROM account WHERE username = ? AND password = ? AND online=false"
 	var player_name string
