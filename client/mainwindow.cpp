@@ -22,7 +22,7 @@ MainWindow::~MainWindow() {
 void MainWindow::setUpLoginUi() {
     removePreviousUi();
     LoginWidget * loginWidget = new LoginWidget(this);
-    setActiveWidget(loginWidget);
+    connection::setActiveWidget(loginWidget);
     loginWidget->show();
 }
 
@@ -30,7 +30,7 @@ void MainWindow::setUpGameUi() {
     removePreviousUi();
     GameWidget * gameWidget = new GameWidget(this);
     gameWidget->show();
-    setActiveWidget(gameWidget);
+    connection::setActiveWidget(gameWidget);
 }
 
 void MainWindow::removePreviousUi() {

@@ -6,8 +6,6 @@
 
 Q_DECLARE_METATYPE(std::string)
 
-extern int s0;
-
 class Reader : public QThread
 {
     Q_OBJECT

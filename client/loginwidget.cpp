@@ -3,7 +3,6 @@
 #include "network/connection.h"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
-#include "network/reader.h"
 
 #include <iostream>
 #include <QLineEdit>
@@ -34,7 +33,7 @@ void LoginWidget::on_pushButton_clicked() {
         {"Password", password->text().toStdString()}
     };
 
-    if(output(data) == false) {
+    if(connection::output(data) == false) {
         popupBox("Connection failed!");
     }
 }

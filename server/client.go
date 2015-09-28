@@ -4,6 +4,7 @@ import (
 	"net"
 	"sync"
 	"encoding/json"
+	"fmt"
 )
 
 // Binds the player names to their clients.
@@ -11,7 +12,7 @@ var clientList map[string]*Client
 
 type Client struct {
 	connection 		net.Conn
-	output_mutex 	sync.Mutex
+	output_mutex 	sync.Mutex // TODO: Change to a unbuffered channel instead.
 	player     		Player
 }
 
@@ -152,13 +153,14 @@ func (client *Client) handleInput(input []byte) {
 		return;
 	}
 
+
 	if data["Type"] == "Logout" {
 		client.disconnect()
-	}
-
-	for _, c := range clientList {
-		if c.connection != client.connection {
-			c.write(input)
+	} else {
+		for _, c := range clientList {
+			if c.connection != client.connection {
+				c.write(input)
+			}
 		}
 	}
 }

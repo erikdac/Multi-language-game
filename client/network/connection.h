@@ -10,11 +10,11 @@ using namespace json11;
 
 extern int s0;
 
-void setActiveWidget(QWidget *);
-bool online();
-bool connectToServer();
-bool output(const Json);
-void sigHandler(int);
-void disconnect();
+namespace connection {
+    void setActiveWidget(QWidget *);
+    bool connectToServer();
+    bool output(const Json);
+    void disconnect();
+}
 
 #endif

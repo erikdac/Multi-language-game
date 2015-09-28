@@ -24,20 +24,20 @@ int s0; // Socket.
 
 Reader * const reader = new Reader();
 
-void setActiveWidget(QWidget * object) {
+void connection::setActiveWidget(QWidget * object) {
     QObject::connect(
-            reader,
-            SIGNAL(input(std::string)),
-            object,
-            SLOT(input(std::string))
-            );
+        reader,
+        SIGNAL(input(std::string)),
+        object,
+        SLOT(input(std::string))
+    );
 }
 
 static std::mutex output_mutex;
 
 // Private function
 bool retryOutput(char * data) {
-    if(connectToServer()) {
+    if(connection::connectToServer()) {
         output_mutex.lock();
         int res = write(s0, data, strlen(data) + 1);
         output_mutex.unlock();
@@ -46,7 +46,7 @@ bool retryOutput(char * data) {
     return false;
 }
 
-bool output(const Json object) {
+bool connection::output(const Json object) {
 
     std::string temp = object.dump();
     char data[temp.size()+1];
@@ -60,8 +60,10 @@ bool output(const Json object) {
         if (errno != EAGAIN) {
             perror("Write error");
             return retryOutput(data);
-        } else
+        } else {
             perror("Incompleted send");
+            return false;
+        }
     }
     else if (res == 0) {
         std::cout << "Connection closed" << std::endl;
@@ -71,7 +73,9 @@ bool output(const Json object) {
         return true;
 }
 
-void disconnect() {
+void connection::disconnect() {
+    const Json data = Json::object {{"Type", "Logout"}};
+    connection::output(data);
     reader->stopReading();
     shutdown(s0, 2);
     close(s0);
@@ -82,7 +86,7 @@ void sigHandler(int sigID) {
     reader->stopReading();
 }
 
-bool connectToServer() {
+bool connection::connectToServer() {
 
     // Set signal handler for the "SIGPIPE" signal
     // (used to intercept the signal about broken connection).
