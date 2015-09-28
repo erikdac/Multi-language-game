@@ -1,8 +1,8 @@
-#include "loginwidget.h"
+#include "ui/loginwidget.h"
 #include "json11/json11.hpp"
 #include "network/reader.h"
 #include "connection.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 
 #include <iostream>
 #include <string.h>

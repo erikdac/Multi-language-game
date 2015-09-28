@@ -2,7 +2,7 @@
 #define CONNECTION_H
 
 #include <QThread>
-#include "loginwidget.h"
+#include "ui/loginwidget.h"
 
 #include "json11/json11.hpp"
 

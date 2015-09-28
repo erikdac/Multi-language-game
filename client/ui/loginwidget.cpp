@@ -1,5 +1,5 @@
-#include "loginwidget.h"
 #include "ui_loginwidget.h"
+#include "loginwidget.h"
 #include "network/connection.h"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
@@ -14,8 +14,8 @@ std::mutex login_mutex;
 
 LoginWidget::LoginWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::LoginWidget) {
-
+    , ui(new Ui::LoginWidget)
+{
     ui->setupUi(this);
 }
 

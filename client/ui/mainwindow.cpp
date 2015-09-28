@@ -1,16 +1,15 @@
-#include <iostream>
-#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "mainwindow.h"
 #include "loginwidget.h"
 #include "gamewidget.h"
 #include "network/connection.h"
 
 #include <iostream>
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
-
-//    connectToServer();
-
+MainWindow::MainWindow(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::MainWindow)
+{
     setUpLoginUi();
     ui->setupUi(this);
 }

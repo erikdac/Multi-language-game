@@ -13,21 +13,28 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+        mainwindow.cpp \
     json11/json11.cpp \
+    loginwidget.cpp \
     network/connection.cpp \
+    gamewidget.cpp \
     network/reader.cpp \
     ui/gamewidget.cpp \
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
+    player.cpp \
     game/player.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
+    loginwidget.h \
     network/connection.h \
+    gamewidget.h \
     network/reader.h \
     ui/gamewidget.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
+    player.h \
     game/player.h
 
 FORMS    += ui/gamewidget.ui \

@@ -1,12 +1,12 @@
-#include "gamewidget.h"
 #include "ui_gamewidget.h"
+#include "gamewidget.h"
 #include "mainwindow.h"
 #include "network/connection.h"
 
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::GameWidget) {
-
+    , ui(new Ui::GameWidget)
+{
     ui->setupUi(this);
 }
 
