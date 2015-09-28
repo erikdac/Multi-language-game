@@ -15,13 +15,16 @@ public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget();
 
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
 private:
     Ui::GameWidget *ui;
+
+    void openMenu();
 
 public slots:
     void input(std::string result);
 
-private slots:
-    void on_pushButton_clicked();
 };
 #endif

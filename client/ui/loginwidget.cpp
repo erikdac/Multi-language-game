@@ -17,6 +17,7 @@ LoginWidget::LoginWidget(QWidget *parent)
     , ui(new Ui::LoginWidget)
 {
     ui->setupUi(this);
+    findChild<QLineEdit*>("username")->setFocus();
 }
 
 LoginWidget::~LoginWidget() {

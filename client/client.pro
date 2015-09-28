@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     ui/gamewidget.cpp \
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
-    game/player.cpp
+    game/player.cpp \
+    game/map.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     ui/gamewidget.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
-    game/player.h
+    game/player.h \
+    game/map.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \

@@ -3,7 +3,7 @@
 #include <cmath>
 
 #define MOVEMENT_STEP   5
-#define TURN_SPEED      0.1
+#define TURN_SPEED      0.05
 
 Player::Player(unsigned int x, unsigned int y, unsigned int z, double direction)
     : _x(x)
@@ -37,7 +37,13 @@ void Player::turnLeft() {
 
 void Player::turnRight() {
     _direction -= TURN_SPEED;
-    if(_direction < M_PI) {
+    if(_direction < -M_PI) {
         _direction += 2*M_PI;
     }
+}
+
+// TODO: Remove
+#include <iostream>
+void Player::printForTest() {
+    std::cout << _x << "\t" << _y << "\t" << _z << "\t" << _direction << std::endl;
 }

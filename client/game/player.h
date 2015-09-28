@@ -13,6 +13,9 @@ public:
     void turnLeft();
     void turnRight();
 
+    // TODO: Remove
+    void printForTest();
+
 private:
     unsigned int _x;
     unsigned int _y;
