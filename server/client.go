@@ -49,26 +49,23 @@ func (client *Client) login() bool {
 			return false
 		}
 
-		var data map[string]string
-		err = json.Unmarshal(input, &data)
-		if err != nil {
-			loginError := map[string]string {"Type:": "Error"}
-			data,  _ := json.Marshal(loginError)
-			client.write(data)
-		}
-
-		player, err := checkLogin(data)
-		loginSuccess := map[string]string {"Type:": "LoginSuccess"}
-		if err != nil {
-			loginSuccess["Success"] = "no"
-			data,  _ := json.Marshal(loginSuccess)
-			client.write(data)
+		data, errorResponse := parseJson(input)
+		if errorResponse != nil {
+			client.write(errorResponse)
 		} else {
-			client.player = player
-			loginSuccess["Success"] = "yes"
-			data,  _ := json.Marshal(loginSuccess)
-			client.write(data)
-			return true
+			player, err := checkLogin(data)
+			loginSuccess := map[string]string {"Type:": "LoginSuccess"}
+			if err != nil {
+				loginSuccess["Success"] = "no"
+				data,  _ := json.Marshal(loginSuccess)
+				client.write(data)
+			} else {
+				client.player = player
+				loginSuccess["Success"] = "yes"
+				data,  _ := json.Marshal(loginSuccess)
+				client.write(data)
+				return true
+			}
 		}
 	}
 	return false
@@ -135,7 +132,7 @@ func (client *Client) reader() {
 
 		for i := 0; i < n; i++ {
 			if input[i] == 0 {
-				go handleInput(client, []byte(data))
+				go client.handleInput(data)
 				data = data[:0] // Empty slice
 			} else {
 				data = append(data, input[i])
@@ -147,10 +144,21 @@ func (client *Client) reader() {
 /**
  * Function used to handle whatever data the server has recieved from the user.
  */
-func handleInput(client *Client, data []byte) {
+func (client *Client) handleInput(input []byte) {
+
+	data, errorResponse := parseJson(input)
+	if errorResponse != nil {
+		client.write(errorResponse)
+		return;
+	}
+
+	if data["Type"] == "Logout" {
+		client.disconnect()
+	}
+
 	for _, c := range clientList {
 		if c.connection != client.connection {
-			c.write(data)
+			c.write(input)
 		}
 	}
 }
@@ -162,4 +170,16 @@ func (client *Client) disconnect() {
 	delete(clientList, client.player.name)
 	client.connection.Close()
 	client.player.logOut()
+}
+
+func parseJson(input []byte) (map[string]string, []byte) {
+	var data map[string]string
+	err := json.Unmarshal(input, &data)
+	if err != nil {
+		error := map[string]string {"Type:": "Error"}
+		errorResponse,  _ := json.Marshal(error)
+		return nil, errorResponse
+	} else {
+		return data, nil
+	}
 }
