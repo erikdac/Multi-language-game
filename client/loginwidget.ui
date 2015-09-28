@@ -25,6 +25,15 @@
    <property name="text">
     <string>PushButton</string>
    </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QLineEdit" name="username">
    <property name="geometry">
@@ -80,5 +89,38 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>username</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>password</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

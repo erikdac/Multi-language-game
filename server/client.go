@@ -4,7 +4,6 @@ import (
 	"net"
 	"sync"
 	"encoding/json"
-	"fmt"
 )
 
 // Binds the player names to their clients.
