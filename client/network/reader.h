@@ -18,7 +18,7 @@ public:
     void handleInput(const char readBuffer[]);
 
 private:
-    int _isReading;
+    bool _isReading;
 
 signals:
     void input(std::string);

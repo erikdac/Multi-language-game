@@ -5,6 +5,12 @@
 class Player {
 
 public:
+    unsigned int _x;
+    unsigned int _y;
+    unsigned int _z;
+    double _direction;
+
+
     Player(unsigned int, unsigned int, unsigned int, double);
     ~Player();
 
@@ -16,11 +22,6 @@ public:
     // TODO: Remove
     void printForTest();
 
-private:
-    unsigned int _x;
-    unsigned int _y;
-    unsigned int _z;
-    double _direction;
 
 };
 
