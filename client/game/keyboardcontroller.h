@@ -19,7 +19,6 @@ public:
 
 private:
     Player * _player;
-    bool _isRunning;
     char _key;
 
 };

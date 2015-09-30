@@ -3,7 +3,6 @@
 #include <iostream>
 
 KeyboardController::KeyboardController(Player * player, char key)
-    : _isRunning(true)
     , _player(player)
     , _key(key)
 {
