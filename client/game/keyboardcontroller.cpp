@@ -2,9 +2,10 @@
 
 #include <iostream>
 
-KeyboardController::KeyboardController(Player * player)
+KeyboardController::KeyboardController(Player * player, char key)
     : _isRunning(true)
     , _player(player)
+    , _key(key)
 {
 
 }
@@ -13,15 +14,26 @@ KeyboardController::~KeyboardController() {
 
 }
 
-void KeyboardController::stop() {
-    _isRunning = false;
-}
-
 void KeyboardController::run() {
-    while(_isRunning) {
-        _player->moveForward();
-        _player->turnLeft();
-        emit animate();
-        usleep(50000);
+    if(_key == 'w') {
+        while(true) {
+            _player->moveForward();
+            usleep(50000);
+        }
+    } else if(_key == 's') {
+        while(true) {
+            _player->moveBackward();
+            usleep(50000);
+        }
+    } else if(_key == 'a') {
+        while(true) {
+            _player->turnLeft();
+            usleep(50000);
+        }
+    } else if(_key == 'd') {
+        while(true) {
+            _player->turnRight();
+            usleep(50000);
+        }
     }
 }

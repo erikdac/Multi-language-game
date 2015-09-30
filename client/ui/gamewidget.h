@@ -3,6 +3,7 @@
 
 #include "game/player.h"
 #include "game/keyboardcontroller.h"
+#include "game/screenrefresher.h"
 
 #include <QWidget>
 #include <unordered_map>
@@ -25,11 +26,14 @@ protected:
     void paintEvent(QPaintEvent *);
 
 private:
-    Player * _player;
-    std::unordered_map<char, std::string> _keyMap;
-
     Ui::GameWidget *ui;
 
+    Player * _player;
+    ScreenRefresher * _screenRefresher;
+    std::unordered_map<char, KeyboardController*> _keyMap;
+
+    void setScreenRefresher();
+    void setKeyboardController(char);
     void openMenu();
 
 public slots:

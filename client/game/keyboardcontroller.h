@@ -5,12 +5,14 @@
 
 #include <QThread>
 
+typedef void (*func_t)();
+
 class KeyboardController : public QThread {
 
     Q_OBJECT
 
 public:
-    KeyboardController(Player *);
+    KeyboardController(Player *, char);
     ~KeyboardController();
     void stop();
     void run();
@@ -18,11 +20,8 @@ public:
 private:
     Player * _player;
     bool _isRunning;
-    void *fptr;
+    char _key;
 
-
-signals:
-    void animate();
 };
 
 #endif // KEYBOARDCONTROLLER_H

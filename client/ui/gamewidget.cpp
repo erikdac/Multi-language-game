@@ -4,12 +4,10 @@
 #include "network/connection.h"
 #include "game/player.h"
 #include "game/keyboardcontroller.h"
+#include "game/screenrefresher.h"
 
 #include <QKeyEvent>
 #include <QPainter>
-
-KeyboardController * test;
-bool running = false;
 
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent)
@@ -18,12 +16,15 @@ GameWidget::GameWidget(QWidget *parent)
     ui->setupUi(this);
     setFocus();
 
+    setScreenRefresher();
+
     // TODO: Remove
     _player = new Player(100, 100, 100, 0);
-    test = new KeyboardController(_player);
+
 }
 
 GameWidget::~GameWidget() {
+    _screenRefresher->terminate();
     delete ui;
 }
 
@@ -33,8 +34,16 @@ void GameWidget::input(std::string input) {
 
 void GameWidget::animate() {
     repaint();
+//    _player->printForTest();
 }
 
+void GameWidget::setScreenRefresher() {
+    _screenRefresher = new ScreenRefresher();
+    QObject::connect(
+        _screenRefresher, SIGNAL(animate()), this, SLOT(animate())
+    );
+    _screenRefresher->start();
+}
 
 void GameWidget::keyPressEvent(QKeyEvent *event) {
     if(event->isAutoRepeat()) {
@@ -42,38 +51,49 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
     }
 
     if(event->key() == Qt::Key_W) {
-        _player->moveForward();
+        setKeyboardController('w');
     } else if(event->key() == Qt::Key_S) {
-        _player->moveBackward();
+        setKeyboardController('s');
     } else if(event->key() == Qt::Key_A) {
-        _player->turnLeft();
+        setKeyboardController('a');
     } else if(event->key() == Qt::Key_D) {
-        _player->turnRight();
+        setKeyboardController('d');
     } else if(event->key() == Qt::Key_Escape) {
         openMenu();
     }
+}
 
-    if(!running) {
-        QObject::connect(
-                    test, SIGNAL(animate()), this, SLOT(animate())
-                );
-        test->start();
-        _keyMap['a'] = "yay";
-        running = true;
+void GameWidget::setKeyboardController(char key) {
+    if(_keyMap.find(key) == _keyMap.end()) {
+        KeyboardController * temp = new KeyboardController(_player, key);
+        _keyMap[key] = temp;
+        temp->start();
     }
-
-//    player->printForTest();
-    repaint();
 }
 
 void GameWidget::keyReleaseEvent(QKeyEvent *event) {
     if(event->isAutoRepeat() == false) {
-        test->stop();
-        running = false;
+        if(event->key() == Qt::Key_W) {
+            KeyboardController * temp = _keyMap['w'];
+            temp->terminate();
+            _keyMap.erase('w');
+        } else if(event->key() == Qt::Key_S) {
+            KeyboardController * temp = _keyMap['s'];
+            temp->terminate();
+            _keyMap.erase('s');
+        } else if(event->key() == Qt::Key_A) {
+            KeyboardController * temp = _keyMap['a'];
+            temp->terminate();
+            _keyMap.erase('a');
+        } else if(event->key() == Qt::Key_D) {
+            KeyboardController * temp = _keyMap['d'];
+            temp->terminate();
+            _keyMap.erase('d');
+        }
     }
 }
 
-void GameWidget::paintEvent(QPaintEvent *e) {
+void GameWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     QPainterPath painterPath;
     QPen pen;

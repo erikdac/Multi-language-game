@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     ui/mainwindow.cpp \
     game/player.cpp \
     game/map.cpp \
-    game/keyboardcontroller.cpp
+    game/keyboardcontroller.cpp \
+    game/screenrefresher.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     ui/mainwindow.h \
     game/player.h \
     game/map.h \
-    game/keyboardcontroller.h
+    game/keyboardcontroller.h \
+    game/screenrefresher.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
