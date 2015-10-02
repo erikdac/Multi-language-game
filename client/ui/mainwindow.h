@@ -19,6 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    void changeWidget(QWidget *);
     void removePreviousUi();
 };
 

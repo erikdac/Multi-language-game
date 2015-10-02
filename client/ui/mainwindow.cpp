@@ -5,6 +5,7 @@
 #include "network/connection.h"
 
 #include <iostream>
+#include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
@@ -21,18 +22,25 @@ MainWindow::~MainWindow() {
 void MainWindow::setUpLoginUi() {
     removePreviousUi();
     LoginWidget * loginWidget = new LoginWidget(this);
-    connection::setActiveWidget(loginWidget);
-    loginWidget->show();
+    changeWidget(loginWidget);
 }
 
 void MainWindow::setUpGameUi() {
     removePreviousUi();
     GameWidget * gameWidget = new GameWidget(this);
-    gameWidget->show();
-    connection::setActiveWidget(gameWidget);
+    changeWidget(gameWidget);
+}
+
+void MainWindow::changeWidget(QWidget *widget) {
+    connection::setActiveWidget(widget);
+    QGridLayout * layout = new QGridLayout;
+    layout->setContentsMargins(0,0,0,0);
+    layout->addWidget(widget);
+    setLayout(layout);
 }
 
 void MainWindow::removePreviousUi() {
+    delete this->layout();
     while ( QWidget* w = findChild<QWidget*>() )
         delete w;
 }
