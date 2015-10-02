@@ -5,14 +5,14 @@
 #include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
 
-#include <QWidget>
+#include <QOpenGLWidget>
 #include <unordered_map>
 
 namespace Ui {
     class GameWidget;
 }
 
-class GameWidget : public QWidget
+class GameWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
@@ -23,7 +23,11 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
-    void paintEvent(QPaintEvent *);
+//    void paintEvent(QPaintEvent *);
+
+    void intitializeGL();
+    void paintGL();
+    void resizeGL();
 
 private:
     Ui::GameWidget *ui;

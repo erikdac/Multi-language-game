@@ -8,9 +8,11 @@
 
 #include <QKeyEvent>
 #include <QPainter>
+#include <QOpenGLTexture>
+#include <GL/glut.h>
 
 GameWidget::GameWidget(QWidget *parent)
-    : QWidget(parent)
+    : QOpenGLWidget(parent)
     , ui(new Ui::GameWidget)
 {
     ui->setupUi(this);
@@ -93,26 +95,26 @@ void GameWidget::keyReleaseEvent(QKeyEvent *event) {
     }
 }
 
-void GameWidget::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
-    QPainterPath painterPath;
-    QPen pen;
-    pen.setWidth(8);
-    pen.setColor(Qt::red);
-    painter.setPen(pen);
-    QBrush color;
-    color.setStyle(Qt::SolidPattern);
+void GameWidget::intitializeGL() {
+    glClearColor(255, 255, 255, 1);
+}
 
-    QPolygon polygon;
-    polygon << QPoint(_player->_x+10, _player->_y+10);
-    polygon << QPoint(_player->_x+10, _player->_y+100);
-    polygon << QPoint(_player->_x+100, _player->_y+100);
-    polygon << QPoint(_player->_x+100, _player->_y+10);
-    painter.drawPolygon(polygon);
+void GameWidget::paintGL() {
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    painterPath.addPolygon(polygon);
-    color.setColor(Qt::green);
-    painter.fillPath(painterPath, color);
+    glBegin(GL_TRIANGLES);
+    glColor3d(1, 0, 0);
+    glVertex3d(-0.5, -0.5, 0);
+    glColor3d(0, 1, 0);
+    glVertex3d(0.5, -0.5, 0);
+    glColor3d(0, 0, 1);
+    glVertex3d(0.0, 0.5, 0);
+
+    glEnd();
+}
+
+void GameWidget::resizeGL() {
+
 }
 
 // TODO: Implement a game menu instead of just logging out.

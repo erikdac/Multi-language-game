@@ -2,7 +2,11 @@
 #include <QApplication>
 #include <iostream>
 
+#include <GL/glut.h>
+
 int main(int argc, char *argv[]) {
+
+//    glutInit(&argc, argv);
 
     QApplication a(argc, argv);
     MainWindow w;

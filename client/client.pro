@@ -4,13 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = client
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
     json11/json11.cpp \
@@ -41,3 +40,5 @@ FORMS    += ui/gamewidget.ui \
     ui/mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+LIBS += -lglut

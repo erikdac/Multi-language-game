@@ -3,7 +3,7 @@
 #include <cmath>
 
 #define MOVEMENT_STEP   5
-#define TURN_SPEED      0.05
+#define TURN_SPEED      0.1
 
 Player::Player(unsigned int x, unsigned int y, unsigned int z, double direction)
     : _x(x)

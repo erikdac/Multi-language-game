@@ -1,9 +1,10 @@
 #include "keyboardcontroller.h"
+#include "player.h"
 
 #include <iostream>
 
 KeyboardController::KeyboardController(Player * player, char key)
-    , _player(player)
+    : _player(player)
     , _key(key)
 {
 

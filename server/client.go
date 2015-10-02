@@ -64,6 +64,9 @@ func (client *Client) login() bool {
 				loginSuccess["Success"] = "yes"
 				data,  _ := json.Marshal(loginSuccess)
 				client.write(data)
+				playerJson := map[string]string {"Type:": "Player", "x": string(player.x), "y": string(player.y), "z": string(player.z)}
+				data,  _ = json.Marshal(playerJson)
+				client.write(data)
 				return true
 			}
 		}
