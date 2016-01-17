@@ -23,7 +23,6 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
-//    void paintEvent(QPaintEvent *);
 
     void intitializeGL();
     void paintGL();
@@ -32,7 +31,6 @@ protected:
 private:
     Ui::GameWidget *ui;
 
-    Player * _player;
     ScreenRefresher * _screenRefresher;
     std::unordered_map<char, KeyboardController*> _keyMap;
 

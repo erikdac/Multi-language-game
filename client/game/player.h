@@ -1,28 +1,22 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-
 class Player {
 
+unsigned int _x;
+unsigned int _y;
+
 public:
-    unsigned int _x;
-    unsigned int _y;
-    unsigned int _z;
-    double _direction;
-
-
-    Player(unsigned int, unsigned int, unsigned int, double);
+    Player(unsigned int, unsigned int);
     ~Player();
 
-    void moveForward();
-    void moveBackward();
-    void turnLeft();
-    void turnRight();
+    unsigned int x() const;
+    unsigned int y() const;
 
-    // TODO: Remove
-    void printForTest();
-
-
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
 };
 
 #endif // PLAYER_H

@@ -8,19 +8,15 @@
 typedef void (*func_t)();
 
 class KeyboardController : public QThread {
-
     Q_OBJECT
 
+    char _key;
+
 public:
-    KeyboardController(Player *, char);
+    KeyboardController(char);
     ~KeyboardController();
     void stop();
     void run();
-
-private:
-    Player * _player;
-    char _key;
-
 };
 
 #endif // KEYBOARDCONTROLLER_H

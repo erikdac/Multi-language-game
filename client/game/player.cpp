@@ -2,15 +2,9 @@
 
 #include <cmath>
 
-#define MOVEMENT_STEP   5
-#define TURN_SPEED      0.1
+#define MOVEMENT_STEP   1
 
-Player::Player(unsigned int x, unsigned int y, unsigned int z, double direction)
-    : _x(x)
-    , _y(y)
-    , _z(z)
-    , _direction(direction)
-{
+Player::Player(unsigned int x, unsigned int y) : _x(x), _y(y) {
 
 }
 
@@ -18,32 +12,26 @@ Player::~Player() {
 
 }
 
-void Player::moveForward() {
-    _x += MOVEMENT_STEP*sin(_direction);
-    _y += MOVEMENT_STEP*cos(_direction);
+unsigned int Player::x() const {
+    return _x;
 }
 
-void Player::moveBackward() {
-    _x -= MOVEMENT_STEP*sin(_direction);
-    _y -= MOVEMENT_STEP*cos(_direction);
+unsigned int Player::y() const {
+    return _y;
 }
 
-void Player::turnLeft() {
-    _direction += TURN_SPEED;
-    if(_direction > M_PI) {
-        _direction -= 2*M_PI;
-    }
+void Player::moveUp() {
+    --_y;
 }
 
-void Player::turnRight() {
-    _direction -= TURN_SPEED;
-    if(_direction < -M_PI) {
-        _direction += 2*M_PI;
-    }
+void Player::moveDown() {
+    ++_y;
 }
 
-// TODO: Remove
-#include <iostream>
-void Player::printForTest() {
-    std::cout << _x << "\t" << _y << "\t" << _z << "\t" << _direction << std::endl;
+void Player::moveLeft() {
+    --_x;
+}
+
+void Player::moveRight() {
+    ++_x;
 }

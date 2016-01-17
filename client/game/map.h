@@ -1,13 +1,13 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "player.h"
 
-class Map {
+const int VIEW_WIDTH = 15;
+const int VIEW_HEIGHT = 10;
 
-public:
-    Map();
-    ~Map();
+extern Player * _player;
 
-};
+void initializeMap();
 
 #endif // MAP_H

@@ -1,9 +1,8 @@
 #include "map.h"
 
-Map::Map() {
+Player * _player;
 
-}
-
-Map::~Map() {
-
+void initializeMap() {
+    // TODO: Get player from server
+    _player = new Player(100, 100);
 }

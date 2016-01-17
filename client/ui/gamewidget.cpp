@@ -5,6 +5,7 @@
 #include "game/player.h"
 #include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
+#include "game/map.h"
 
 #include <QKeyEvent>
 #include <QPainter>
@@ -15,14 +16,12 @@ GameWidget::GameWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , ui(new Ui::GameWidget)
 {
+    initializeMap();
+
     ui->setupUi(this);
     setFocus();
 
     setScreenRefresher();
-
-    // TODO: Remove
-    _player = new Player(100, 100, 100, 0);
-
 }
 
 GameWidget::~GameWidget() {
@@ -36,7 +35,6 @@ void GameWidget::input(std::string input) {
 
 void GameWidget::animate() {
     repaint();
-//    _player->printForTest();
 }
 
 void GameWidget::setScreenRefresher() {
@@ -67,7 +65,7 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
 
 void GameWidget::setKeyboardController(char key) {
     if(_keyMap.find(key) == _keyMap.end()) {
-        KeyboardController * temp = new KeyboardController(_player, key);
+        KeyboardController * temp = new KeyboardController(key);
         _keyMap[key] = temp;
         temp->start();
     }
@@ -102,14 +100,25 @@ void GameWidget::intitializeGL() {
 void GameWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBegin(GL_TRIANGLES);
-    glColor3d(1, 0, 0);
-    glVertex3d(-0.5, -0.5, 0);
-    glColor3d(0, 1, 0);
-    glVertex3d(0.5, -0.5, 0);
-    glColor3d(0, 0, 1);
-    glVertex3d(0.0, 0.5, 0);
+    // Player
+    glBegin(GL_QUADS);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
+        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
+    glEnd();
 
+    float x = (0.5f + 105.0f - _player->x())/VIEW_WIDTH;
+    float y = -(0.5f + 105.0f - _player->y())/VIEW_HEIGHT;
+
+    // Tree
+    glBegin(GL_QUADS);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f(x, y);
+        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
+        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
+        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
     glEnd();
 }
 
