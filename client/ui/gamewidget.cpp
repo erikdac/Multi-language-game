@@ -25,7 +25,7 @@ GameWidget::GameWidget(QWidget *parent)
 }
 
 GameWidget::~GameWidget() {
-    _screenRefresher->terminate();
+    _screenRefresher->stop();
     delete ui;
 }
 
@@ -33,14 +33,10 @@ void GameWidget::input(std::string input) {
 
 }
 
-void GameWidget::animate() {
-    repaint();
-}
-
 void GameWidget::setScreenRefresher() {
     _screenRefresher = new ScreenRefresher();
     QObject::connect(
-        _screenRefresher, SIGNAL(animate()), this, SLOT(animate())
+        _screenRefresher, SIGNAL(repaint()), this, SLOT(repaint())
     );
     _screenRefresher->start();
 }
@@ -50,16 +46,22 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
         return;
     }
 
-    if(event->key() == Qt::Key_W) {
-        setKeyboardController('w');
-    } else if(event->key() == Qt::Key_S) {
-        setKeyboardController('s');
-    } else if(event->key() == Qt::Key_A) {
-        setKeyboardController('a');
-    } else if(event->key() == Qt::Key_D) {
-        setKeyboardController('d');
-    } else if(event->key() == Qt::Key_Escape) {
-        openMenu();
+    switch(event->key()) {
+        case Qt::Key_W:
+            setKeyboardController('w');
+        break;
+        case Qt::Key_A:
+            setKeyboardController('a');
+        break;
+        case Qt::Key_S:
+            setKeyboardController('s');
+        break;
+        case Qt::Key_D:
+            setKeyboardController('d');
+        break;
+        case Qt::Key_Escape:
+            openMenu();
+        break;
     }
 }
 
@@ -73,23 +75,18 @@ void GameWidget::setKeyboardController(char key) {
 
 void GameWidget::keyReleaseEvent(QKeyEvent *event) {
     if(event->isAutoRepeat() == false) {
-        if(event->key() == Qt::Key_W) {
-            KeyboardController * temp = _keyMap['w'];
-            temp->terminate();
-            _keyMap.erase('w');
-        } else if(event->key() == Qt::Key_S) {
-            KeyboardController * temp = _keyMap['s'];
-            temp->terminate();
-            _keyMap.erase('s');
-        } else if(event->key() == Qt::Key_A) {
-            KeyboardController * temp = _keyMap['a'];
-            temp->terminate();
-            _keyMap.erase('a');
-        } else if(event->key() == Qt::Key_D) {
-            KeyboardController * temp = _keyMap['d'];
-            temp->terminate();
-            _keyMap.erase('d');
+        char c;
+        switch(event->key()) {
+            case Qt::Key_W: c = 'w'; break;
+            case Qt::Key_A: c = 'a'; break;
+            case Qt::Key_S: c = 's'; break;
+            case Qt::Key_D: c = 'd'; break;
+            default: return;
         }
+
+        KeyboardController * temp = _keyMap[c];
+        temp->stop();
+        _keyMap.erase(c);
     }
 }
 

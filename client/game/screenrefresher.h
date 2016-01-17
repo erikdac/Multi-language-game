@@ -7,18 +7,16 @@ class ScreenRefresher : public QThread {
 
     Q_OBJECT
 
+    bool _isRunning;
+
 public:
     ScreenRefresher();
     ~ScreenRefresher();
     void stop();
     void run();
 
-private:
-    bool _isRunning;
-
-
 signals:
-    void animate();
+    void repaint();
 };
 
 

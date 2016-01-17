@@ -2,39 +2,37 @@
 #include "map.h"
 #include "player.h"
 
-#include <iostream>
+#include <unordered_map>
 
 const int SLEEP_TIME = 200000;
 
-KeyboardController::KeyboardController(char key) : _key(key) {
+bool _isRunning;
 
+KeyboardController::KeyboardController(char key) : _key(key), _isRunning(true) {
 }
 
 KeyboardController::~KeyboardController() {
 
 }
 
-void KeyboardController::run() {
+typedef void (Player::*function)();
 
-    if(_key == 'w') {
-        while(true) {
-            _player->moveUp();
-            usleep(SLEEP_TIME);
-        }
-    } else if(_key == 's') {
-        while(true) {
-            _player->moveDown();
-            usleep(SLEEP_TIME);
-        }
-    } else if(_key == 'a') {
-        while(true) {
-            _player->moveLeft();
-            usleep(SLEEP_TIME);
-        }
-    } else if(_key == 'd') {
-        while(true) {
-            _player->moveRight();
-            usleep(SLEEP_TIME);
-        }
+void KeyboardController::run() {
+    function fp;
+    switch(_key) {
+        case 'w': fp = &Player::moveUp; break;
+        case 'a': fp = &Player::moveLeft; break;
+        case 's': fp = &Player::moveDown; break;
+        case 'd': fp = &Player::moveRight; break;
+        default: return;
     }
+
+    while(_isRunning) {
+        (_player->*fp)();
+        usleep(SLEEP_TIME);
+    }
+}
+
+void KeyboardController::stop() {
+    _isRunning = false;
 }

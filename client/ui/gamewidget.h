@@ -40,6 +40,5 @@ private:
 
 public slots:
     void input(std::string);
-    void animate();
 };
 #endif

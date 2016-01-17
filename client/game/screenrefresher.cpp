@@ -1,6 +1,6 @@
 #include "screenrefresher.h"
 
-ScreenRefresher::ScreenRefresher() {
+ScreenRefresher::ScreenRefresher() : _isRunning(true) {
 
 }
 
@@ -9,8 +9,12 @@ ScreenRefresher::~ScreenRefresher() {
 }
 
 void ScreenRefresher::run() {
-    while(true) {
-        emit animate();
+    while(_isRunning) {
+        emit repaint();
         usleep(40000);
     }
+}
+
+void ScreenRefresher::stop() {
+    _isRunning = false;
 }

@@ -11,6 +11,7 @@ class KeyboardController : public QThread {
     Q_OBJECT
 
     char _key;
+    bool _isRunning;
 
 public:
     KeyboardController(char);
