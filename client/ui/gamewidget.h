@@ -1,7 +1,7 @@
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 
-#include "game/player.h"
+#include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
 

@@ -1,7 +1,7 @@
 #ifndef KEYBOARDCONTROLLER_H
 #define KEYBOARDCONTROLLER_H
 
-#include "game/player.h"
+#include "game/objects/player.h"
 
 #include <QThread>
 

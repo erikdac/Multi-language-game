@@ -1,6 +1,6 @@
 #include "keyboardcontroller.h"
 #include "map.h"
-#include "player.h"
+#include "objects/player.h"
 
 #include <unordered_map>
 

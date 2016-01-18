@@ -1,7 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class Player {
+#include "graphics.h"
+
+class Player : public Graphics {
 
 unsigned int _x;
 unsigned int _y;
@@ -17,6 +19,7 @@ public:
     void moveDown();
     void moveLeft();
     void moveRight();
+    virtual void load_graphics() override;
 };
 
 #endif // PLAYER_H

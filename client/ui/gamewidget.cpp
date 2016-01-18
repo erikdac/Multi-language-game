@@ -2,10 +2,11 @@
 #include "gamewidget.h"
 #include "mainwindow.h"
 #include "network/connection.h"
-#include "game/player.h"
+#include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
 #include "game/map.h"
+#include "game/objects/graphics.h"
 
 #include <QKeyEvent>
 #include <QPainter>
@@ -97,14 +98,8 @@ void GameWidget::intitializeGL() {
 void GameWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Player
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-    glEnd();
+    Graphics * g = _player;
+    g->load_graphics();
 
     float x = (0.5f + 105.0f - _player->x())/VIEW_WIDTH;
     float y = -(0.5f + 105.0f - _player->y())/VIEW_HEIGHT;
@@ -117,6 +112,8 @@ void GameWidget::paintGL() {
         glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
         glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
     glEnd();
+
+
 }
 
 void GameWidget::resizeGL() {

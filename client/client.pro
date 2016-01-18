@@ -18,10 +18,10 @@ SOURCES += main.cpp\
     ui/gamewidget.cpp \
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
-    game/player.cpp \
     game/map.cpp \
     game/keyboardcontroller.cpp \
-    game/screenrefresher.cpp
+    game/screenrefresher.cpp \
+    game/objects/player.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -30,10 +30,11 @@ HEADERS  += mainwindow.h \
     ui/gamewidget.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
-    game/player.h \
     game/map.h \
     game/keyboardcontroller.h \
-    game/screenrefresher.h
+    game/screenrefresher.h \
+    game/objects/player.h \
+    game/objects/graphics.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
@@ -42,3 +43,5 @@ FORMS    += ui/gamewidget.ui \
 QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -lglut
+
+DISTFILES +=
