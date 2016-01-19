@@ -50,10 +50,10 @@ bool connection::output(const Json object) {
 
     std::string temp = object.dump();
     char data[temp.size()+1];
-    strcpy(data, temp.c_str());
+    strcpy(data, temp.c_str() + '\0');
 
     output_mutex.lock();
-    int res = write(s0, data, strlen(data) + 1);
+    int res = write(s0, data, strlen(data));
     output_mutex.unlock();
 
     if (res < 0) {

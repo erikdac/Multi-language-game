@@ -4,6 +4,7 @@ import (
 	"net"
 	"sync"
 	"encoding/json"
+	"bufio"
 )
 
 // Binds the player names to their clients.
@@ -44,7 +45,7 @@ func (client *Client) handleRequest() {
 func (client *Client) login() bool {
 
 	for {
-		input, err := client.readSingleInput()
+		input, err := client.readPacket()
 		if err != nil {
 			return false
 		}
@@ -74,29 +75,15 @@ func (client *Client) login() bool {
 	return false
 }
 
-// This method reads the data from the client and iterates through it until
-// it reaches a null-byte in which case it will return all the data.
-//
-// If all the data which had been read didnt include a null-byte it will
-// append it to a byte-array read another round of data and repeat this
-// procedure until it has finally found a null-byte.
-func (client *Client) readSingleInput() ([]byte, error) {
-	input := make([]byte, 64)
-	data := []byte{}
-	for {
-		n, err := client.connection.Read(input)
-		if err != nil {
-			return []byte{}, err
-		}
-
-		for i := 0; i < n; i++ {
-			if input[i] == 0 {
-				data = append(data, input[:i]...)
-				return data, nil
-			}
-		}
-		data = append(data, input...)
+// This method reads the data from the client until it reaches a null-byte 
+// in which case it will return all the data.
+func (client *Client) readPacket() ([]byte, error) {
+	reader := bufio.NewReader(client.connection)
+	data, err := reader.ReadBytes(0)
+	if err == nil {
+		data = data[:len(data)-1]
 	}
+	return data, err
 }
 
 /**
@@ -118,29 +105,18 @@ func (client *Client) write(data []byte) {
 	client.output_mutex.Unlock()
 }
 
-/**
- * This method will read the data from the client and return it
- * as a byte-array. It will then read until it reaches a null-byte and
- * call the function 'handleInput' with the data excluding the null-byte.
- */
+// This method will read the data from the client and call the method
+// handleInput() to deal with whatever kind of input it recieves.
 func (client *Client) reader() {
-	input := make([]byte, 128)
-	data := []byte{}
 	for {
-		n, err := client.connection.Read(input)
+		data, err := client.readPacket()
+
 		if err != nil {
 			client.disconnect()
 			break
 		}
 
-		for i := 0; i < n; i++ {
-			if input[i] == 0 {
-				go client.handleInput(data)
-				data = data[:0] // Empty slice
-			} else {
-				data = append(data, input[i])
-			}
-		}
+		go client.handleInput(data)
 	}
 }
 
@@ -154,7 +130,6 @@ func (client *Client) handleInput(input []byte) {
 		client.write(errorResponse)
 		return;
 	}
-
 
 	if data["Type"] == "Logout" {
 		client.disconnect()
