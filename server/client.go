@@ -37,7 +37,7 @@ func createClient(connection net.Conn) *Client {
 func (client *Client) handleRequest() {
 	if client.login() == true {
 		clientList[client.player.name] = client
-		AddPlayer(client.player)
+		AddPlayer(&client.player)
 		go client.reader()
 	} else {
 		client.connection.Close()
@@ -133,6 +133,8 @@ func (client *Client) handleInput(input []byte) {
 
 	if data["Type"] == "Logout" {
 		client.disconnect()
+	} else if data["Type"] == "Movement" {
+		Movement(&client.player, data)
 	} else {
 		for _, c := range clientList {
 			if c.connection != client.connection {
@@ -148,7 +150,7 @@ func (client *Client) handleInput(input []byte) {
 func (client *Client) disconnect() {
 	delete(clientList, client.player.name)
 	client.connection.Close()
-	RemovePlayer(client.player)
+	RemovePlayer(&client.player)
 	client.player.logOut()
 }
 

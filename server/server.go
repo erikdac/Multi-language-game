@@ -28,7 +28,7 @@ func main() {
 
 	err := resetDatabaseOnlineList()
 	if err != nil {
-		fmt.Println("Error clearing the database onlinelist!")
+		fmt.Println("Error clearing the database online list!")
 		os.Exit(1)
 	}
 

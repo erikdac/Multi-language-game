@@ -20,6 +20,9 @@ public:
     void moveLeft();
     void moveRight();
     virtual void load_graphics() override;
+
+private:
+    void sendMovement();
 };
 
 #endif // PLAYER_H

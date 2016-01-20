@@ -117,8 +117,6 @@ void GameWidget::paintGL() {
         glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
         glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
     glEnd();
-
-
 }
 
 void GameWidget::resizeGL() {

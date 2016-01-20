@@ -1,5 +1,6 @@
 #include "player.h"
-#include "../map.h"
+#include "json11/json11.hpp"
+#include "network/connection.h"
 
 #include <QPainter>
 #include <QOpenGLTexture>
@@ -23,18 +24,31 @@ unsigned int Player::y() const {
 
 void Player::moveUp() {
     --_y;
+    sendMovement();
 }
 
 void Player::moveDown() {
     ++_y;
+    sendMovement();
 }
 
 void Player::moveLeft() {
     --_x;
+    sendMovement();
 }
 
 void Player::moveRight() {
     ++_x;
+    sendMovement();
+}
+
+void Player::sendMovement() {
+    const json11::Json data = json11::Json::object {
+        {"Type", "Movement"},
+        {"ToX", std::to_string(_x)},
+        {"ToY", std::to_string(_y)}
+    };
+    connection::output(data);
 }
 
 void Player::load_graphics() {
