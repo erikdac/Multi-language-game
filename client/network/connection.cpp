@@ -2,9 +2,9 @@
 #include "ui/loginwidget.h"
 #include "json11/json11.hpp"
 #include "reader.h"
+#include "game/map.h"
 
 #include <iostream>
-#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -50,10 +50,10 @@ bool connection::output(const Json object) {
 
     std::string temp = object.dump();
     char data[temp.size()+1];
-    strcpy(data, temp.c_str() + '\0');
+    strcpy(data, temp.c_str());
 
     output_mutex.lock();
-    int res = write(s0, data, strlen(data));
+    int res = write(s0, data, strlen(data) + 1);
     output_mutex.unlock();
 
     if (res < 0) {
@@ -79,6 +79,7 @@ void connection::disconnect() {
     reader->stopReading();
     shutdown(s0, 2);
     close(s0);
+    cleanMap();
 }
 
 void sigHandler(int sigID) {

@@ -10,7 +10,7 @@ unsigned int _y;
 
 public:
     Player(unsigned int, unsigned int);
-    ~Player();
+    virtual ~Player();
 
     unsigned int x() const;
     unsigned int y() const;

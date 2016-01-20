@@ -3,6 +3,8 @@
 #include "network/connection.h"
 #include "json11/json11.hpp"
 #include "mainwindow.h"
+#include "game/map.h"
+#include "game/objects/player.h"
 
 #include <iostream>
 #include <QLineEdit>
@@ -18,6 +20,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 {
     ui->setupUi(this);
     findChild<QLineEdit*>("username")->setFocus();
+    _online = true;
 }
 
 LoginWidget::~LoginWidget() {
@@ -25,7 +28,6 @@ LoginWidget::~LoginWidget() {
 }
 
 void LoginWidget::on_pushButton_clicked() {
-
     const QLineEdit * username = findChild<QLineEdit*>("username");
     const QLineEdit * password = findChild<QLineEdit*>("password");
 
@@ -39,15 +41,24 @@ void LoginWidget::on_pushButton_clicked() {
     }
 }
 
-void LoginWidget::input(std::string result) {
+void LoginWidget::input(std::string input) {
     std::string error;
-    Json data = Json::parse(result, error);
-    if(data["Success"].string_value().compare("yes") == 0) {
+    Json data = Json::parse(input, error);
+
+    if(data["Type"].string_value() == "LoginSuccess") {
+        if(data["Success"].string_value() == "yes") {
+            _online = true;
+        }
+        else
+            popupBox("Login failed!");
+    }
+    else if(data["Type"].string_value() == "Player" && _online) {
+        int x = std::stoi(data["x"].string_value());
+        int y = std::stoi(data["y"].string_value());
+        _player = new Player(x, y);
         MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
         w->setUpGameUi();
     }
-    else
-        popupBox("Login failed!");
 }
 
 void LoginWidget::popupBox(const QString message) {

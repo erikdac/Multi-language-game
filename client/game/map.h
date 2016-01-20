@@ -5,6 +5,6 @@
 
 extern Player * _player;
 
-void initializeMap();
+void cleanMap();
 
 #endif // MAP_H

@@ -1,15 +1,5 @@
-// A simple go-server which can either be used to learn how simple
-// go-networking works or to built further on for your own project.
-// This version uses go-routines to handle each client so that many
-// clients can be connected on the same time, independently of each other.
-// The clients can send bytes of data and when a null-byte it recived
-// the data will be printed out as a string.
-//
-// On the server-side there is also a menu option. The host can either
-// choose to see which connections is active or it can shutdown the server.
-//
 // Written by Erik Dackander.
-// Last updated 2015-01-31.
+// Last updated 2015-01-20.
 
 package main
 
@@ -33,7 +23,6 @@ const (
 func main() {
 
 	InitiateMapStructure()
-	Test()
 
 	clientList = make(map[string]*Client)
 

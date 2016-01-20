@@ -17,8 +17,6 @@ GameWidget::GameWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , ui(new Ui::GameWidget)
 {
-    initializeMap();
-
     ui->setupUi(this);
     setFocus();
 
@@ -31,7 +29,10 @@ GameWidget::~GameWidget() {
 }
 
 void GameWidget::input(std::string input) {
+    std::string error;
+    Json data = Json::parse(input, error);
 
+    std::cout << data.dump() << std::endl;
 }
 
 void GameWidget::setScreenRefresher() {
@@ -43,6 +44,10 @@ void GameWidget::setScreenRefresher() {
 }
 
 void GameWidget::keyPressEvent(QKeyEvent *event) {
+
+    const Json data = Json::object {{"type", "TESTAR"}};
+    connection::output(data);
+
     if(event->isAutoRepeat()) {
         return;
     }

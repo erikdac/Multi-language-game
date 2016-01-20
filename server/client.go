@@ -5,6 +5,7 @@ import (
 	"sync"
 	"encoding/json"
 	"bufio"
+	"strconv"
 )
 
 // Binds the player names to their clients.
@@ -35,15 +36,15 @@ func createClient(connection net.Conn) *Client {
  */
 func (client *Client) handleRequest() {
 	if client.login() == true {
-		go client.reader()
 		clientList[client.player.name] = client
+		AddPlayer(client.player)
+		go client.reader()
 	} else {
 		client.connection.Close()
 	}
 }
 
 func (client *Client) login() bool {
-
 	for {
 		input, err := client.readPacket()
 		if err != nil {
@@ -55,7 +56,7 @@ func (client *Client) login() bool {
 			client.write(errorResponse)
 		} else {
 			player, err := checkLogin(data)
-			loginSuccess := map[string]string {"Type:": "LoginSuccess"}
+			loginSuccess := map[string]string {"Type": "LoginSuccess"}
 			if err != nil {
 				loginSuccess["Success"] = "no"
 				data,  _ := json.Marshal(loginSuccess)
@@ -65,7 +66,7 @@ func (client *Client) login() bool {
 				loginSuccess["Success"] = "yes"
 				data,  _ := json.Marshal(loginSuccess)
 				client.write(data)
-				playerJson := map[string]string {"Type:": "Player", "x": string(player.x), "y": string(player.y)}
+				playerJson := map[string]string {"Type": "Player", "x": strconv.Itoa(player.x), "y": strconv.Itoa(player.y)}
 				data,  _ = json.Marshal(playerJson)
 				client.write(data)
 				return true
@@ -78,8 +79,8 @@ func (client *Client) login() bool {
 // This method reads the data from the client until it reaches a null-byte 
 // in which case it will return all the data.
 func (client *Client) readPacket() ([]byte, error) {
-	reader := bufio.NewReader(client.connection)
-	data, err := reader.ReadBytes(0)
+	socket_reader := bufio.NewReader(client.connection)
+	data, err := socket_reader.ReadBytes(0)
 	if err == nil {
 		data = data[:len(data)-1]
 	}
@@ -110,7 +111,6 @@ func (client *Client) write(data []byte) {
 func (client *Client) reader() {
 	for {
 		data, err := client.readPacket()
-
 		if err != nil {
 			client.disconnect()
 			break
@@ -148,6 +148,7 @@ func (client *Client) handleInput(input []byte) {
 func (client *Client) disconnect() {
 	delete(clientList, client.player.name)
 	client.connection.Close()
+	RemovePlayer(client.player)
 	client.player.logOut()
 }
 
