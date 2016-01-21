@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"encoding/json"
 )
 
 // The connection settings.
@@ -121,8 +122,10 @@ func kickPlayer() {
 	name := readKeyboard()
 	client, exists := clientList[name]
 	if exists == true {
-		client.write([]byte("Kicked from server!"))
-		client.disconnect()
+		message := map[string]string {"Type": "Disconnect"}
+		data,  _ := json.Marshal(message)
+		client.write(data)
+		client.connection.Close()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")

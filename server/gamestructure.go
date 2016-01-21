@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	MAP_SIZE = 10
+	MAP_SIZE = 50
+	MAP_SLICE = 10
 )
 
 var map_mutex = &sync.Mutex{}
@@ -42,12 +43,14 @@ func Movement(player *Player, movement map[string]string) {
 	newY, _ := strconv.Atoi(movement["ToY"])
 	newSectionX, newSectionY := sliceMap(newX, newY)
 	oldSectionX, oldSectionY := sliceMap(player.x, player.y)
-	if newSectionX != oldSectionX || newSectionY != oldSectionY{
+	if newSectionX != oldSectionX || newSectionY != oldSectionY {
+		oldSection := mapSection[oldSectionX][oldSectionY]
+		newSection := mapSection[newSectionX][newSectionY]
 		map_mutex.Lock()
-		RemovePlayer(player)
+		delete(oldSection, player.name)
 		player.x = newX
 		player.y = newY
-		AddPlayer(player)
+		newSection[player.name] = player
 		map_mutex.Unlock()
 	} else {
 		map_mutex.Lock()
@@ -64,13 +67,13 @@ func sliceMap(x int, y int) (int, int) {
 	if x == 0 {
 		column = 0
 	} else {
-		column = x / MAP_SIZE
+		column = x / MAP_SLICE
 	}
 
 	if y == 0 {
 		row = 0
 	} else {
-		row = y / MAP_SIZE
+		row = y / MAP_SLICE
 	}
 
 	return column, row

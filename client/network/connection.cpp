@@ -21,6 +21,7 @@
 using namespace json11;
 
 int s0; // Socket.
+bool _online = false;
 
 Reader * const reader = new Reader();
 
@@ -35,18 +36,15 @@ void connection::setActiveWidget(QWidget * object) {
 
 static std::mutex output_mutex;
 
-// Private function
-bool retryOutput(char * data) {
-    if(connection::connectToServer()) {
-        output_mutex.lock();
-        int res = write(s0, data, strlen(data) + 1);
-        output_mutex.unlock();
-        return (res > 0);
-    }
-    return false;
-}
-
 bool connection::output(const Json object) {
+    if(!_online) {
+        if(connection::connectToServer() == false) {
+            return false;
+        }
+        else {
+            _online = true;
+        }
+    }
 
     std::string temp = object.dump();
     char data[temp.size()+1];
@@ -56,30 +54,29 @@ bool connection::output(const Json object) {
     int res = write(s0, data, strlen(data) + 1);
     output_mutex.unlock();
 
-    if (res < 0) {
+    if (res <= 0) {
         if (errno != EAGAIN) {
             perror("Write error");
-            return retryOutput(data);
-        } else {
-            perror("Incompleted send");
-            return false;
         }
-    }
-    else if (res == 0) {
-        std::cout << "Connection closed" << std::endl;
-        return retryOutput(data);
+        else if(res == 0) {
+            std::cerr << "Connection closed" << std::endl;
+        }
+
+        else {
+            perror("Incompleted send");
+        }
+        return false;
     }
     else
         return true;
 }
 
 void connection::disconnect() {
-    const Json data = Json::object {{"Type", "Logout"}};
-    connection::output(data);
     reader->stopReading();
     shutdown(s0, 2);
     close(s0);
     cleanMap();
+    _online = false;
 }
 
 void sigHandler(int sigID) {

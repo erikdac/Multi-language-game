@@ -65,7 +65,8 @@ void Reader::run() {
         if (res < 0) {
             perror("Select error");
             _isReading = false;
-            break;
+            const Json data = Json::object {{"Type", "Disconnect"}};
+            emit input(data.dump());
         } else if (res > 0) {
 
             // At this point, we can read an incoming data
@@ -84,8 +85,9 @@ void Reader::run() {
                 if (res < 0 && errno != EAGAIN) {
                     perror("Read error");
                     _isReading = false;
+                    const Json data = Json::object {{"Type", "Disconnect"}};
+                    emit input(data.dump());
                 }
-                break;
             }
         }
     }

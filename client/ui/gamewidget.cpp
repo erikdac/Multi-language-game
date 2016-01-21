@@ -32,7 +32,15 @@ void GameWidget::input(std::string input) {
     std::string error;
     Json data = Json::parse(input, error);
 
-    std::cout << data.dump() << std::endl;
+    if(data["Type"] == "Disconnect") {
+        logout();
+    }
+    else if(data["Type"] == "Player") {
+        int x = std::stoi(data["x"].string_value());
+        int y = std::stoi(data["y"].string_value());
+        _player = new Player(x, y);
+    }
+
 }
 
 void GameWidget::setScreenRefresher() {
@@ -44,9 +52,6 @@ void GameWidget::setScreenRefresher() {
 }
 
 void GameWidget::keyPressEvent(QKeyEvent *event) {
-
-    const Json data = Json::object {{"type", "TESTAR"}};
-    connection::output(data);
 
     if(event->isAutoRepeat()) {
         return;
@@ -125,6 +130,10 @@ void GameWidget::resizeGL() {
 
 // TODO: Implement a game menu instead of just logging out.
 void GameWidget::openMenu() {
+    logout();
+}
+
+void GameWidget::logout() {
     connection::disconnect();
     MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
     w->setUpLoginUi();

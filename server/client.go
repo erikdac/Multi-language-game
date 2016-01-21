@@ -131,9 +131,7 @@ func (client *Client) handleInput(input []byte) {
 		return;
 	}
 
-	if data["Type"] == "Logout" {
-		client.disconnect()
-	} else if data["Type"] == "Movement" {
+	if data["Type"] == "Movement" {
 		Movement(&client.player, data)
 	} else {
 		for _, c := range clientList {

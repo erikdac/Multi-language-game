@@ -37,6 +37,7 @@ private:
     void setScreenRefresher();
     void setKeyboardController(char);
     void openMenu();
+    void logout();
 
 public slots:
     void input(std::string);
