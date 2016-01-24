@@ -5,23 +5,15 @@ import (
 	"sync"
 	"encoding/json"
 	"bufio"
-//	"strconv"
-
 )
 
-// Binds the player.Names to their clients.
+// Binds the player names to their clients.
 var clientList map[string]*Client
 
 type Client struct {
 	connection 		net.Conn
 	output_mutex 	sync.Mutex // TODO: Change to a unbuffered channel instead.
 	player     		Player
-}
-
-type login_packet struct {
-	Type 			string
-	Success 		bool 
-	Player 			Player
 }
 
 /**
