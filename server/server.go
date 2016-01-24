@@ -113,7 +113,7 @@ func readKeyboard() string {
 func onlineList() {
 	fmt.Println("IP-address: ", "\t\t", "Player name:")
 	for _, c := range clientList {
-		fmt.Println(c.connection.RemoteAddr(), "\t\t", c.player.name)
+		fmt.Println(c.connection.RemoteAddr(), "\t\t", c.player.Name)
 	}
 }
 

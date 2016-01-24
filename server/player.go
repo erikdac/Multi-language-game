@@ -1,7 +1,7 @@
 package main
 
 type Player struct {
-	name 	string
-	x   	int
-	y 		int
+	Name 	string
+	X   	int
+	Y 		int
 }

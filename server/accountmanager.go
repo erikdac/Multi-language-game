@@ -30,7 +30,7 @@ func checkLogin(request map[string]string) (Player, error) {
 		return Player{}, errors.New("Database_Fail")
 	}
 
-	err = setOnlineStatus(db, player.name)
+	err = setOnlineStatus(db, player.Name)
 	if err != nil {
 		return Player{}, errors.New("Already_Online")
 	}
@@ -68,7 +68,7 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 		return player, err
 	}
 	for rows.Next() {
-		err := rows.Scan(&player.name, &player.x, &player.y)
+		err := rows.Scan(&player.Name, &player.X, &player.Y)
 		if err != nil {
 			return player, err
 		}
@@ -97,8 +97,8 @@ func (player *Player) logOut() (error) {
 	query1 := "UPDATE account SET online=false WHERE username = ?"
 	query2 := "UPDATE player SET xpos = ?, ypos = ? WHERE name = ?"
 	database_mutex.Lock()
-	_, err = db.Exec(query1, player.name)
-	_, err = db.Exec(query2, player.x, player.y, player.name)
+	_, err = db.Exec(query1, player.Name)
+	_, err = db.Exec(query2, player.X, player.Y, player.Name)
 	database_mutex.Unlock()
 	return err
 }

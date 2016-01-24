@@ -5,16 +5,23 @@ import (
 	"sync"
 	"encoding/json"
 	"bufio"
-	"strconv"
+//	"strconv"
+
 )
 
-// Binds the player names to their clients.
+// Binds the player.Names to their clients.
 var clientList map[string]*Client
 
 type Client struct {
 	connection 		net.Conn
 	output_mutex 	sync.Mutex // TODO: Change to a unbuffered channel instead.
 	player     		Player
+}
+
+type login_packet struct {
+	Type 			string
+	Success 		bool 
+	Player 			Player
 }
 
 /**
@@ -36,7 +43,7 @@ func createClient(connection net.Conn) *Client {
  */
 func (client *Client) handleRequest() {
 	if client.login() == true {
-		clientList[client.player.name] = client
+		clientList[client.player.Name] = client
 		AddPlayer(&client.player)
 		go client.reader()
 	} else {
@@ -56,18 +63,16 @@ func (client *Client) login() bool {
 			client.write(errorResponse)
 		} else {
 			player, err := checkLogin(data)
-			loginSuccess := map[string]string {"Type": "LoginSuccess"}
+			packet := &login_packet {Type: "Login_Success"}
 			if err != nil {
-				loginSuccess["Success"] = "no"
-				data,  _ := json.Marshal(loginSuccess)
+				packet.Success = false
+				data,  _ := json.Marshal(packet)
 				client.write(data)
 			} else {
 				client.player = player
-				loginSuccess["Success"] = "yes"
-				data,  _ := json.Marshal(loginSuccess)
-				client.write(data)
-				playerJson := map[string]string {"Type": "Player", "x": strconv.Itoa(player.x), "y": strconv.Itoa(player.y)}
-				data,  _ = json.Marshal(playerJson)
+				packet.Success = true
+				packet.Player = player
+			    data, _ := json.Marshal(packet)
 				client.write(data)
 				return true
 			}
@@ -146,7 +151,7 @@ func (client *Client) handleInput(input []byte) {
 // with the client, removes it from the Hashmaps and also change its 
 // online status in the database to 'false'.
 func (client *Client) disconnect() {
-	delete(clientList, client.player.name)
+	delete(clientList, client.player.Name)
 	client.connection.Close()
 	RemovePlayer(&client.player)
 	client.player.logOut()

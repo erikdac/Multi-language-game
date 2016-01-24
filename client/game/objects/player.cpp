@@ -6,12 +6,16 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-Player::Player(unsigned int x, unsigned int y) : _x(x), _y(y) {
+Player::Player(std::string name, unsigned int x, unsigned int y) : _name(name), _x(x), _y(y) {
 
 }
 
 Player::~Player() {
 
+}
+
+std::string Player::name() const {
+    return _name;
 }
 
 unsigned int Player::x() const {

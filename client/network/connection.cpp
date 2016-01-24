@@ -11,7 +11,7 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <assert.h>
+#include <cassert>
 #include <signal.h>
 #include <thread>
 #include <mutex>
@@ -45,6 +45,8 @@ bool connection::output(const Json object) {
             _online = true;
         }
     }
+
+    assert(_online);
 
     std::string temp = object.dump();
     char data[temp.size()+1];

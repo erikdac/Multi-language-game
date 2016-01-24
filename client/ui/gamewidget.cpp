@@ -35,12 +35,6 @@ void GameWidget::input(std::string input) {
     if(data["Type"] == "Disconnect") {
         logout();
     }
-    else if(data["Type"] == "Player") {
-        int x = std::stoi(data["x"].string_value());
-        int y = std::stoi(data["y"].string_value());
-        _player = new Player(x, y);
-    }
-
 }
 
 void GameWidget::setScreenRefresher() {
@@ -134,6 +128,7 @@ void GameWidget::openMenu() {
 }
 
 void GameWidget::logout() {
+    _screenRefresher->stop();
     connection::disconnect();
     MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
     w->setUpLoginUi();

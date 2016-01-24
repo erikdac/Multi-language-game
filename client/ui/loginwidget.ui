@@ -19,8 +19,8 @@
   <widget class="QLineEdit" name="username">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>200</y>
+     <x>290</x>
+     <y>210</y>
      <width>186</width>
      <height>27</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QLineEdit" name="password">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>240</y>
+     <x>290</x>
+     <y>250</y>
      <width>187</width>
      <height>27</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QLabel" name="usernameLabel">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>200</y>
+     <x>200</x>
+     <y>210</y>
      <width>81</width>
      <height>27</height>
     </rect>
@@ -58,8 +58,8 @@
   <widget class="QLabel" name="passwordLabel">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>240</y>
+     <x>200</x>
+     <y>250</y>
      <width>71</width>
      <height>21</height>
     </rect>
@@ -71,14 +71,14 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>280</y>
+     <x>310</x>
+     <y>290</y>
      <width>151</width>
      <height>27</height>
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string>Login</string>
    </property>
    <property name="autoDefault">
     <bool>false</bool>

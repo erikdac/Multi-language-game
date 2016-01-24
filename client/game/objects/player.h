@@ -3,15 +3,19 @@
 
 #include "graphics.h"
 
+#include <string>
+
 class Player : public Graphics {
 
+std::string _name;
 unsigned int _x;
 unsigned int _y;
 
 public:
-    Player(unsigned int, unsigned int);
+    Player(std::string, unsigned int, unsigned int);
     virtual ~Player();
 
+    std::string name() const;
     unsigned int x() const;
     unsigned int y() const;
 

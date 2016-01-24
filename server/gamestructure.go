@@ -23,18 +23,18 @@ func InitiateMapStructure() {
 }
 
 func AddPlayer(player *Player) {
-	x, y := sliceMap(player.x, player.y)
+	x, y := sliceMap(player.X, player.Y)
 	section := mapSection[x][y]
 	map_mutex.Lock()
-	section[player.name] = player
+	section[player.Name] = player
 	map_mutex.Unlock()
 }
 
 func RemovePlayer(player *Player) {
-	x, y := sliceMap(player.x, player.y)
+	x, y := sliceMap(player.X, player.Y)
 	section := mapSection[x][y]
 	map_mutex.Lock()
-	delete(section, player.name)
+	delete(section, player.Name)
 	map_mutex.Unlock()
 }
 
@@ -42,20 +42,20 @@ func Movement(player *Player, movement map[string]string) {
 	newX, _ := strconv.Atoi(movement["ToX"])
 	newY, _ := strconv.Atoi(movement["ToY"])
 	newSectionX, newSectionY := sliceMap(newX, newY)
-	oldSectionX, oldSectionY := sliceMap(player.x, player.y)
+	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
 		oldSection := mapSection[oldSectionX][oldSectionY]
 		newSection := mapSection[newSectionX][newSectionY]
 		map_mutex.Lock()
-		delete(oldSection, player.name)
-		player.x = newX
-		player.y = newY
-		newSection[player.name] = player
+		delete(oldSection, player.Name)
+		player.X = newX
+		player.Y = newY
+		newSection[player.Name] = player
 		map_mutex.Unlock()
 	} else {
 		map_mutex.Lock()
-		player.x = newX
-		player.y = newY
+		player.X = newX
+		player.Y = newY
 		map_mutex.Unlock()
 	}
 
