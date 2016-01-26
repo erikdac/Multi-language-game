@@ -32,6 +32,8 @@ void GameWidget::input(std::string input) {
     std::string error;
     Json data = Json::parse(input, error);
 
+    std::cout << "GAMEWIDGET: " << data.dump() << std::endl;
+
     if(data["Type"] == "Disconnect") {
         logout();
     }

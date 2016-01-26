@@ -80,8 +80,9 @@ void Reader::run() {
             if (res > 0) {
                 received += res;
                 readBuffer[received] = '\0';
-                handleInput(readBuffer);
-            } else {
+                emit input(readBuffer);
+            }
+            else {
                 if (res < 0 && errno != EAGAIN) {
                     perror("Read error");
                     _isReading = false;
@@ -91,8 +92,4 @@ void Reader::run() {
             }
         }
     }
-}
-
-void Reader::handleInput(const char readBuffer[]) {
-    emit input(readBuffer);
 }

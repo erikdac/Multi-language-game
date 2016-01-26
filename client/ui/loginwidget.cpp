@@ -45,6 +45,8 @@ void LoginWidget::input(std::string input) {
     std::string error;
     Json data = Json::parse(input, error);
 
+    std::cout << "LOGINWIDGET: " << data.dump() << std::endl;
+
     if(data["Type"].string_value() == "Login_Success") {
         if(data["Success"].bool_value() == true) {
             Json player = data["Player"];
@@ -52,9 +54,9 @@ void LoginWidget::input(std::string input) {
             int x = player["X"].number_value();
             int y = player["Y"].number_value();
             _player = new Player(name, x, y);
+            _online = true;
             MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
             w->setUpGameUi();
-            _online = true;
         }
         else
             popupBox("Login failed!");

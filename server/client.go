@@ -37,6 +37,7 @@ func (client *Client) handleRequest() {
 	if client.login() == true {
 		clientList[client.player.Name] = client
 		AddPlayer(&client.player)
+		client.player.sendLocalMap()
 		go client.reader()
 	} else {
 		client.connection.Close()

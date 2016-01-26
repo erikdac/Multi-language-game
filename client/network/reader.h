@@ -15,7 +15,6 @@ public:
     ~Reader();
     void stopReading();
     void run();
-    void handleInput(const char readBuffer[]);
 
 private:
     bool _isReading;
