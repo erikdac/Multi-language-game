@@ -3,6 +3,7 @@
 #include "loginwidget.h"
 #include "gamewidget.h"
 #include "network/connection.h"
+#include "onlinewidget.h"
 
 #include <iostream>
 #include <QGridLayout>
@@ -27,8 +28,8 @@ void MainWindow::setUpLoginUi() {
 
 void MainWindow::setUpGameUi() {
     removePreviousUi();
-    GameWidget * gameWidget = new GameWidget(this);
-    changeWidget(gameWidget);
+    OnlineWidget * onlineWidget = new OnlineWidget(this);
+    changeWidget(onlineWidget);
 }
 
 void MainWindow::changeWidget(QWidget *widget) {

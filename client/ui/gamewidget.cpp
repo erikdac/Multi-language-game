@@ -8,7 +8,6 @@
 #include "game/map.h"
 #include "game/objects/graphics.h"
 
-#include <QKeyEvent>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
@@ -18,7 +17,6 @@ GameWidget::GameWidget(QWidget *parent)
     , ui(new Ui::GameWidget)
 {
     ui->setupUi(this);
-    setFocus();
 
     setScreenRefresher();
 }
@@ -28,73 +26,12 @@ GameWidget::~GameWidget() {
     delete ui;
 }
 
-void GameWidget::input(std::string input) {
-    std::string error;
-    Json data = Json::parse(input, error);
-
-    std::cout << "GAMEWIDGET: " << data.dump() << std::endl;
-
-    if(data["Type"] == "Disconnect") {
-        logout();
-    }
-}
-
 void GameWidget::setScreenRefresher() {
     _screenRefresher = new ScreenRefresher();
     QObject::connect(
         _screenRefresher, SIGNAL(repaint()), this, SLOT(repaint())
     );
     _screenRefresher->start();
-}
-
-void GameWidget::keyPressEvent(QKeyEvent *event) {
-
-    if(event->isAutoRepeat()) {
-        return;
-    }
-
-    switch(event->key()) {
-        case Qt::Key_W:
-            setKeyboardController('w');
-        break;
-        case Qt::Key_A:
-            setKeyboardController('a');
-        break;
-        case Qt::Key_S:
-            setKeyboardController('s');
-        break;
-        case Qt::Key_D:
-            setKeyboardController('d');
-        break;
-        case Qt::Key_Escape:
-            openMenu();
-        break;
-    }
-}
-
-void GameWidget::setKeyboardController(char key) {
-    if(_keyMap.find(key) == _keyMap.end()) {
-        KeyboardController * temp = new KeyboardController(key);
-        _keyMap[key] = temp;
-        temp->start();
-    }
-}
-
-void GameWidget::keyReleaseEvent(QKeyEvent *event) {
-    if(event->isAutoRepeat() == false) {
-        char c;
-        switch(event->key()) {
-            case Qt::Key_W: c = 'w'; break;
-            case Qt::Key_A: c = 'a'; break;
-            case Qt::Key_S: c = 's'; break;
-            case Qt::Key_D: c = 'd'; break;
-            default: return;
-        }
-
-        KeyboardController * temp = _keyMap[c];
-        temp->stop();
-        _keyMap.erase(c);
-    }
 }
 
 void GameWidget::intitializeGL() {
@@ -124,14 +61,7 @@ void GameWidget::resizeGL() {
 
 }
 
-// TODO: Implement a game menu instead of just logging out.
-void GameWidget::openMenu() {
-    logout();
+void GameWidget::stop_refreshing() {
+    _screenRefresher->stop();
 }
 
-void GameWidget::logout() {
-    _screenRefresher->stop();
-    connection::disconnect();
-    MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
-    w->setUpLoginUi();
-}

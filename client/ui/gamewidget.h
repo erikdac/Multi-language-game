@@ -20,9 +20,9 @@ public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget();
 
+    void stop_refreshing();
+
 protected:
-    void keyPressEvent(QKeyEvent *);
-    void keyReleaseEvent(QKeyEvent *);
 
     void intitializeGL();
     void paintGL();
@@ -32,14 +32,7 @@ private:
     Ui::GameWidget *ui;
 
     ScreenRefresher * _screenRefresher;
-    std::unordered_map<char, KeyboardController*> _keyMap;
 
     void setScreenRefresher();
-    void setKeyboardController(char);
-    void openMenu();
-    void logout();
-
-public slots:
-    void input(std::string);
 };
 #endif

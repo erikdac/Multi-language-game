@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 type Player struct {
@@ -17,7 +18,7 @@ func (player *Player) sendLocalMap() {
 
 
 
-//	time.Sleep(1 * time.Second)			// TODO: FIX!
+	time.Sleep(1 * time.Second)			// TODO: FIX!
 
 
 
