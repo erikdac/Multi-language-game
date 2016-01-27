@@ -12,3 +12,8 @@ type map_packet struct {
 
 	// TODO: Add creature-array
 }
+
+type player_update_packet struct {
+	Type 		string
+	Player 		Player
+}

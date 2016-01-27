@@ -30,6 +30,8 @@ public:
     void moveRight();
     virtual void load_graphics() override;
 
+    bool operator==(const Player other) const;
+
 private:
     void sendMovement();
 };

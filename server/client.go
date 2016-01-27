@@ -84,7 +84,11 @@ func (client *Client) waitForClient() (bool) {
 		return false
 	}
 	if ready["Type"] == "Ready" {
-		data,  _ := json.Marshal(client.player.LocalMap())
+		packet := map_packet {
+			Type: "Map",
+			Players: client.player.LocalPlayerMap(),
+		}
+		data,  _ := json.Marshal(packet)
 		client.write(data)
 		return true
 	} else {

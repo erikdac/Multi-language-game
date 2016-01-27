@@ -11,7 +11,7 @@ type Player struct {
 	// Parameters not to clients to server should NOT be capitalized.
 }
 
-func (player *Player) LocalMap() (map_packet) {
+func (player *Player) LocalPlayerMap() ([]Player) {
 
 	x, y := sliceMap(player.X, player.Y)
 
@@ -45,9 +45,5 @@ func (player *Player) LocalMap() (map_packet) {
 	}
 	map_mutex.Unlock()
 
-	packet := &map_packet {
-		Type: "Map",
-		Players: list,
-	}
-	return *packet
+	return list
 }

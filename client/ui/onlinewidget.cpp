@@ -43,6 +43,12 @@ void OnlineWidget::input(std::string input) {
     else if(type == "Map") {
         parse_map(data);
     }
+    else if(type == "Player_update") {
+        update_player(data);
+    }
+    else if(type == "Player_removed") {
+        remove_player(data);
+    }
 }
 
 void OnlineWidget::logout() {

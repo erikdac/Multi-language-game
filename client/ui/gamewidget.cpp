@@ -50,7 +50,7 @@ void GameWidget::paintGL() {
         glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
     glEnd();
 
-    for(int i = 0; i < _others.size(); ++i) {
+    for(unsigned int i = 0; i < _others.size(); ++i) {
         _others[i].load_graphics();
     }
 

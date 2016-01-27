@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 	"sync"
+	"encoding/json"
 )
 
 const (
@@ -28,6 +29,8 @@ func AddPlayer(player *Player) {
 	map_mutex.Lock()
 	section[player.Name] = player
 	map_mutex.Unlock()
+
+	sendPlayerUpdate(player, false);
 }
 
 func RemovePlayer(player *Player) {
@@ -36,6 +39,7 @@ func RemovePlayer(player *Player) {
 	map_mutex.Lock()
 	delete(section, player.Name)
 	map_mutex.Unlock()
+	sendPlayerUpdate(player, true)
 }
 
 func Movement(player *Player, movement map[string]string) {
@@ -48,6 +52,9 @@ func Movement(player *Player, movement map[string]string) {
 		newSection := mapSection[newSectionX][newSectionY]
 		map_mutex.Lock()
 		delete(oldSection, player.Name)
+		map_mutex.Unlock()
+		sendPlayerUpdate(player, true)
+		map_mutex.Lock()
 		player.X = newX
 		player.Y = newY
 		newSection[player.Name] = player
@@ -59,7 +66,7 @@ func Movement(player *Player, movement map[string]string) {
 		map_mutex.Unlock()
 	}
 
-	// TODO: Inform nearby players that the movement occured.
+	sendPlayerUpdate(player, false);
 }
 
 func sliceMap(x int, y int) (int, int) {
@@ -77,4 +84,22 @@ func sliceMap(x int, y int) (int, int) {
 	}
 
 	return column, row
+}
+
+func sendPlayerUpdate(player *Player, removed bool) {
+	var temp string
+	if(!removed) {
+		temp = "Player_update"
+	} else {
+		temp = "Player_removed"
+	}
+	packet := player_update_packet {
+		Type: temp,
+		Player: *player,
+	}
+	data,  _ := json.Marshal(packet)
+
+	for _, p := range player.LocalPlayerMap() {
+		clientList[p.Name].write(data)
+	}
 }

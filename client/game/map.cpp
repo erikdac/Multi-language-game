@@ -3,10 +3,13 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <mutex>
 
 Player * _player;
 
 std::vector<Player> _others;
+static std::mutex others_mutex;
 
 using namespace json11;
 
@@ -17,9 +20,37 @@ void cleanMap() {
 
 void parse_map(const Json data) {
     Json::array players = data["Players"].array_items();
+    others_mutex.lock();
     for(unsigned int i = 0; i < players.size(); ++i) {
         _others.push_back(parse_player(players[i]));
     }
+    others_mutex.unlock();
+}
+
+void update_player(const Json data) {
+    Player player = parse_player(data["Player"]);
+
+    others_mutex.lock();
+    auto it = std::find (_others.begin(), _others.end(), player);
+    if(it != _others.end()) {
+        *it = player;
+    }
+    else {
+        _others.push_back(player);
+    }
+    others_mutex.unlock();
+}
+
+void remove_player(const Json data) {
+    Player player = parse_player(data["Player"]);
+
+    others_mutex.lock();
+    auto it = std::find (_others.begin(), _others.end(), player);
+    if(it != _others.end()) {
+        *it = _others[_others.size()-1];
+        _others.erase(_others.begin() + _others.size()-1);
+    }
+    others_mutex.unlock();
 }
 
 Player parse_player(const Json player) {
