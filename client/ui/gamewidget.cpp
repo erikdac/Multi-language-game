@@ -41,11 +41,33 @@ void GameWidget::intitializeGL() {
 void GameWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    Graphics * g = _player;
-    g->load_graphics();
+    // Self
+    glBegin(GL_QUADS);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
+        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
+    glEnd();
+
+    for(int i = 0; i < _others.size(); ++i) {
+        _others[i].load_graphics();
+    }
 
     float x = (0.5f + 105.0f - _player->x())/VIEW_WIDTH;
     float y = -(0.5f + 105.0f - _player->y())/VIEW_HEIGHT;
+
+    // Tree
+    glBegin(GL_QUADS);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f(x, y);
+        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
+        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
+        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
+    glEnd();
+
+    x = (0.5f + 95.0f - _player->x())/VIEW_WIDTH;
+    y = -(0.5f + 95.0f - _player->y())/VIEW_HEIGHT;
 
     // Tree
     glBegin(GL_QUADS);

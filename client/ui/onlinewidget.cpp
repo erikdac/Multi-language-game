@@ -9,8 +9,9 @@
 #include "game/map.h"
 #include "game/objects/graphics.h"
 
-#include <QKeyEvent>
 #include <QGridLayout>
+#include <QLabel>
+#include <QKeyEvent>
 
 OnlineWidget::OnlineWidget(QWidget *parent) :
     QWidget(parent),
@@ -35,8 +36,12 @@ void OnlineWidget::input(std::string input) {
 
     std::cout << "ONLINEWIDGET: " << data.dump() << std::endl;
 
-    if(data["Type"] == "Disconnect") {
+    std::string type = data["Type"].string_value();
+    if(type == "Disconnect") {
         logout();
+    }
+    else if(type == "Map") {
+        parse_map(data);
     }
 }
 

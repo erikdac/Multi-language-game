@@ -74,6 +74,11 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 		}
 	}
 	err = rows.Err()
+
+	// TODO: Put into SQL-database
+	player.Level = 1
+	player.Health = 100
+	player.max_health = 100
 	
 	return player, err		
 }

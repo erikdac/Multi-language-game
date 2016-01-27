@@ -1,26 +1,17 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-	"time"
-)
-
 type Player struct {
-	Name 	string
-	X   	int
-	Y 		int
+	Name 		string
+	X   		int
+	Y 			int
+	Level		int
+	Health 		int
+	max_health 	int
 
 	// Parameters not to clients to server should NOT be capitalized.
 }
 
-func (player *Player) sendLocalMap() {
-
-
-
-	time.Sleep(1 * time.Second)			// TODO: FIX!
-
-
+func (player *Player) LocalMap() (map_packet) {
 
 	x, y := sliceMap(player.X, player.Y)
 
@@ -54,13 +45,9 @@ func (player *Player) sendLocalMap() {
 	}
 	map_mutex.Unlock()
 
-	if len(list) > 0 {
-		packet := &map_packet {
-			Type: "Map",
-			Players: list,
-		}
-		data, _ := json.Marshal(packet)
-		fmt.Println(string(data))
-		clientList[player.Name].write(data)
+	packet := &map_packet {
+		Type: "Map",
+		Players: list,
 	}
+	return *packet
 }

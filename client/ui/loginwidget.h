@@ -1,6 +1,9 @@
 #ifndef LOGINWIDGET_H
 #define LOGINWIDGET_H
 
+#include "json11/json11.hpp"
+#include "game/objects/player.h"
+
 #include <iostream>
 #include <QWidget>
 #include <mutex>

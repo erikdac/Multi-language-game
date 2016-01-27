@@ -10,14 +10,19 @@ class Player : public Graphics {
 std::string _name;
 unsigned int _x;
 unsigned int _y;
+unsigned int _level;
+unsigned int _health;
 
 public:
-    Player(std::string, unsigned int, unsigned int);
+    Player(std::string, unsigned int, unsigned int, unsigned int, unsigned int);
     virtual ~Player();
 
     std::string name() const;
     unsigned int x() const;
     unsigned int y() const;
+    unsigned int level() const;
+    unsigned int health() const;
+    unsigned int max_health() const;
 
     void moveUp();
     void moveDown();
