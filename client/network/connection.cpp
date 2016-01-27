@@ -77,7 +77,7 @@ void connection::disconnect() {
     reader->stopReading();
     shutdown(s0, 2);
     close(s0);
-    cleanMap();
+    map::cleanMap();
     _online = false;
 }
 

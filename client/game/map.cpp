@@ -13,22 +13,22 @@ static std::mutex others_mutex;
 
 using namespace json11;
 
-void cleanMap() {
+void map::cleanMap() {
     delete _player;
     _others.clear();
 }
 
-void parse_map(const Json data) {
+void map::parse_map(const Json data) {
     Json::array players = data["Players"].array_items();
     others_mutex.lock();
     for(unsigned int i = 0; i < players.size(); ++i) {
-        _others.push_back(parse_player(players[i]));
+        _others.push_back(map::parse_player(players[i]));
     }
     others_mutex.unlock();
 }
 
-void update_player(const Json data) {
-    Player player = parse_player(data["Player"]);
+void map::update_player(const Json data) {
+    Player player = map::parse_player(data["Player"]);
 
     others_mutex.lock();
     auto it = std::find (_others.begin(), _others.end(), player);
@@ -41,8 +41,8 @@ void update_player(const Json data) {
     others_mutex.unlock();
 }
 
-void remove_player(const Json data) {
-    Player player = parse_player(data["Player"]);
+void map::remove_player(const Json data) {
+    Player player = map::parse_player(data["Player"]);
 
     others_mutex.lock();
     auto it = std::find (_others.begin(), _others.end(), player);
@@ -53,7 +53,7 @@ void remove_player(const Json data) {
     others_mutex.unlock();
 }
 
-Player parse_player(const Json player) {
+Player map::parse_player(const Json player) {
     std::string name = player["Name"].string_value();
     int x = player["X"].number_value();
     int y = player["Y"].number_value();

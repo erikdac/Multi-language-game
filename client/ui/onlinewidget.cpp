@@ -9,6 +9,7 @@
 #include "game/map.h"
 #include "game/objects/graphics.h"
 
+#include <iostream>
 #include <QGridLayout>
 #include <QLabel>
 #include <QKeyEvent>
@@ -18,6 +19,8 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     ui(new Ui::OnlineWidget)
 {
     ui->setupUi(this);
+
+    findChild<QLabel*>("Self_name")->setText(QString::fromStdString(_player->name()));
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
     gameLayout->addWidget(new GameWidget(this));
@@ -41,13 +44,13 @@ void OnlineWidget::input(std::string input) {
         logout();
     }
     else if(type == "Map") {
-        parse_map(data);
+        map::parse_map(data);
     }
     else if(type == "Player_update") {
-        update_player(data);
+        map::update_player(data);
     }
     else if(type == "Player_removed") {
-        remove_player(data);
+        map::remove_player(data);
     }
 }
 
