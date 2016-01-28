@@ -37,6 +37,7 @@ func (client *Client) handleRequest() {
 	if client.login() == true {
 		clientList[client.player.Name] = client
 		AddPlayer(&client.player)
+		client.player.sendLocalMap()
 		go client.reader()
 	} else {
 		client.connection.Close()
@@ -83,17 +84,7 @@ func (client *Client) waitForClient() (bool) {
 	if fail != nil {
 		return false
 	}
-	if ready["Type"] == "Ready" {
-		packet := map_packet {
-			Type: "Map",
-			Players: client.player.LocalPlayerMap(),
-		}
-		data,  _ := json.Marshal(packet)
-		client.write(data)
-		return true
-	} else {
-		return false
-	}
+	return ready["Type"] == "Ready"
 }
 
 // This method reads the data from the client until it reaches a null-byte 

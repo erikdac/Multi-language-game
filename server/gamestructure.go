@@ -8,7 +8,7 @@ import (
 
 const (
 	MAP_SIZE = 50
-	MAP_SLICE = 10
+	MAP_SLICE = 14
 )
 
 var map_mutex = &sync.Mutex{}
@@ -29,7 +29,6 @@ func AddPlayer(player *Player) {
 	map_mutex.Lock()
 	section[player.Name] = player
 	map_mutex.Unlock()
-
 	sendPlayerUpdate(player, false);
 }
 
@@ -59,6 +58,7 @@ func Movement(player *Player, movement map[string]string) {
 		player.Y = newY
 		newSection[player.Name] = player
 		map_mutex.Unlock()
+		player.sendLocalMap()
 	} else {
 		map_mutex.Lock()
 		player.X = newX

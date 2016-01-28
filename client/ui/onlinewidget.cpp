@@ -21,6 +21,9 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     ui->setupUi(this);
 
     findChild<QLabel*>("Self_name")->setText(QString::fromStdString(_player->name()));
+    QWidget * target = findChild<QWidget *>("Target");
+    target->setVisible(false);
+    _target_widget = target;
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
     gameLayout->addWidget(new GameWidget(this));
@@ -28,8 +31,7 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     setFocus();
 }
 
-OnlineWidget::~OnlineWidget()
-{
+OnlineWidget::~OnlineWidget() {
     delete ui;
 }
 
@@ -115,4 +117,15 @@ void OnlineWidget::keyReleaseEvent(QKeyEvent *event) {
 // TODO: Implement a game menu instead of just logging out.
 void OnlineWidget::openMenu() {
     logout();
+}
+
+void OnlineWidget::switch_target(Player * player) {
+    QWidget * target = findChild<QWidget *>("Target");
+    if(player) {
+        target->setVisible(true);
+        findChild<QLabel *>("Target_name")->setText(QString::fromStdString(player->name()));
+    }
+    else {
+        target->setVisible(false);
+    }
 }

@@ -1,16 +1,14 @@
 #ifndef ONLINEWIDGET_H
 #define ONLINEWIDGET_H
 
-#include <QWidget>
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
-#include "game/screenrefresher.h"
 
-#include <QOpenGLWidget>
+#include <QWidget>
 #include <unordered_map>
 
 namespace Ui {
-class OnlineWidget;
+    class OnlineWidget;
 }
 
 class OnlineWidget : public QWidget
@@ -21,14 +19,15 @@ public:
     explicit OnlineWidget(QWidget *parent = 0);
     ~OnlineWidget();
 
-protected:
-    void keyPressEvent(QKeyEvent *);
-    void keyReleaseEvent(QKeyEvent *);
+    void switch_target(Player * player);
 
 private:
     Ui::OnlineWidget *ui;
 
     std::unordered_map<char, KeyboardController*> _keyMap;
+
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
 
     void setKeyboardController(char);
     void openMenu();

@@ -1,6 +1,7 @@
 #include "ui_gamewidget.h"
 #include "gamewidget.h"
 #include "mainwindow.h"
+#include "onlinewidget.h"
 #include "network/connection.h"
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
@@ -11,6 +12,7 @@
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
+#include <QMouseEvent>
 
 GameWidget::GameWidget(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -50,9 +52,11 @@ void GameWidget::paintGL() {
         glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
     glEnd();
 
-    for(unsigned int i = 0; i < _others.size(); ++i) {
-        _others[i].load_graphics();
+    others_mutex.lock();
+    for(unsigned int i = 0; i < _other_players.size(); ++i) {
+        _other_players[i].load_graphics();
     }
+    others_mutex.unlock();
 
     float x = (0.5f + 105.0f - _player->x())/VIEW_WIDTH;
     float y = -(0.5f + 105.0f - _player->y())/VIEW_HEIGHT;
@@ -87,3 +91,10 @@ void GameWidget::stop_refreshing() {
     _screenRefresher->stop();
 }
 
+void GameWidget::mousePressEvent(QMouseEvent *event) {
+    unsigned int x = _player->x() - VIEW_WIDTH + event->x() / (this->width() / (VIEW_WIDTH * 2 + 1));
+    unsigned int y = _player->y() - VIEW_HEIGHT + event->y() / (this->height() / (VIEW_HEIGHT * 2 + 1));
+    Player * player = map::player_at_position(x, y);
+    OnlineWidget * w = dynamic_cast<OnlineWidget *> (this->parentWidget());
+    w->switch_target(player);
+}

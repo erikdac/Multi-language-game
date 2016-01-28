@@ -1,8 +1,6 @@
 #ifndef KEYBOARDCONTROLLER_H
 #define KEYBOARDCONTROLLER_H
 
-#include "game/objects/player.h"
-
 #include <QThread>
 
 typedef void (*func_t)();

@@ -1,12 +1,9 @@
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 
-#include "game/objects/player.h"
-#include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
 
 #include <QOpenGLWidget>
-#include <unordered_map>
 
 namespace Ui {
     class GameWidget;
@@ -27,6 +24,7 @@ protected:
     void intitializeGL();
     void paintGL();
     void resizeGL();
+    void mousePressEvent(QMouseEvent *);
 
 private:
     Ui::GameWidget *ui;

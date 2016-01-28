@@ -1,8 +1,8 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-const int VIEW_WIDTH = 15;
-const int VIEW_HEIGHT = 10;
+const float VIEW_WIDTH = 12 + 0.5f;
+const float VIEW_HEIGHT = 8 + 0.5f;
 
 class Graphics {
 

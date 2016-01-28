@@ -1,5 +1,9 @@
 package main
 
+import (
+	"encoding/json"
+)
+
 type Player struct {
 	Name 		string
 	X   		int
@@ -9,6 +13,15 @@ type Player struct {
 	max_health 	int
 
 	// Parameters not to clients to server should NOT be capitalized.
+}
+
+func (player *Player) sendLocalMap() {
+	packet := map_packet {
+		Type: "Map",
+		Players: player.LocalPlayerMap(),
+	}
+	data,  _ := json.Marshal(packet)
+	clientList[player.Name].write(data)
 }
 
 func (player *Player) LocalPlayerMap() ([]Player) {
