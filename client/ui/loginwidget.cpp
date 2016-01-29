@@ -50,7 +50,7 @@ void LoginWidget::input(std::string input) {
 
     if(data["Type"].string_value() == "Login_Success") {
         if(data["Success"].bool_value() == true) {
-            _player = new Player(std::move(map::parse_player(data["Player"])));
+            _self = new Player(std::move(map::parse_player(data["Player"])));
             _online = true;
             MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
             w->setUpGameUi();

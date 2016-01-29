@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     game/keyboardcontroller.cpp \
     game/screenrefresher.cpp \
     game/objects/player.cpp \
-    ui/onlinewidget.cpp
+    ui/onlinewidget.cpp \
+    ui/targetwidget.cpp \
+    ui/playerwidget.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -36,12 +38,15 @@ HEADERS  += mainwindow.h \
     game/screenrefresher.h \
     game/objects/player.h \
     game/objects/graphics.h \
-    ui/onlinewidget.h
+    ui/onlinewidget.h \
+    ui/targetwidget.h \
+    ui/playerwidget.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
     ui/mainwindow.ui \
-    ui/onlinewidget.ui
+    ui/onlinewidget.ui \
+    ui/playerwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 

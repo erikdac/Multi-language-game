@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-const int SLEEP_TIME = 200000;
+const int SLEEP_TIME = 250000;
 
 bool _isRunning;
 
@@ -28,7 +28,7 @@ void KeyboardController::run() {
     }
 
     while(_isRunning) {
-        (_player->*fp)();
+        (_self->*fp)();
         usleep(SLEEP_TIME);
     }
 }

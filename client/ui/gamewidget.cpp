@@ -58,8 +58,8 @@ void GameWidget::paintGL() {
     }
     others_mutex.unlock();
 
-    float x = (0.5f + 105.0f - _player->x())/VIEW_WIDTH;
-    float y = -(0.5f + 105.0f - _player->y())/VIEW_HEIGHT;
+    float x = (0.5f + 105.0f - _self->x())/VIEW_WIDTH;
+    float y = -(0.5f + 105.0f - _self->y())/VIEW_HEIGHT;
 
     // Tree
     glBegin(GL_QUADS);
@@ -70,8 +70,8 @@ void GameWidget::paintGL() {
         glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
     glEnd();
 
-    x = (0.5f + 95.0f - _player->x())/VIEW_WIDTH;
-    y = -(0.5f + 95.0f - _player->y())/VIEW_HEIGHT;
+    x = (0.5f + 95.0f - _self->x())/VIEW_WIDTH;
+    y = -(0.5f + 95.0f - _self->y())/VIEW_HEIGHT;
 
     // Tree
     glBegin(GL_QUADS);
@@ -92,8 +92,8 @@ void GameWidget::stop_refreshing() {
 }
 
 void GameWidget::mousePressEvent(QMouseEvent *event) {
-    unsigned int x = _player->x() - VIEW_WIDTH + event->x() / (this->width() / (VIEW_WIDTH * 2 + 1));
-    unsigned int y = _player->y() - VIEW_HEIGHT + event->y() / (this->height() / (VIEW_HEIGHT * 2 + 1));
+    unsigned int x = _self->x() - VIEW_WIDTH + event->x() / (this->width() / (VIEW_WIDTH * 2 + 1));
+    unsigned int y = _self->y() - VIEW_HEIGHT + event->y() / (this->height() / (VIEW_HEIGHT * 2 + 1));
     Player * player = map::player_at_position(x, y);
     OnlineWidget * w = dynamic_cast<OnlineWidget *> (this->parentWidget());
     w->switch_target(player);

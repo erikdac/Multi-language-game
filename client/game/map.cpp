@@ -9,22 +9,22 @@
 #include <QWidget>
 #include <QLabel>
 
-Player * _player;
+Player * _self;
 
 std::vector<Player> _other_players;
 std::mutex others_mutex;
 
-QWidget * _target_widget;       // TODO: Find better place for this.
+TargetWidget * _target_widget;       // TODO: Find better place for this.
 
 using namespace json11;
 
 void map::cleanMap() {
-    delete _player;
+    delete _self;
     _other_players.clear();
 }
 
 void check_target() {
-    std::string name = _target_widget->findChild<QLabel *>("Target_name")->text().toStdString();
+    std::string name = _target_widget->findChild<QLabel *>("Name")->text().toStdString();
     bool found = false;
     others_mutex.lock();
     for(unsigned int i = 0; i < _other_players.size() && !found; ++i) {
@@ -34,7 +34,7 @@ void check_target() {
     }
     others_mutex.unlock();
     if(!found) {
-        _target_widget->setVisible(false);
+        _target_widget->unselect_target();
     }
 }
 

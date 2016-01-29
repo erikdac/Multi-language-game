@@ -74,8 +74,8 @@ void Player::sendMovement() {
 }
 
 void Player::load_graphics() {
-    float x = (-0.5f + _x - _player->x())/VIEW_WIDTH;
-    float y = -(0.5f + _y - _player->y())/VIEW_HEIGHT;
+    float x = (-0.5f + _x - _self->x())/VIEW_WIDTH;
+    float y = -(0.5f + _y - _self->y())/VIEW_HEIGHT;
 
     glBegin(GL_QUADS);
         glColor3f(0.0f, 0.0f, 1.0f);

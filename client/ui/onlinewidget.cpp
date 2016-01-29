@@ -1,6 +1,7 @@
 #include "onlinewidget.h"
 #include "ui_onlinewidget.h"
 #include "gamewidget.h"
+#include "targetwidget.h"
 #include "network/connection.h"
 #include "mainwindow.h"
 #include "game/objects/player.h"
@@ -20,10 +21,16 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    findChild<QLabel*>("Self_name")->setText(QString::fromStdString(_player->name()));
-    QWidget * target = findChild<QWidget *>("Target");
-    target->setVisible(false);
-    _target_widget = target;
+    PlayerWidget * selfWidget = new PlayerWidget(this, _self);
+    selfWidget->update();
+
+    TargetWidget * targetWidget = new TargetWidget(this);
+    _target_widget = targetWidget;
+    targetWidget->setVisible(false);
+
+    QWidget * bar = findChild<QWidget *> ("Bar");
+    bar->layout()->addWidget(selfWidget);
+    bar->layout()->addWidget(targetWidget);
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
     gameLayout->addWidget(new GameWidget(this));
@@ -120,12 +127,11 @@ void OnlineWidget::openMenu() {
 }
 
 void OnlineWidget::switch_target(Player * player) {
-    QWidget * target = findChild<QWidget *>("Target");
+    TargetWidget * targetWidget = findChild<TargetWidget *>();
     if(player) {
-        target->setVisible(true);
-        findChild<QLabel *>("Target_name")->setText(QString::fromStdString(player->name()));
+        targetWidget->select_target(player);
     }
     else {
-        target->setVisible(false);
+        targetWidget->unselect_target();
     }
 }

@@ -3,16 +3,17 @@
 
 #include "objects/player.h"
 #include "json11/json11.hpp"
+#include "ui/targetwidget.h"
 
 #include <QWidget>
 #include <vector>
 #include <mutex>
 
-extern Player * _player;
+extern Player * _self;
 extern std::vector<Player> _other_players;
 extern std::mutex others_mutex;
 
-extern QWidget * _target_widget;
+extern TargetWidget * _target_widget;
 
 namespace map {
     void cleanMap();
