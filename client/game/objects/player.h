@@ -28,9 +28,12 @@ public:
     void moveDown();
     void moveLeft();
     void moveRight();
-    virtual void load_graphics() override;
 
     bool operator==(const Player other) const;
+
+    unsigned int distance_to_player(Player *);
+
+    virtual void load_graphics() override;
 
 private:
     void sendMovement();

@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <mutex>
+#include <cmath>
 #include <QWidget>
 #include <QLabel>
 

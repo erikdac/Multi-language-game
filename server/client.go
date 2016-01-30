@@ -5,6 +5,7 @@ import (
 	"sync"
 	"encoding/json"
 	"bufio"
+	"fmt"
 )
 
 // Binds the player names to their clients.
@@ -145,11 +146,7 @@ func (client *Client) handleInput(input []byte) {
 	if data["Type"] == "Movement" {
 		Movement(&client.player, data)
 	} else {
-		for _, c := range clientList {
-			if c.connection != client.connection {
-				c.write(input)
-			}
-		}
+		fmt.Println(data)
 	}
 }
 

@@ -14,7 +14,6 @@
 #include <errno.h>
 #include <assert.h>
 #include <signal.h>
-#include <thread>
 #include <mutex>
 #include <QWidget>
 #include <QThread>

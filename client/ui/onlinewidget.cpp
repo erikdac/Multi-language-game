@@ -129,7 +129,7 @@ void OnlineWidget::openMenu() {
 void OnlineWidget::switch_target(Player * player) {
     TargetWidget * targetWidget = findChild<TargetWidget *>();
     if(player) {
-        targetWidget->select_target(player);
+        targetWidget->select_target(player, true);
     }
     else {
         targetWidget->unselect_target();

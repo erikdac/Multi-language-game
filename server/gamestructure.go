@@ -13,6 +13,8 @@ const (
 
 var map_mutex = &sync.Mutex{}
 
+var playerMap map[string]*Player
+
 var mapSection [MAP_SIZE + 1][MAP_SIZE + 1](map[string]*Player)
 
 func InitiateMapStructure() {
@@ -21,6 +23,8 @@ func InitiateMapStructure() {
 			mapSection[i][j] = map[string]*Player{}
 		}
 	}
+
+	playerMap = make(map[string]*Player)
 }
 
 func AddPlayer(player *Player) {
@@ -28,6 +32,7 @@ func AddPlayer(player *Player) {
 	section := mapSection[x][y]
 	map_mutex.Lock()
 	section[player.Name] = player
+	playerMap[player.Name] = player
 	map_mutex.Unlock()
 	sendPlayerUpdate(player, false);
 }
@@ -37,6 +42,7 @@ func RemovePlayer(player *Player) {
 	section := mapSection[x][y]
 	map_mutex.Lock()
 	delete(section, player.Name)
+	delete(playerMap, player.Name)
 	map_mutex.Unlock()
 	sendPlayerUpdate(player, true)
 }

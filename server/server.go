@@ -138,7 +138,9 @@ func shutdown() {
 	for _, c := range clientList {
 		wg.Add(1)
 		go func() {
-			c.write([]byte("Server shutting down!"))
+			message := map[string]string {"Type": "Disconnect"}
+			data,  _ := json.Marshal(message)
+			c.write(data)
 			c.disconnect()
 			wg.Done()
 		}()

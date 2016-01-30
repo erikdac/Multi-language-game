@@ -83,6 +83,7 @@ void connection::disconnect() {
 
 void sigHandler(int sigID) {
     std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
+    std::cout << "Sig ID: " << sigID << std::endl;
     reader->stopReading();
 }
 
