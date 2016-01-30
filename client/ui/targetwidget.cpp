@@ -5,7 +5,6 @@
 #include "json11/json11.hpp"
 #include "game/map.h"
 
-#include <iostream>
 #include <QWidget>
 
 using namespace json11;
@@ -24,7 +23,9 @@ TargetWidget::~TargetWidget() {
 }
 
 void TargetWidget::select_target(Player * player, bool combat) {
+    _attack.attack_mutex.lock();
     _player = player;
+    _attack.attack_mutex.unlock();
     _combat = combat;
     if(_combat && _attack.isRunning() == false) {
         _attack.start();
@@ -36,6 +37,7 @@ void TargetWidget::select_target(Player * player, bool combat) {
 void TargetWidget::unselect_target() {
     this->setVisible(false);
     _combat = false;
+    _attack.wait();
     _player = 0;
 }
 
@@ -61,11 +63,13 @@ void TargetWidget::Attack::run() {
     }
 }
 
-void TargetWidget::Attack::hit() const {
+void TargetWidget::Attack::hit() {
+    attack_mutex.lock();
     const Json data = Json::object {
         {"Type", "Attack"},
         {"Victim", _outer->_player->name()}
     };
+    attack_mutex.unlock();
     connection::output(data);
 }
 

@@ -6,6 +6,7 @@
 
 #include <QWidget>
 #include <QThread>
+#include <mutex>
 
 class TargetWidget : public PlayerWidget {
 
@@ -25,15 +26,17 @@ private:
     class Attack : public QThread {
 
         TargetWidget * const _outer;
+        const unsigned int ATTACK_DELAY_MS = 2000;
 
     public:
         Attack(TargetWidget * const);
 
         void run();
 
+        std::mutex attack_mutex;
+
     private:
-        const unsigned int ATTACK_DELAY_MS = 2000;
-        void hit() const;
+        void hit();
         void safe_sleep(const unsigned int);
 
     } _attack;
