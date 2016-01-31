@@ -31,6 +31,7 @@ void check_target() {
     for(unsigned int i = 0; i < _other_players.size() && !found; ++i) {
         if(_other_players[i].name() == name) {
             found = true;
+            _target_widget->update_target(&_other_players[i]);
         }
     }
     others_mutex.unlock();

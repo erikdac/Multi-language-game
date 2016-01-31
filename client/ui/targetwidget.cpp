@@ -23,9 +23,7 @@ TargetWidget::~TargetWidget() {
 }
 
 void TargetWidget::select_target(Player * player, bool combat) {
-    _attack.attack_mutex.lock();
-    _player = player;
-    _attack.attack_mutex.unlock();
+    update_target(player);
     _combat = combat;
     if(_combat && _attack.isRunning() == false) {
         _attack.start();
@@ -39,6 +37,12 @@ void TargetWidget::unselect_target() {
     _combat = false;
     _attack.wait();
     _player = 0;
+}
+
+void TargetWidget::update_target(Player * player) {
+    _attack.attack_mutex.lock();
+    _player = player;
+    _attack.attack_mutex.unlock();
 }
 
 TargetWidget::Attack::Attack(TargetWidget * const outer) : _outer(outer) {

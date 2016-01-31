@@ -21,6 +21,7 @@ public:
     Player * target() const;
     void select_target(Player *, bool);
     void unselect_target();
+    void update_target(Player *);
 
 private:
     class Attack : public QThread {
