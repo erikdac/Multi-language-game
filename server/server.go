@@ -137,13 +137,10 @@ func shutdown() {
 	var wg sync.WaitGroup
 	for _, c := range clientList {
 		wg.Add(1)
-		go func() {
-			message := map[string]string {"Type": "Disconnect"}
-			data,  _ := json.Marshal(message)
-			c.write(data)
-			c.disconnect()
+		go func (client *Client)() {
+			client.disconnect()
 			wg.Done()
-		}()
+		}(c)
 	}
 	wg.Wait()
 	os.Exit(0)

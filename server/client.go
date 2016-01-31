@@ -124,7 +124,9 @@ func (client *Client) reader() {
 	for {
 		data, err := client.readPacket()
 		if err != nil {
-			client.disconnect()
+			if _, ok := clientList[client.player.Name]; ok {
+				client.disconnect()
+			}
 			break
 		}
 
@@ -144,9 +146,11 @@ func (client *Client) handleInput(input []byte) {
 	}
 
 	if data["Type"] == "Movement" {
-		Movement(&client.player, data)
+		client.player.Movement(data)
+	} else if data["Type"] == "Attack" {
+		client.player.target <- data
 	} else {
-		fmt.Println(data)
+		fmt.Println("FAILED PACKAGE: ", data)
 	}
 }
 

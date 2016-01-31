@@ -83,11 +83,11 @@ void Reader::run() {
             }
             else {
                 if (res < 0 && errno != EAGAIN) {
-                    perror("Read error");
-                    _isReading = false;
-                    const Json data = Json::object {{"Type", "Disconnect"}};
-                    emit input(data.dump());
+                    perror("Read error"); 
                 }
+                _isReading = false;
+                const Json data = Json::object {{"Type", "Disconnect"}};
+                emit input(data.dump());
             }
         }
     }

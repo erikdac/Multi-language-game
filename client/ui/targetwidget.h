@@ -12,35 +12,17 @@ class TargetWidget : public PlayerWidget {
 
     Q_OBJECT
 
-    bool _combat;
+    std::mutex attack_mutex;
 
 public:
     TargetWidget(QWidget *parent = 0);
-    ~TargetWidget();
 
     Player * target() const;
     void select_target(Player *, bool);
     void unselect_target();
     void update_target(Player *);
 
-private:
-    class Attack : public QThread {
-
-        TargetWidget * const _outer;
-        const unsigned int ATTACK_DELAY_MS = 2000;
-
-    public:
-        Attack(TargetWidget * const);
-
-        void run();
-
-        std::mutex attack_mutex;
-
-    private:
-        void hit();
-        void safe_sleep(const unsigned int);
-
-    } _attack;
+    void stop_attack();
 };
 
 #endif // TARGETWIDGET_H

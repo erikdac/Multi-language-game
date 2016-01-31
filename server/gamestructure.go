@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strconv"
 	"sync"
 	"encoding/json"
 )
@@ -31,9 +30,12 @@ func AddPlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
 	section := mapSection[x][y]
 	map_mutex.Lock()
+	player.mutex.Lock()
 	section[player.Name] = player
 	playerList[player.Name] = player
+	player.mutex.Unlock()
 	map_mutex.Unlock()
+	go player.Auto_attack()
 	sendPlayerUpdate(player, false);
 }
 
@@ -41,38 +43,13 @@ func RemovePlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
 	section := mapSection[x][y]
 	map_mutex.Lock()
+	player.mutex.Lock()
+	player.target <- map[string]string {"Condition": "Shutdown"}
 	delete(section, player.Name)
 	delete(playerList, player.Name)
+	player.mutex.Unlock()
 	map_mutex.Unlock()
 	sendPlayerUpdate(player, true)
-}
-
-func Movement(player *Player, movement map[string]string) {
-	newX, _ := strconv.Atoi(movement["ToX"])
-	newY, _ := strconv.Atoi(movement["ToY"])
-	newSectionX, newSectionY := sliceMap(newX, newY)
-	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
-	if newSectionX != oldSectionX || newSectionY != oldSectionY {
-		oldSection := mapSection[oldSectionX][oldSectionY]
-		newSection := mapSection[newSectionX][newSectionY]
-		map_mutex.Lock()
-		delete(oldSection, player.Name)
-		map_mutex.Unlock()
-		sendPlayerUpdate(player, true)
-		map_mutex.Lock()
-		player.X = newX
-		player.Y = newY
-		newSection[player.Name] = player
-		map_mutex.Unlock()
-		player.sendLocalMap()
-	} else {
-		map_mutex.Lock()
-		player.X = newX
-		player.Y = newY
-		map_mutex.Unlock()
-	}
-
-	sendPlayerUpdate(player, false);
 }
 
 func sliceMap(x int, y int) (int, int) {
@@ -99,10 +76,12 @@ func sendPlayerUpdate(player *Player, removed bool) {
 	} else {
 		temp = "Player_removed"
 	}
+	player.mutex.Lock()
 	packet := player_update_packet {
 		Type: temp,
 		Player: *player,
 	}
+	player.mutex.Unlock()
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range player.LocalPlayerMap() {

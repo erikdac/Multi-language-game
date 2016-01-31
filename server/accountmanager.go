@@ -79,7 +79,8 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	player.Level = 1
 	player.Health = 100
 	player.max_health = 100
-	
+	player.target = make(chan map[string]string)
+
 	return player, err		
 }
 
