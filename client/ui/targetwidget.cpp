@@ -10,7 +10,9 @@
 using namespace json11;
 
 TargetWidget::TargetWidget(QWidget *parent) : PlayerWidget(parent) {
-
+    QSizePolicy sp_retain = this->sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    this->setSizePolicy(sp_retain);
 }
 
 Player * TargetWidget::target() const {
@@ -21,18 +23,19 @@ void TargetWidget::select_target(Player * player, bool combat) {
     update_target(player);
 
     if(combat) {
+        attack_mutex.lock();
         const Json data = Json::object {
             {"Type", "Attack"},
             {"Condition", "Start"},
             {"Victim", _player->name()}
         };
+        attack_mutex.unlock();
         connection::output(data);
     } else {
         stop_attack();
     }
 
     this->setVisible(true);
-    update();
 }
 
 void TargetWidget::unselect_target() {

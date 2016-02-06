@@ -25,7 +25,12 @@ void map::cleanMap() {
 }
 
 void check_target() {
-    std::string name = _target_widget->findChild<QLabel *>("Name")->text().toStdString();
+    Player * target = _target_widget->target();
+    if(target == 0) {
+        return;
+    }
+
+    std::string name = target->name();
     bool found = false;
     others_mutex.lock();
     for(unsigned int i = 0; i < _other_players.size() && !found; ++i) {

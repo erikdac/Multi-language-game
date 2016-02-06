@@ -42,9 +42,9 @@ func AddPlayer(player *Player) {
 func RemovePlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
 	section := mapSection[x][y]
-	map_mutex.Lock()
 	player.mutex.Lock()
 	player.target <- map[string]string {"Condition": "Shutdown"}
+	map_mutex.Lock()
 	delete(section, player.Name)
 	delete(playerList, player.Name)
 	player.mutex.Unlock()

@@ -17,11 +17,10 @@ public:
     explicit PlayerWidget(QWidget *parent = 0, Player * player = 0);
     virtual ~PlayerWidget();
 
-    virtual void update();
-
 protected:
     Ui::PlayerWidget *ui;
     Player * _player;
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // PLAYERWIDGET_H

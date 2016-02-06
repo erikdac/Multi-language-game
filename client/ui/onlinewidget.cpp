@@ -21,15 +21,12 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    PlayerWidget * selfWidget = new PlayerWidget(this, _self);
-    selfWidget->update();
-
     TargetWidget * targetWidget = new TargetWidget(this);
     _target_widget = targetWidget;
     targetWidget->setVisible(false);
 
     QWidget * bar = findChild<QWidget *> ("Bar");
-    bar->layout()->addWidget(selfWidget);
+    bar->layout()->addWidget(new PlayerWidget(this, _self));
     bar->layout()->addWidget(targetWidget);
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
