@@ -6,7 +6,6 @@ import (
 	"math"
 	"sync"
 	"time"
-	"fmt"
 )
 
 type Player struct {
@@ -16,6 +15,8 @@ type Player struct {
 	Level		int
 	Health 		int
 	max_health 	int
+	Mana		int
+	max_mana	int
 	target		(chan map[string]string)
 	mutex 		sync.Mutex
 
@@ -132,7 +133,7 @@ func (player *Player) Auto_attack() {
 	    victim := playerList[target]
 	    target_mutex.Unlock()
 	    if player.distanceToPlayer(victim) <= 1 {
-	    	fmt.Println(player.Name, " attacked ", victim.Name)
+	    	go playerAttacked(victim, player.Name, 5)	// TODO: Make some calculation for the damage.
 	    	time.Sleep(2000 * time.Millisecond)
 	    } else {
 	    	time.Sleep(100 * time.Millisecond)

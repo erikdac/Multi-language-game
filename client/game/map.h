@@ -4,6 +4,7 @@
 #include "objects/player.h"
 #include "json11/json11.hpp"
 #include "ui/targetwidget.h"
+#include "ui/playerwidget.h"
 
 #include <QWidget>
 #include <vector>
@@ -13,6 +14,7 @@ extern Player * _self;
 extern std::vector<Player> _other_players;
 extern std::mutex others_mutex;
 
+extern PlayerWidget * _player_widget;
 extern TargetWidget * _target_widget;
 
 namespace map {

@@ -7,8 +7,8 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-Player::Player(std::string name, unsigned int x, unsigned int y, unsigned int level, unsigned int health)
-    : _name(name), _x(x), _y(y), _level(level), _health(health) {
+Player::Player(std::string name, unsigned int x, unsigned int y, unsigned int level, unsigned int health, unsigned int mana)
+    : _name(name), _x(x), _y(y), _level(level), _health(health), _mana(mana) {
 
 }
 
@@ -41,7 +41,15 @@ unsigned int Player::health() const {
 }
 
 unsigned int Player::max_health() const {
-    return 100 + (_level - 1)*10;
+    return 100 + (_level - 1)*5;
+}
+
+unsigned int Player::mana() const {
+    return _mana;
+}
+
+unsigned int Player::max_mana() const {
+    return 20 + (_level - 1) * 2;
 }
 
 void Player::moveUp() {
@@ -64,7 +72,11 @@ void Player::moveRight() {
     sendMovement();
 }
 
-void Player::sendMovement() {
+void Player::update_health(int health) {
+    _health = health;
+}
+
+void Player::sendMovement() const {
     const json11::Json data = json11::Json::object {
         {"Type", "Movement"},
         {"ToX", std::to_string(_x)},

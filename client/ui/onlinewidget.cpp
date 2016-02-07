@@ -21,12 +21,15 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    PlayerWidget * playerWidget = new PlayerWidget(this, _self);
+    _player_widget = playerWidget;
+
     TargetWidget * targetWidget = new TargetWidget(this);
     _target_widget = targetWidget;
     targetWidget->setVisible(false);
 
     QWidget * bar = findChild<QWidget *> ("Bar");
-    bar->layout()->addWidget(new PlayerWidget(this, _self));
+    bar->layout()->addWidget(playerWidget);
     bar->layout()->addWidget(targetWidget);
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
@@ -57,6 +60,10 @@ void OnlineWidget::input(std::string input) {
     }
     else if(type == "Player_removed") {
         map::remove_player(data);
+    }
+    else if(type == "Attacked") {
+        _self->update_health(data["Health"].number_value());
+        _player_widget->update();
     }
 }
 

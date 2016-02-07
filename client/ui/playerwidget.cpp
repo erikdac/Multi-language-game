@@ -30,11 +30,13 @@ void PlayerWidget::paintEvent(QPaintEvent * event) {
     font.setPointSize(14);
     font.setBold(true);
     painter.setFont(font);
-    painter.drawText(rect.width() * 0.1, 14, QString::fromStdString(_player->name()));
+    painter.drawText(rect.width() * 0.08, 14, QString::fromStdString("(" + std::to_string(_player->level()) + ") " + _player->name()));
 
-    painter.fillRect(rect.width() * 0.05, 23, 300, 12, Qt::red);
-    painter.drawRect(rect.width() * 0.05, 23, rect.width()*0.9, 12);
+    int health_progress = (rect.width() * 0.9) * ((double)_player->health() / _player->max_health());
+    painter.fillRect(rect.width() * 0.05, 23, health_progress, 12, Qt::red);
+    painter.drawRect(rect.width() * 0.05, 23, (rect.width() * 0.9), 12);
 
-    painter.fillRect(rect.width() * 0.05, 43, 300, 12, Qt::blue);
-    painter.drawRect(rect.width() * 0.05, 43, rect.width()*0.9, 12);
+    int mana_progress = (rect.width() * 0.9) * ((double)_player->mana() / _player->max_mana());
+    painter.fillRect(rect.width() * 0.05, 43, mana_progress, 12, Qt::blue);
+    painter.drawRect(rect.width() * 0.05, 43, (rect.width() * 0.9), 12);
 }

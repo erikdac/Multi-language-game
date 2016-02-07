@@ -15,7 +15,9 @@ Player * _self;
 std::vector<Player> _other_players;
 std::mutex others_mutex;
 
-TargetWidget * _target_widget;       // TODO: Find better place for this.
+// TODO: Find better place for this.
+PlayerWidget * _player_widget;
+TargetWidget * _target_widget;
 
 using namespace json11;
 
@@ -68,6 +70,13 @@ void map::update_player(const Json data) {
         _other_players.push_back(player);
     }
     others_mutex.unlock();
+
+    Player * target = _target_widget->target();
+    if(target != 0) {
+        if(player == *_target_widget->target()) {
+            _target_widget->update();
+        }
+    }
 }
 
 void map::remove_player(const Json data) {
@@ -89,7 +98,8 @@ Player map::parse_player(const Json player) {
     int y = player["Y"].number_value();
     int level = player["Level"].number_value();
     int health = player["Health"].number_value();
-    return Player(name, x, y, level, health);
+    int mana = player["Mana"].number_value();
+    return Player(name, x, y, level, health, mana);
 }
 
 Player * map::player_at_position(unsigned int x, unsigned int y) {

@@ -88,3 +88,18 @@ func sendPlayerUpdate(player *Player, removed bool) {
 		clientList[p.Name].write(data)
 	}
 }
+
+func playerAttacked(victim *Player, attacker string, damage int) {
+	victim.mutex.Lock()
+	victim.Health -= damage
+	packet := player_attacked_packet {
+		Type: "Attacked",
+		Health: victim.Health,
+		Attacker: attacker,
+	}
+	data, _ := json.Marshal(packet)
+	clientList[victim.Name].write(data)
+	victim.mutex.Unlock()
+
+	sendPlayerUpdate(victim, false)
+}

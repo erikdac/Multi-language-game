@@ -77,8 +77,10 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 
 	// TODO: Put into SQL-database
 	player.Level = 1
-	player.Health = 100
-	player.max_health = 100
+	player.Health = 88
+	player.max_health = 100  + (player.Level - 1) * 5
+	player.Mana = 12
+	player.max_mana = 20 + (player.Level - 1) * 2 
 	player.target = make(chan map[string]string)
 
 	return player, err		
