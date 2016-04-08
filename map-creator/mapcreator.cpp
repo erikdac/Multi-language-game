@@ -3,22 +3,26 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <ctime>
+#include <cstdlib>
 
 #include "environment.hpp"
 
-#define SIZE 2
+#define SIZE 10
 
 typedef std::pair<int, std::vector<std::string>> sector;
 
 Environment generateEnvironment() {
-	Environment e(Environment::GRASS, 1, 2);
+    int x = std::rand() % 20;
+    int y = std::rand() % 20;
+	Environment e(Environment::GRASS, x, y);
 	return e;
 }
 
 sector generateSector() {
 	int bytes = 0;
 	sector s;
-	for(int i = 0; i < 100; ++i) {
+	for(int i = 0; i < std::rand() % (SIZE * SIZE); ++i) {
 		Environment e = generateEnvironment();
 		std::string str = e.to_string();
 		s.second.push_back(str);
@@ -50,6 +54,14 @@ void writeIndexes(std::ofstream & file, int bytes[]) {
 	}
 }
 
+void writeSectors(std::ofstream & file, std::vector<std::string> map[]) {
+	for(int i = 0; i < SIZE * SIZE; ++i) {
+		for(std::string element : map[i]) {
+			file << element << "\n";
+		}
+	}
+}
+
 int main() {
 	int bytes[SIZE*SIZE + 1];
 	bytes[0] = 0;
@@ -62,7 +74,9 @@ int main() {
 	std::ofstream file;
 	file.open("map.mf");
 	
+	std::srand(std::time(NULL));	// For random generating the environment.
 	writeIndexes(file, bytes);
+	writeSectors(file, map);
 	
 	file.close();
 }

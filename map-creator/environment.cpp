@@ -26,5 +26,5 @@ std::string Environment::to_string() const {
 			str = "water";
 			break;
 	}
-	return str + " " + std::to_string(_x) + " " + std::to_string(_y) + "\n";
+	return str + " " + std::to_string(_x) + " " + std::to_string(_y);
 }
