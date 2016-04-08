@@ -1,6 +1,8 @@
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
+#include <string>
+
 class Environment {
 public:
 	enum Type {GRASS, WATER};
@@ -15,6 +17,7 @@ public:
 	int x() const;
 	int y() const;
 	Type type() const;
+	std::string to_string() const;
 };
 
 #endif

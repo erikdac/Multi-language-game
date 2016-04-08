@@ -15,3 +15,16 @@ int Environment::y() const {
 Environment::Type Environment::type() const {
 	return _type;
 }
+
+std::string Environment::to_string() const {
+	std::string str = "";
+	switch(_type) {
+		case Environment::GRASS:
+			str = "grass";
+			break;
+		case Environment::WATER:
+			str = "water";
+			break;
+	}
+	return str + " " + std::to_string(_x) + " " + std::to_string(_y) + "\n";
+}
