@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     game/objects/player.cpp \
     ui/onlinewidget.cpp \
     ui/targetwidget.cpp \
-    ui/playerwidget.cpp
+    ui/playerwidget.cpp \
+    game/objects/environment.cpp \
+    game/mapreader.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -40,7 +42,9 @@ HEADERS  += mainwindow.h \
     game/objects/graphics.h \
     ui/onlinewidget.h \
     ui/targetwidget.h \
-    ui/playerwidget.h
+    ui/playerwidget.h \
+    game/objects/environment.h \
+    game/mapreader.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
@@ -52,4 +56,5 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -lglut
 
-DISTFILES +=
+DISTFILES += \
+    map.map

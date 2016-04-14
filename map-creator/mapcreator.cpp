@@ -8,13 +8,13 @@
 
 #include "environment.hpp"
 
-#define SIZE 10
+#define SIZE 50
 
 typedef std::pair<int, std::vector<std::string>> sector;
 
 Environment generateEnvironment() {
-    int x = std::rand() % 20;
-    int y = std::rand() % 20;
+    int x = std::rand() % (SIZE * 10);
+    int y = std::rand() % (SIZE * 10);
 	Environment e(Environment::GRASS, x, y);
 	return e;
 }
@@ -34,7 +34,7 @@ sector generateSector() {
 
 std::string generateOffsetString(int length) {
 	std::string str = "";
-	str.resize(length, ' ');
+	str.resize(length, '0');
 	return str;
 }
 
@@ -46,18 +46,18 @@ std::string offsetString(std::string offsetString, int value) {
 void writeIndexes(std::ofstream & file, int bytes[]) {
 	int offset = std::ceil(log10(bytes[SIZE * SIZE] + 1));
 	std::string str = generateOffsetString(offset);
-	file << offset << offsetString(str, offset) << "\n";
+	file << offsetString(str, offset) << (offset + 1) << '\n';
 
 	int startIndex = (offset + 1) * (SIZE * SIZE + 2);
 	for(int i = 0; i <= SIZE * SIZE; ++i) {
-		file << (startIndex + bytes[i]) << offsetString(str, startIndex + bytes[i]) << "\n";
+		file << offsetString(str, startIndex + bytes[i]) << (startIndex + bytes[i]) << '\n';
 	}
 }
 
 void writeSectors(std::ofstream & file, std::vector<std::string> map[]) {
 	for(int i = 0; i < SIZE * SIZE; ++i) {
 		for(std::string element : map[i]) {
-			file << element << "\n";
+			file << element << '\n';
 		}
 	}
 }
