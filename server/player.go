@@ -6,6 +6,7 @@ import (
 	"math"
 	"sync"
 	"time"
+	"./basic"
 )
 
 type Player struct {
@@ -19,8 +20,6 @@ type Player struct {
 	max_mana	int
 	target		(chan map[string]string)
 	mutex 		sync.Mutex
-
-	// Parameters not to clients to server should NOT be capitalized.
 }
 
 func (player *Player) sendLocalMap() {
@@ -36,28 +35,18 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 
 	x, y := sliceMap(player.X, player.Y)
 
+	fromX := basic.Max(x-1, 0)
+	toX := basic.Min(x+1, MAP_X)
+
+	fromY := basic.Max(y-1, 0)
+	toY := basic.Min(y+1, MAP_Y)
+
 	var list []Player
 
-	start_x := x-1
-	end_x := x+1
-	if start_x < 0 {
-		start_x = 0
-	} else if end_x > MAP_SIZE {
-		end_x = MAP_SIZE
-	}
-
-	start_y := y-1
-	end_y := y+1
-	if start_y < 0 {
-		start_y = 0
-	} else if end_y > MAP_SIZE {
-		end_y = MAP_SIZE
-	}
-
 	map_mutex.Lock()
-	for i := start_x; i <= end_x; i++ {
-		for j := start_y; j <= end_y; j++ {
-			for _, p := range mapSection[i][j] {
+	for i := fromX; i <= toX; i++ {
+		for j := fromY; j <= toY; j++ {
+			for _, p := range map_players[i][j] {
 				if p.Name != player.Name {
 					p.mutex.Lock()
 					list = append(list, *p)
@@ -77,8 +66,8 @@ func (player *Player) Movement(movement map[string]string) {
 	newSectionX, newSectionY := sliceMap(newX, newY)
 	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
-		oldSection := mapSection[oldSectionX][oldSectionY]
-		newSection := mapSection[newSectionX][newSectionY]
+		oldSection := map_players[oldSectionX][oldSectionY]
+		newSection := map_players[newSectionX][newSectionY]
 		map_mutex.Lock()
 		delete(oldSection, player.Name)
 		map_mutex.Unlock()
