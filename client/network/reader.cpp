@@ -4,8 +4,6 @@
 #include "connection.h"
 #include "ui/mainwindow.h"
 
-#include <iostream>
-#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -21,7 +19,6 @@
 #include <QMetaType>
 
 using namespace json11;
-using std::string;
 
 const int BUFFER_SIZE= 65534;
 
