@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	MAP_SIZE = 50
+	MAP_X = 50
+	MAP_Y = 50
 	MAP_SLICE = 14
 )
 
@@ -14,12 +15,13 @@ var map_mutex = &sync.Mutex{}
 
 var playerList map[string]*Player
 
-var mapSection [MAP_SIZE + 1][MAP_SIZE + 1](map[string]*Player)
+var map_players [MAP_X + 1][MAP_Y + 1](map[string]*Player)
+// var map_environment_json [MAP_X + 1][MAP_Y + 1]()
 
 func InitiateMapStructure() {
-	for i := 0; i <= MAP_SIZE; i++ {
-		for j := 0; j <= MAP_SIZE; j++ {
-			mapSection[i][j] = map[string]*Player{}
+	for i := 0; i <= MAP_X; i++ {
+		for j := 0; j <= MAP_Y; j++ {
+			map_players[i][j] = map[string]*Player{}
 		}
 	}
 
@@ -28,7 +30,7 @@ func InitiateMapStructure() {
 
 func AddPlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
-	section := mapSection[x][y]
+	section := map_players[x][y]
 	map_mutex.Lock()
 	player.mutex.Lock()
 	section[player.Name] = player
@@ -41,7 +43,7 @@ func AddPlayer(player *Player) {
 
 func RemovePlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
-	section := mapSection[x][y]
+	section := map_players[x][y]
 	player.mutex.Lock()
 	player.target <- map[string]string {"Condition": "Shutdown"}
 	map_mutex.Lock()
