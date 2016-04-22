@@ -23,15 +23,12 @@ const (
 
 func main() {
 
-	InitiateMapStructure()
-
-	clientList = make(map[string]*Client)
-
-	err := resetDatabaseOnlineList()
+	err := InitiateGameStructure()
 	if err != nil {
-		fmt.Println("Error clearing the database online list!")
 		os.Exit(1)
 	}
+
+	clientList = make(map[string]*Client)
 
 	// Sets up the server.
 	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)

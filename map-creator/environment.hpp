@@ -17,6 +17,8 @@ public:
 	int x() const;
 	int y() const;
 	Type type() const;
+	bool operator<(const Environment & other) const;
+	bool operator!=(const Environment & other) const; 
 	std::string to_string() const;
 };
 

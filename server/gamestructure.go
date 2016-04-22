@@ -3,6 +3,7 @@ package main
 import (
 	"sync"
 	"encoding/json"
+	"fmt"
 )
 
 const (
@@ -18,7 +19,29 @@ var playerList map[string]*Player
 var map_players [MAP_X + 1][MAP_Y + 1](map[string]*Player)
 // var map_environment_json [MAP_X + 1][MAP_Y + 1]()
 
-func InitiateMapStructure() {
+func InitiateGameStructure() (error) {
+
+	fmt.Println("Reseting the database online list...")	
+	err := resetDatabaseOnlineList()
+	if err != nil {
+		fmt.Println("Error clearing the database online list!")
+		return err
+	}	
+	
+	fmt.Println("Initiating the map structure...")
+	initiateMapStructure()
+	
+	fmt.Println("Loading map file...")
+	err = ReadMapFile()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func initiateMapStructure() {
 	for i := 0; i <= MAP_X; i++ {
 		for j := 0; j <= MAP_Y; j++ {
 			map_players[i][j] = map[string]*Player{}

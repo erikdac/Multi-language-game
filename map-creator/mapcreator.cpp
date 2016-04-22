@@ -1,7 +1,9 @@
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
 
 #include "environment.hpp"
 
@@ -17,6 +19,22 @@ Environment generateEnvironment(const unsigned int sectorX, const unsigned int s
 	return Environment(Environment::GRASS, x, y);
 }
 
+void removeDuplicateEnvironments(sector & old) {
+	if(old.size() == 0) {
+		return;
+	}
+ 
+	std::sort(old.begin(), old.end());
+	sector s;
+	s.push_back(old[0]);
+	for(std::size_t i = 1; i < old.size(); ++i) {
+		if(old[i] != old[i-1]) {
+			s.push_back(old[i]);
+		}
+	}
+	old = s;
+}
+
 sector generateSector(const unsigned int sectorX, const unsigned int sectorY) {
 	sector s;
 	int lim = std::rand() % (MAP_SECTOR_SIZE * MAP_SECTOR_SIZE);
@@ -24,12 +42,14 @@ sector generateSector(const unsigned int sectorX, const unsigned int sectorY) {
 		Environment e = generateEnvironment(sectorX, sectorY);
 		s.push_back(e);
 	}
+	removeDuplicateEnvironments(s);
+	std::cout << s.size() << std::endl;
 	return s;
 }
 
 void writeToFile(std::ofstream & file, std::vector<sector> & sectors) {
 	file << MAP_SECTOR_SIZE << std::endl;
-	for(int i = 0; i < sectors.size(); ++i) {
+	for(std::size_t i = 0; i < sectors.size(); ++i) {
 		for(Environment & e : sectors[i]) {
 			file << e.to_string() << std::endl;
 		}
