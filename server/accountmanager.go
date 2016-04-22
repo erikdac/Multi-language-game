@@ -22,17 +22,17 @@ func checkLogin(request map[string]string) (Player, error) {
 
 	player_name, err := queryAccount(request, db)
 	if err != nil {
-		return Player{}, errors.New("Login_Fail")
+		return Player{}, errors.New("Login fail!")
 	}
 
 	player, err := queryPlayer(db, player_name)
 	if err != nil {
-		return Player{}, errors.New("Database_Fail")
+		return Player{}, errors.New("Database fail!")
 	}
 
 	err = setOnlineStatus(db, player.Name)
 	if err != nil {
-		return Player{}, errors.New("Already_Online")
+		return Player{}, errors.New("Player is already online!")
 	}
 
 	return player, nil

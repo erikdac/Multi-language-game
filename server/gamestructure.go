@@ -1,58 +1,31 @@
 package main
 
 import (
-	"sync"
 	"encoding/json"
-	"fmt"
+	"errors"
 )
-
-const (
-	MAP_X = 50
-	MAP_Y = 50
-	MAP_SLICE = 14
-)
-
-var map_mutex = &sync.Mutex{}
 
 var playerList map[string]*Player
 
-var map_players [MAP_X + 1][MAP_Y + 1](map[string]*Player)
-// var map_environment_json [MAP_X + 1][MAP_Y + 1]()
-
 func InitiateGameStructure() (error) {
 
-	fmt.Println("Reseting the database online list...")	
 	err := resetDatabaseOnlineList()
 	if err != nil {
-		fmt.Println("Error clearing the database online list!")
-		return err
+		return errors.New("Error clearing the database online list!")
 	}	
 	
-	fmt.Println("Initiating the map structure...")
-	initiateMapStructure()
-	
-	fmt.Println("Loading map file...")
-	err = ReadMapFile()
+	err = InitiateMapStructure()
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
+
+	playerList = make(map[string]*Player)
 
 	return nil
 }
 
-func initiateMapStructure() {
-	for i := 0; i <= MAP_X; i++ {
-		for j := 0; j <= MAP_Y; j++ {
-			map_players[i][j] = map[string]*Player{}
-		}
-	}
-
-	playerList = make(map[string]*Player)
-}
-
 func AddPlayer(player *Player) {
-	x, y := sliceMap(player.X, player.Y)
+	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	map_mutex.Lock()
 	player.mutex.Lock()
@@ -65,7 +38,7 @@ func AddPlayer(player *Player) {
 }
 
 func RemovePlayer(player *Player) {
-	x, y := sliceMap(player.X, player.Y)
+	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	player.mutex.Lock()
 	player.target <- map[string]string {"Condition": "Shutdown"}
@@ -75,23 +48,6 @@ func RemovePlayer(player *Player) {
 	player.mutex.Unlock()
 	map_mutex.Unlock()
 	sendPlayerUpdate(player, true)
-}
-
-func sliceMap(x int, y int) (int, int) {
-	var row, column int
-	if x == 0 {
-		column = 0
-	} else {
-		column = x / MAP_SLICE
-	}
-
-	if y == 0 {
-		row = 0
-	} else {
-		row = y / MAP_SLICE
-	}
-
-	return column, row
 }
 
 func sendPlayerUpdate(player *Player, removed bool) {

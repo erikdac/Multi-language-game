@@ -33,7 +33,7 @@ func (player *Player) sendLocalMap() {
 
 func (player *Player) LocalPlayerMap() ([]Player) {
 
-	x, y := sliceMap(player.X, player.Y)
+	x, y := SliceMap(player.X, player.Y)
 
 	fromX := basic.Max(x-1, 0)
 	toX := basic.Min(x+1, MAP_X)
@@ -63,8 +63,8 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 func (player *Player) Movement(movement map[string]string) {
 	newX, _ := strconv.Atoi(movement["ToX"])
 	newY, _ := strconv.Atoi(movement["ToY"])
-	newSectionX, newSectionY := sliceMap(newX, newY)
-	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
+	newSectionX, newSectionY := SliceMap(newX, newY)
+	oldSectionX, oldSectionY := SliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
 		oldSection := map_players[oldSectionX][oldSectionY]
 		newSection := map_players[newSectionX][newSectionY]
