@@ -6,6 +6,7 @@ import (
 	"sync"
 	"fmt"
 	"errors"
+	"strconv"
 )
 
 const (
@@ -13,12 +14,19 @@ const (
 	MAP_Y = 50
 	MAP_SLICE = 14
 	MAP_FILE = "map.mf"
+	SECTION_DELIMITER = "!NEW_SECTION!"
 )
+
+type environment struct {
+	Type 	string
+	x 		int
+	y 		int
+}
 
 var map_mutex = &sync.Mutex{}
 
 var map_players [MAP_X + 1][MAP_Y + 1](map[string]*Player)
-// var map_environment_json [MAP_X + 1][MAP_Y + 1]()
+//var map_environment_json [MAP_X + 1][MAP_Y + 1]([])
 
 func InitiateMapStructure() (error) {
 	for i := 0; i <= MAP_X; i++ {
@@ -42,11 +50,43 @@ func loadMap() (error) {
 	defer file.Close() 
 
 	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+	scanner.Split(bufio.ScanWords)
+	for i := 0; i < MAP_X; i++ {
+		for j := 0; j < MAP_Y; j++ {
+			err := scanner.scanSection(i, j) // SHOULD RETURN LIST!
+			if err != nil {
+				return err
+			}
+		}
 	}
+	
 	return nil
+}
+
+// Used to read in each section of the map file.
+func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) (error) {
+	size, err := strconv.Atoi(scanner.nextToken())
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < size; i++ {
+		env := scanner.nextToken()
+		x, _ := strconv.Atoi(scanner.nextToken())
+		y, _ := strconv.Atoi(scanner.nextToken())
+
+		// JUST TEMPORARY FOR BEING ABLE TO RUN PROGRAM, REMOVE
+		if env == "" || x == -1 || y == -1 || sectionX == -1 || sectionY == -1 {
+			fmt.Println(sectionX, " ", sectionY)
+			fmt.Println("TYPE: ", env, "\tX: ", x, "\tY: ", y)
+		}
+	}
+	return nil;
+}
+
+func (scanner *bufio.Scanner) nextToken() (string) {
+	scanner.Scan()
+	return scanner.Text()
 }
 
 func SliceMap(x int, y int) (int, int) {

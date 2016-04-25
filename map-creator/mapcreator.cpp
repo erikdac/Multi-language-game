@@ -7,9 +7,9 @@
 
 #include "environment.hpp"
 
-static const int MAP_X = 20;
-static const int MAP_Y = 20;
-static const int MAP_SECTOR_SIZE = 15;
+static const int MAP_X = 50;
+static const int MAP_Y = 50;
+static const int MAP_SECTOR_SIZE = 14;
 
 typedef std::vector<Environment> sector;
 
@@ -43,13 +43,12 @@ sector generateSector(const unsigned int sectorX, const unsigned int sectorY) {
 		s.push_back(e);
 	}
 	removeDuplicateEnvironments(s);
-	std::cout << s.size() << std::endl;
 	return s;
 }
 
 void writeToFile(std::ofstream & file, std::vector<sector> & sectors) {
-	file << MAP_SECTOR_SIZE << std::endl;
 	for(std::size_t i = 0; i < sectors.size(); ++i) {
+		file << sectors[i].size() << std::endl;		// Each section starts with its size.
 		for(Environment & e : sectors[i]) {
 			file << e.to_string() << std::endl;
 		}

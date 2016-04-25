@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++11 -pedantic -Iincludes -pthread
+CFLAGS = -std=c++11 -Wall -pedantic -Iincludes -pthread
 SOURCES = $(wildcard *.cpp)
 OBJ_FILES = $(addprefix obj/, $(notdir $(SOURCES:.cpp=.o)))
 
