@@ -75,10 +75,12 @@ func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) (error) {
 		x, _ := strconv.Atoi(scanner.nextToken())
 		y, _ := strconv.Atoi(scanner.nextToken())
 
+		e := environment{env, x, y}
+
 		// JUST TEMPORARY FOR BEING ABLE TO RUN PROGRAM, REMOVE
-		if env == "" || x == -1 || y == -1 || sectionX == -1 || sectionY == -1 {
+		if sectionX == -1 || sectionY == -1 {
 			fmt.Println(sectionX, " ", sectionY)
-			fmt.Println("TYPE: ", env, "\tX: ", x, "\tY: ", y)
+			fmt.Println(e)
 		}
 	}
 	return nil;
