@@ -53,7 +53,7 @@ func loadMap() (error) {
 	scanner.Split(bufio.ScanWords)
 	for i := 0; i < MAP_X; i++ {
 		for j := 0; j < MAP_Y; j++ {
-			err := scanner.scanSection(i, j) // SHOULD RETURN LIST!
+			_, err := scanner.scanSection(i, j)
 			if err != nil {
 				return err
 			}
@@ -64,11 +64,12 @@ func loadMap() (error) {
 }
 
 // Used to read in each section of the map file.
-func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) (error) {
+func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) ([]environment, error) {
 	size, err := strconv.Atoi(scanner.nextToken())
 	if err != nil {
-		return err
+		return nil, err
 	}
+	var section []environment
 
 	for i := 0; i < size; i++ {
 		env := scanner.nextToken()
@@ -76,6 +77,7 @@ func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) (error) {
 		y, _ := strconv.Atoi(scanner.nextToken())
 
 		e := environment{env, x, y}
+		section = append(section, e);
 
 		// JUST TEMPORARY FOR BEING ABLE TO RUN PROGRAM, REMOVE
 		if sectionX == -1 || sectionY == -1 {
@@ -83,7 +85,7 @@ func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) (error) {
 			fmt.Println(e)
 		}
 	}
-	return nil;
+	return section, nil;
 }
 
 func (scanner *bufio.Scanner) nextToken() (string) {
