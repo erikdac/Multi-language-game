@@ -9,6 +9,7 @@ type login_packet struct {
 type map_packet struct {
 	Type 		string
 	Players 	[]Player
+	Environment []Environment
 
 	// TODO: Add creature-array
 }

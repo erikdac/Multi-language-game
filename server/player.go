@@ -26,6 +26,7 @@ func (player *Player) sendLocalMap() {
 	packet := map_packet {
 		Type: "Map",
 		Players: player.LocalPlayerMap(),
+		Environment: player.localEnvironmentMap(),
 	}
 	data,  _ := json.Marshal(packet)
 	clientList[player.Name].write(data)
@@ -56,6 +57,26 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 		}
 	}
 	map_mutex.Unlock()
+
+	return list
+}
+
+func (player *Player) localEnvironmentMap() ([]Environment) {
+	x, y := SliceMap(player.X, player.Y)
+
+	fromX := basic.Max(x-1, 0)
+	toX := basic.Min(x+1, MAP_X)
+
+	fromY := basic.Max(y-1, 0)
+	toY := basic.Min(y+1, MAP_Y)
+
+	var list []Environment
+
+	for i := fromX; i <= toX; i++ {
+		for j := fromY; j <= toY; j++ {
+			list = append(list, map_environment[i][j]...)
+		}
+	}
 
 	return list
 }

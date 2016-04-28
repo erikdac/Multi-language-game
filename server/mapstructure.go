@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"os"
 	"sync"
-	"fmt"
 	"errors"
 	"strconv"
 )
@@ -17,7 +16,7 @@ const (
 	SECTION_DELIMITER = "!NEW_SECTION!"
 )
 
-type environment struct {
+type Environment struct {
 	Type 	string
 	x 		int
 	y 		int
@@ -26,7 +25,7 @@ type environment struct {
 var map_mutex = &sync.Mutex{}
 
 var map_players [MAP_X + 1][MAP_Y + 1](map[string]*Player)
-//var map_environment_json [MAP_X + 1][MAP_Y + 1]([])
+var map_environment [MAP_X + 1][MAP_Y + 1]([]Environment)	// NEEDS TO HAVE MUTEX IF GONNA BE DYNAMIC!
 
 func InitiateMapStructure() (error) {
 	for i := 0; i <= MAP_X; i++ {
@@ -53,10 +52,11 @@ func loadMap() (error) {
 	scanner.Split(bufio.ScanWords)
 	for i := 0; i < MAP_X; i++ {
 		for j := 0; j < MAP_Y; j++ {
-			_, err := scanner.scanSection(i, j)
+			section, err := scanner.nextSection()
 			if err != nil {
 				return err
 			}
+			map_environment[i][j] = section
 		}
 	}
 	
@@ -64,26 +64,20 @@ func loadMap() (error) {
 }
 
 // Used to read in each section of the map file.
-func (scanner *bufio.Scanner) scanSection(sectionX int, sectionY int) ([]environment, error) {
+func (scanner *bufio.Scanner) nextSection() ([]Environment, error) {
 	size, err := strconv.Atoi(scanner.nextToken())
 	if err != nil {
 		return nil, err
 	}
-	var section []environment
+	var section []Environment
 
 	for i := 0; i < size; i++ {
 		env := scanner.nextToken()
 		x, _ := strconv.Atoi(scanner.nextToken())
 		y, _ := strconv.Atoi(scanner.nextToken())
 
-		e := environment{env, x, y}
+		e := Environment{env, x, y}
 		section = append(section, e);
-
-		// JUST TEMPORARY FOR BEING ABLE TO RUN PROGRAM, REMOVE
-		if sectionX == -1 || sectionY == -1 {
-			fmt.Println(sectionX, " ", sectionY)
-			fmt.Println(e)
-		}
 	}
 	return section, nil;
 }
