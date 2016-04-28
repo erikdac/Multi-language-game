@@ -54,5 +54,4 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -lglut
 
-DISTFILES += \
-    map.map
+DISTFILES +=

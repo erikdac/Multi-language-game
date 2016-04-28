@@ -85,13 +85,13 @@ void Player::sendMovement() const {
     connection::output(data);
 }
 
-unsigned int Player::distance_to_player(Player * p) {
-    int x = std::abs(_x - p->x());
-    int y = std::abs(_y - p->y());
+unsigned int Player::distance_to_player(const Player & p) const {
+    int x = std::abs(_x - p.x());
+    int y = std::abs(_y - p.y());
     return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
 }
 
-void Player::load_graphics() {
+void Player::load_graphics() const {
     float x = (-0.5f + _x - _self->x())/VIEW_WIDTH;
     float y = -(0.5f + _y - _self->y())/VIEW_HEIGHT;
 

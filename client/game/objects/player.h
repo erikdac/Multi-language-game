@@ -36,9 +36,9 @@ public:
 
     bool operator==(const Player) const;
 
-    unsigned int distance_to_player(Player *);
+    unsigned int distance_to_player(const Player &) const;
 
-    virtual void load_graphics() override;
+    virtual void load_graphics() const override;
 
 private:
     void sendMovement() const;

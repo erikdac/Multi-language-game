@@ -15,8 +15,13 @@ TargetWidget::TargetWidget(QWidget *parent) : PlayerWidget(parent) {
     this->setSizePolicy(sp_retain);
 }
 
-Player * TargetWidget::target() const {
-    return _player;
+std::string TargetWidget::target() const {
+    if(_player == 0) {
+        return "";
+    }
+    else {
+        return _player->name();
+    }
 }
 
 void TargetWidget::select_target(Player * player, bool combat) {

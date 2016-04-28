@@ -111,6 +111,7 @@ func (player *Player) Movement(movement map[string]string) {
 	sendPlayerUpdate(player, false);
 }
 
+// TODO: Clean up this function!
 func (player *Player) Auto_attack() {
 	var target_mutex = &sync.Mutex{}
 	var target string
@@ -140,9 +141,12 @@ func (player *Player) Auto_attack() {
 	blocking.Wait()
 	for running == true {
 	    target_mutex.Lock()
-	    victim := playerList[target]
+	    victim := playerList[target];
 	    target_mutex.Unlock()
-	    if player.distanceToPlayer(victim) <= 1 {
+	    if victim == nil {
+			running = false
+			paused = false
+		} else if player.distanceToPlayer(victim) <= 1 {
 	    	go playerAttacked(victim, player.Name, 5)	// TODO: Make some calculation for the damage.
 	    	time.Sleep(2000 * time.Millisecond)
 	    } else {

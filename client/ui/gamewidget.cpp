@@ -53,10 +53,14 @@ void GameWidget::paintGL() {
     glEnd();
 
     others_mutex.lock();
-    for(unsigned int i = 0; i < _other_players.size(); ++i) {
-        _other_players[i].load_graphics();
+    for (const Player & p : _other_players) {
+        p.load_graphics();
     }
     others_mutex.unlock();
+
+    for (const Environment & e : _environment) {
+        e.load_graphics();
+    }
 
     float x = (0.5f + 105.0f - _self->x())/VIEW_WIDTH;
     float y = -(0.5f + 105.0f - _self->y())/VIEW_HEIGHT;

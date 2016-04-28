@@ -1,9 +1,11 @@
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
+#include "graphics.h"
+
 #include <string>
 
-class Environment {
+class Environment : Graphics {
 public:
     enum Type {GRASS, WATER};
 
@@ -13,11 +15,12 @@ private:
     Type _type;
 
 public:
-    Environment(const Type type, const int x, const int y);
     Environment(const std::string type, const int x, const int y);
     int x() const;
     int y() const;
     Type type() const;
+
+    virtual void load_graphics() const override;
 };
 
 #endif

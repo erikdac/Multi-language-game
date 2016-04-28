@@ -17,7 +17,7 @@ class TargetWidget : public PlayerWidget {
 public:
     TargetWidget(QWidget *parent = 0);
 
-    Player * target() const;
+    std::string target() const;
     void select_target(Player *, bool);
     void unselect_target();
     void update_target(Player *);

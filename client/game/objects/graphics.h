@@ -10,7 +10,7 @@ public:
     Graphics() {}
     ~Graphics() {}
 
-    virtual void load_graphics() = 0;
+    virtual void load_graphics() const = 0;
 };
 
 #endif // GRAPHICS_H

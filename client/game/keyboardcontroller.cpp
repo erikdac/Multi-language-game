@@ -19,7 +19,7 @@ typedef void (Player::*function)();
 
 void KeyboardController::run() {
     function fp;
-    switch(_key) {
+    switch (_key) {
         case 'w': fp = &Player::moveUp; break;
         case 'a': fp = &Player::moveLeft; break;
         case 's': fp = &Player::moveDown; break;
@@ -27,7 +27,7 @@ void KeyboardController::run() {
         default: return;
     }
 
-    while(_isRunning) {
+    while (_isRunning) {
         (_self->*fp)();
         usleep(SLEEP_TIME);
     }
