@@ -1,16 +1,15 @@
-
 package main
 
 import (
 	"database/sql"
-	"errors"                           // lol
+	"errors"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
 	"sync"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
 
-var database_mutex = &sync.Mutex{}
+var database_mutex = &sync.Mutex{}	// REMOVE WHEN TRANSACTION LEVEL SET FOR DATABASE!
 
 func checkLogin(request map[string]string) (Player, error) {
 
