@@ -43,15 +43,6 @@ void GameWidget::intitializeGL() {
 void GameWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Self
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-    glEnd();
-
     others_mutex.lock();
     for (const Player & p : _other_players) {
         p.load_graphics();
@@ -62,29 +53,15 @@ void GameWidget::paintGL() {
         e.load_graphics();
     }
 
-    float x = (0.5f + 105.0f - _self->x())/VIEW_WIDTH;
-    float y = -(0.5f + 105.0f - _self->y())/VIEW_HEIGHT;
-
-    // Tree
+    // Self
     glBegin(GL_QUADS);
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(x, y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
-        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
+        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
+        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
     glEnd();
 
-    x = (0.5f + 95.0f - _self->x())/VIEW_WIDTH;
-    y = -(0.5f + 95.0f - _self->y())/VIEW_HEIGHT;
-
-    // Tree
-    glBegin(GL_QUADS);
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(x, y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
-        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
-    glEnd();
 }
 
 void GameWidget::resizeGL() {
@@ -95,7 +72,7 @@ void GameWidget::stop_refreshing() {
     _screenRefresher->stop();
 }
 
-void GameWidget::mousePressEvent(QMouseEvent *event) {
+void GameWidget::mousePressEvent(QMouseEvent * event) {
     unsigned int x = _self->x() - VIEW_WIDTH + event->x() / (this->width() / (VIEW_WIDTH * 2 + 1));
     unsigned int y = _self->y() - VIEW_HEIGHT + event->y() / (this->height() / (VIEW_HEIGHT * 2 + 1));
     Player * player = map::player_at_position(x, y);

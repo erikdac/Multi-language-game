@@ -76,6 +76,7 @@ void map::parse_map(const Json data) {
 
     Json::array environments = data["Environment"].array_items();
     environment_mutex.lock();
+    _environment.clear();
     for (const Json & e : environments) {
         _environment.push_back(parse_environment(e));
     }

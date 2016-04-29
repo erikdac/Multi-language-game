@@ -20,7 +20,7 @@
 
 using namespace json11;
 
-const int BUFFER_SIZE= 65534;
+const static std::size_t BUFFER_SIZE= 131070;
 
 Reader::Reader() {
     qRegisterMetaType<std::string>();

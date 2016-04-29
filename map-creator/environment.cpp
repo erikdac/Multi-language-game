@@ -31,10 +31,10 @@ std::string Environment::to_string() const {
 	std::string str = "";
 	switch(_type) {
 		case Environment::GRASS:
-			str = "grass";
+			str = "GRASS";
 			break;
 		case Environment::WATER:
-			str = "water";
+			str = "WATER";
 			break;
 	}
 	return str + " " + std::to_string(_x) + " " + std::to_string(_y);

@@ -37,10 +37,10 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 	x, y := SliceMap(player.X, player.Y)
 
 	fromX := basic.Max(x-1, 0)
-	toX := basic.Min(x+1, MAP_X)
+	toX := basic.Min(x+1, MAP_X-1)
 
 	fromY := basic.Max(y-1, 0)
-	toY := basic.Min(y+1, MAP_Y)
+	toY := basic.Min(y+1, MAP_Y-1)
 
 	var list []Player
 
@@ -65,10 +65,10 @@ func (player *Player) localEnvironmentMap() ([]Environment) {
 	x, y := SliceMap(player.X, player.Y)
 
 	fromX := basic.Max(x-1, 0)
-	toX := basic.Min(x+1, MAP_X)
+	toX := basic.Min(x+1, MAP_X-1)
 
 	fromY := basic.Max(y-1, 0)
-	toY := basic.Min(y+1, MAP_Y)
+	toY := basic.Min(y+1, MAP_Y-1)
 
 	var list []Environment
 
