@@ -7,6 +7,10 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
+Player::Player() : _name("") {
+
+}
+
 Player::Player(std::string name, unsigned int x, unsigned int y, unsigned int level, unsigned int health, unsigned int mana)
     : _name(name), _x(x), _y(y), _level(level), _health(health), _mana(mana) {
 

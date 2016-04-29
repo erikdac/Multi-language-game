@@ -15,6 +15,7 @@ unsigned int _health;
 unsigned int _mana;
 
 public:
+    Player();
     Player(std::string, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
     virtual ~Player();
 

@@ -16,23 +16,18 @@ TargetWidget::TargetWidget(QWidget *parent) : PlayerWidget(parent) {
 }
 
 std::string TargetWidget::target() const {
-    if(_player == 0) {
-        return "";
-    }
-    else {
-        return _player->name();
-    }
+    return _target.name();
 }
 
-void TargetWidget::select_target(Player * player, bool combat) {
-    update_target(player);
+void TargetWidget::select_target(Player & p, bool combat) {
+    update_target(p);
 
     if(combat) {
         attack_mutex.lock();
         const Json data = Json::object {
             {"Type", "Attack"},
             {"Condition", "Start"},
-            {"Victim", _player->name()}
+            {"Victim", p.name()}
         };
         attack_mutex.unlock();
         connection::output(data);
@@ -46,13 +41,13 @@ void TargetWidget::select_target(Player * player, bool combat) {
 void TargetWidget::unselect_target() {
     this->setVisible(false);
     stop_attack();
-    _player = 0;
 }
 
-void TargetWidget::update_target(Player * player) {
+void TargetWidget::update_target(Player & p) {
     attack_mutex.lock();
-    _player = player;
+    _target = p;
     attack_mutex.unlock();
+    this->update();
 }
 
 void TargetWidget::stop_attack() {
@@ -61,4 +56,8 @@ void TargetWidget::stop_attack() {
         {"Condition", "Stop"}
     };
     connection::output(data);
+}
+
+void TargetWidget::paintEvent(QPaintEvent * event) {
+    paint(event, _target);
 }

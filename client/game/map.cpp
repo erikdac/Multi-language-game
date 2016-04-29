@@ -30,13 +30,14 @@ void map::cleanMap() {
     _environment.clear();
 }
 
-void check_target(std::string target_name) {
+void check_target() {
+    std::string target_name = _target_widget->target();
     bool found = false;
     others_mutex.lock();
     for(Player & p : _other_players) {
         if (p.name() == target_name) {
             found = true;
-            _target_widget->update_target(&p);
+            _target_widget->update_target(p);
             break;
         }
     }
@@ -65,14 +66,13 @@ Environment parse_environment(const Json environment) {
 
 void map::parse_map(const Json data) {
     Json::array players = data["Players"].array_items();
-    std::string target_name = _target_widget->target();
     others_mutex.lock();
     _other_players.clear();
     for (const Json & p : players) {
         _other_players.push_back(map::parse_player(p));
     }
     others_mutex.unlock();
-    check_target(target_name);
+    check_target();
 
     Json::array environments = data["Environment"].array_items();
     environment_mutex.lock();
@@ -97,14 +97,13 @@ void map::update_player(const Json data) {
 
     std::string target_name = _target_widget->target();
     if(player.name() == target_name) {
-        _target_widget->update();
+        _target_widget->update_target(player);
     }
 }
 
 void map::remove_player(const Json data) {
     Player player = map::parse_player(data["Player"]);
 
-    std::string target_name = _target_widget->target();
     others_mutex.lock();
     auto it = std::find (_other_players.begin(), _other_players.end(), player);
     if (it != _other_players.end()) {
@@ -112,7 +111,11 @@ void map::remove_player(const Json data) {
         _other_players.erase(_other_players.begin() + _other_players.size()-1);
     }
     others_mutex.unlock();
-    check_target(target_name);
+
+    std::string target_name = _target_widget->target();
+    if(player.name() == target_name) {
+        _target_widget->unselect_target();
+    }
 }
 
 Player * map::player_at_position(const unsigned int x, const unsigned int y) {
