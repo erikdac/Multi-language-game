@@ -4,12 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
-	"sync"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
-
-var database_mutex = &sync.Mutex{}	// REMOVE WHEN TRANSACTION LEVEL SET FOR DATABASE!
 
 func checkLogin(request map[string]string) (Player, error) {
 
@@ -43,11 +40,9 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 	username := request["Username"]
 	password := request["Password"]
 
-	query := "SELECT username FROM account WHERE username = ? AND password = ? AND online=false"
+	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND active=false"
 	var player_name string
-	database_mutex.Lock()
 	err := db.QueryRow(query, username, password).Scan(&player_name)
-	database_mutex.Unlock()
 	return player_name, err
 }
 
@@ -58,10 +53,8 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 func queryPlayer(db *sql.DB, name string) (Player, error) {
 	var player Player
 	
-	query := "SELECT * FROM player WHERE name = ?"
-	database_mutex.Lock()
+	query := "SELECT * FROM players WHERE name = ?"
 	rows, err := db.Query(query, name)
-	database_mutex.Unlock()
 	defer rows.Close()
 	if err != nil {
 		return player, err
@@ -87,10 +80,8 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 
 // Sets the 'account' table attribute "online" to true.
 func setOnlineStatus(db *sql.DB, username string) (error) {
-	query := "UPDATE account SET online = true WHERE username = ?"
-	database_mutex.Lock()
+	query := "UPDATE accounts SET active = true WHERE username = ?"
 	_, err := db.Exec(query, username)
-	database_mutex.Unlock()
 	return err
 }
 
@@ -101,12 +92,10 @@ func (player *Player) logOut() (error) {
 	}
 	defer db.Close()
 
-	query1 := "UPDATE account SET online=false WHERE username = ?"
-	query2 := "UPDATE player SET xpos = ?, ypos = ? WHERE name = ?"
-	database_mutex.Lock()
-	_, err = db.Exec(query1, player.Name)
-	_, err = db.Exec(query2, player.X, player.Y, player.Name)
-	database_mutex.Unlock()
+	query1 := "UPDATE players SET x = ?, y = ? WHERE name = ?"
+	query2 := "UPDATE accounts SET active=false WHERE username = ?"
+	_, err = db.Exec(query1, player.X, player.Y, player.Name)
+	_, err = db.Exec(query2, player.Name)
 	return err
 }
 
@@ -118,10 +107,8 @@ func resetDatabaseOnlineList() (error) {
 	}
 	defer db.Close()
 
-	query := "UPDATE account SET online=false WHERE online=true"
-	database_mutex.Lock()
+	query := "UPDATE accounts SET active=false"
 	_, err = db.Exec(query)
-	database_mutex.Unlock()
 
 	return err
 }
