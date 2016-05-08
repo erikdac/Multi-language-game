@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     ui/playerwidget.cpp \
     game/objects/environment.cpp \
     game/objects/water.cpp \
-    game/objects/grass.cpp
+    game/objects/grass.cpp \
+    game/objects/stone.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     ui/playerwidget.h \
     game/objects/environment.h \
     game/objects/water.h \
-    game/objects/grass.h
+    game/objects/grass.h \
+    game/objects/stone.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \

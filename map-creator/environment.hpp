@@ -5,7 +5,7 @@
 
 class Environment {
 public:
-	enum Type {GRASS, WATER};
+	enum Type {GRASS, STONE, WATER};
 
 private:
 	int _x;

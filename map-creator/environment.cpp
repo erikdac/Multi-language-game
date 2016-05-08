@@ -33,6 +33,9 @@ std::string Environment::to_string() const {
 		case Environment::GRASS:
 			str = "GRASS";
 			break;
+		case Environment::STONE:
+			str = "STONE";
+			break;
 		case Environment::WATER:
 			str = "WATER";
 			break;

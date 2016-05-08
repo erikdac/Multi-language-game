@@ -3,6 +3,7 @@
 #include "ui/onlinewidget.h"
 #include "game/objects/water.h"
 #include "game/objects/grass.h"
+#include "game/objects/stone.h"
 
 #include <iostream>
 #include <vector>
@@ -73,6 +74,9 @@ Environment * parse_environment(const Json environment) {
     const std::string type = environment["Type"].string_value();
     if(type == "GRASS") {
         return new Grass(x, y);
+    }
+    else if(type == "STONE") {
+        return new Stone(x, y);
     }
     else if(type == "WATER") {
         return new Water(x, y);

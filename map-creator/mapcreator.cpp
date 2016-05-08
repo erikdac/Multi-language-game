@@ -13,10 +13,23 @@ static const int MAP_SECTOR_SIZE = 14;
 
 typedef std::vector<Environment> sector;
 
+sector initiateSector(const unsigned int sectorX, const unsigned int sectorY) {
+	sector s;
+	const int fromX = MAP_SECTOR_SIZE * sectorX;
+	const int fromY = MAP_SECTOR_SIZE * sectorY;
+	for (int x = fromX; x < fromX + MAP_SECTOR_SIZE; ++x) {
+		for (int y = fromY; y < fromY + MAP_SECTOR_SIZE; ++y) {
+			Environment grass(Environment::GRASS, x, y);
+			s.push_back(grass);
+		}
+	}
+	return s;
+}
+
 Environment generateEnvironment(const unsigned int sectorX, const unsigned int sectorY) {
     const int x = (std::rand() % MAP_SECTOR_SIZE) + (MAP_SECTOR_SIZE * sectorX);
     const int y = (std::rand() % MAP_SECTOR_SIZE) + (MAP_SECTOR_SIZE * sectorY);
-	return Environment(Environment::GRASS, x, y);
+	return Environment(Environment::STONE, x, y);
 }
 
 void removeDuplicateEnvironments(sector & old) {
@@ -30,15 +43,21 @@ void removeDuplicateEnvironments(sector & old) {
 	for (std::size_t i = 1; i < old.size(); ++i) {
 		if (old[i] != old[i-1]) {
 			s.push_back(old[i]);
+		} 
+		else if (old[i].type() == old[i-1].type()) {
+			s.push_back(old[i]);
+		}
+		else if (old[i].type() != Environment::GRASS) {
+			s.push_back(old[i]);
 		}
 	}
 	old = s;
 }
 
 sector generateSector(const unsigned int sectorX, const unsigned int sectorY) {
-	sector s;
+	sector s = initiateSector(sectorX, sectorY);
 	int lim = std::sqrt(std::rand() % ((MAP_SECTOR_SIZE * MAP_SECTOR_SIZE) + MAP_SECTOR_SIZE)) + MAP_SECTOR_SIZE;
-	for(int i = 0; i < lim; ++i) {
+	for (int i = 0; i < lim; ++i) {
 		Environment e = generateEnvironment(sectorX, sectorY);
 		s.push_back(e);
 	}
