@@ -61,7 +61,7 @@ Environment parse_environment(const Json environment) {
     std::string type = environment["Type"].string_value();
     int x = environment["X"].number_value();
     int y = environment["Y"].number_value();
-    return Environment(type, x, y);
+    return Environment(x, y);
 }
 
 void map::parse_map(const Json data) {

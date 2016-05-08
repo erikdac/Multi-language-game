@@ -7,7 +7,6 @@
 #include "game/keyboardcontroller.h"
 #include "game/screenrefresher.h"
 #include "game/map.h"
-#include "game/objects/graphics.h"
 
 #include <QPainter>
 #include <QOpenGLTexture>

@@ -5,13 +5,8 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-Environment::Environment(const std::string type, const int x, const int y) : _x(x), _y(y) {
-    if(type == "grass") {
-        _type = Environment::GRASS;
-    }
-    else if(type == "water") {
-        _type = Environment::WATER;
-    }
+Environment::Environment(const int x, const int y) : _x(x), _y(y) {
+
 }
 
 int Environment::x() const {
@@ -20,10 +15,6 @@ int Environment::x() const {
 
 int Environment::y() const {
     return _y;
-}
-
-Environment::Type Environment::type() const {
-    return _type;
 }
 
 void Environment::load_graphics() const {
