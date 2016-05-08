@@ -46,7 +46,12 @@ void OnlineWidget::input(std::string input) {
     std::string error;
     Json data = Json::parse(input, error);
 
-    std::cout << "ONLINEWIDGET: " << data.dump() << std::endl;
+    if(error.size() > 0) {
+        std::cout << "ONLINEWIDGET ERROR: " << error << std::endl;
+    }
+    else {
+        std::cout << "ONLINEWIDGET: " << data.dump() << std::endl;
+    }
 
     std::string type = data["Type"].string_value();
     if(type == "Disconnect") {

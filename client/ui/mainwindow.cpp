@@ -32,7 +32,7 @@ void MainWindow::setUpGameUi() {
     changeWidget(onlineWidget);
 }
 
-void MainWindow::changeWidget(QWidget *widget) {
+void MainWindow::changeWidget(QWidget * widget) {
     connection::setActiveWidget(widget);
     QGridLayout * layout = new QGridLayout;
     layout->setContentsMargins(0,0,0,0);
@@ -42,6 +42,6 @@ void MainWindow::changeWidget(QWidget *widget) {
 
 void MainWindow::removePreviousUi() {
     delete this->layout();
-    while ( QWidget* w = findChild<QWidget*>() )
+    while ( QWidget * w = findChild<QWidget*>() )
         delete w;
 }

@@ -10,7 +10,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <assert.h>
 #include <signal.h>
 #include <mutex>
 #include <QWidget>
@@ -46,7 +45,7 @@ void Reader::run() {
         FD_ZERO(&readfds);    // Erase the set of socket descriptors
         FD_SET(s0, &readfds); // Add the socket "s0" to the set
 
-        tv = {0, 100000};        // Timeout value to for the reading to finish.
+        tv = {1, 0};        // Timeout value to for the reading to finish.
 
         //=== "select" is the key point of the program! ============
         int res = select(
@@ -64,15 +63,12 @@ void Reader::run() {
             const Json data = Json::object {{"Type", "Disconnect"}};
             emit input(data.dump());
         } else if (res > 0) {
-
-            // At this point, we can read an incoming data
-            assert(FD_ISSET(s0, &readfds));
-
             res = read(
                 s0,
                 readBuffer + received,
                 BUFFER_SIZE - received
             );
+
             if (res > 0) {
                 received += res;
                 readBuffer[received] = '\0';
@@ -80,7 +76,7 @@ void Reader::run() {
             }
             else {
                 if (res < 0 && errno != EAGAIN) {
-                    perror("Read error"); 
+                    perror("Read error");
                 }
                 _isReading = false;
                 const Json data = Json::object {{"Type", "Disconnect"}};
