@@ -3,20 +3,17 @@
 
 #include "graphics.h"
 
-#include <string>
+class Environment : public Graphics {
 
-class Environment : Graphics {
-
-private:
+protected:
     int _x;
     int _y;
 
 public:
     Environment(const int x, const int y);
+    virtual ~Environment();
     int x() const;
     int y() const;
-
-    virtual void load_graphics() const override;
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "map.h"
 #include "json11/json11.hpp"
 #include "ui/onlinewidget.h"
+#include "game/objects/water.h"
+#include "game/objects/grass.h"
 
 #include <iostream>
 #include <vector>
@@ -15,7 +17,7 @@ Player * _self;
 std::vector<Player> _other_players;
 std::mutex others_mutex;
 
-std::vector<Environment> _environment;
+std::vector<Environment *> _environment;
 std::mutex environment_mutex;
 
 // TODO: Find better place for this.
@@ -24,10 +26,17 @@ TargetWidget * _target_widget;
 
 using namespace json11;
 
+void clearEnvironment() {
+    for(const Environment * e : _environment) {
+        delete e;
+    }
+    _environment.clear();
+}
+
 void map::cleanMap() {
     delete _self;
     _other_players.clear();
-    _environment.clear();
+    clearEnvironment();
 }
 
 void check_target() {
@@ -57,11 +66,18 @@ Player map::parse_player(const Json player) {
     return Player(name, x, y, level, health, mana);
 }
 
-Environment parse_environment(const Json environment) {
-    std::string type = environment["Type"].string_value();
+Environment * parse_environment(const Json environment) {
     int x = environment["X"].number_value();
     int y = environment["Y"].number_value();
-    return Environment(x, y);
+
+    const std::string type = environment["Type"].string_value();
+    if(type == "GRASS") {
+        return new Grass(x, y);
+    }
+    else if(type == "WATER") {
+        return new Water(x, y);
+    }
+    return 0;
 }
 
 void map::parse_map(const Json data) {
@@ -76,7 +92,7 @@ void map::parse_map(const Json data) {
 
     Json::array environments = data["Environment"].array_items();
     environment_mutex.lock();
-    _environment.clear();
+    clearEnvironment();
     for (const Json & e : environments) {
         _environment.push_back(parse_environment(e));
     }

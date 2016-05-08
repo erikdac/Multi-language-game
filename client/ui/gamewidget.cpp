@@ -42,8 +42,8 @@ void GameWidget::intitializeGL() {
 void GameWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (const Environment & e : _environment) {
-        e.load_graphics();
+    for (const Environment * e : _environment) {
+        e->load_graphics();
     }
 
     others_mutex.lock();

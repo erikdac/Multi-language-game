@@ -14,7 +14,7 @@
 extern Player * _self;
 extern std::vector<Player> _other_players;
 extern std::mutex others_mutex;
-extern std::vector<Environment> _environment;
+extern std::vector<Environment *> _environment;
 
 extern PlayerWidget * _player_widget;
 extern TargetWidget * _target_widget;
