@@ -18,6 +18,7 @@ public:
 
 private:
     bool _isReading;
+    void socket_error(const int res);
 
 signals:
     void input(std::string);

@@ -33,6 +33,15 @@ void Reader::stopReading() {
     _isReading = false;
 }
 
+void Reader::socket_error(const int res) {
+    if (res < 0 && errno != EAGAIN) {
+        perror("Read error");
+    }
+    _isReading = false;
+    const Json data = Json::object {{"Type", "Disconnect"}};
+    emit input(data.dump());
+}
+
 void Reader::run() {
 
     fd_set readfds;                     // Set of socket descriptors for select
@@ -45,7 +54,7 @@ void Reader::run() {
         FD_ZERO(&readfds);    // Erase the set of socket descriptors
         FD_SET(s0, &readfds); // Add the socket "s0" to the set
 
-        tv = {1, 0};        // Timeout value to for the reading to finish.
+        tv = {1, 0};        // Timeout value for the reading to finish.
 
         //=== "select" is the key point of the program! ============
         int res = select(
@@ -75,12 +84,7 @@ void Reader::run() {
                 emit input(readBuffer);
             }
             else {
-                if (res < 0 && errno != EAGAIN) {
-                    perror("Read error");
-                }
-                _isReading = false;
-                const Json data = Json::object {{"Type", "Disconnect"}};
-                emit input(data.dump());
+                socket_error(res);
             }
         }
     }
