@@ -35,7 +35,7 @@ void Reader::stopReading() {
 
 void Reader::socket_error() {
     std::cerr << "Socket error" << std::endl;
-    _isReading = false;
+    stopReading();
     const Json data = Json::object {{"Type", "Disconnect"}};
     emit input(data.dump());
 }
