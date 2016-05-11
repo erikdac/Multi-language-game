@@ -33,10 +33,8 @@ void Reader::stopReading() {
     _isReading = false;
 }
 
-void Reader::socket_error(const int res) {
-    if (res < 0 && errno != EAGAIN) {
-        perror("Read error");
-    }
+void Reader::socket_error() {
+    std::cerr << "Socket error" << std::endl;
     _isReading = false;
     const Json data = Json::object {{"Type", "Disconnect"}};
     emit input(data.dump());
@@ -44,33 +42,22 @@ void Reader::socket_error(const int res) {
 
 void Reader::run() {
 
+    _isReading = true;
     fd_set readfds;                     // Set of socket descriptors for select
     struct timeval tv;
     char readBuffer[BUFFER_SIZE + 2];   // Read buffer
-    _isReading = true;
+    int received = 0;
 
     while(_isReading) {
-        int received = 0;
-        FD_ZERO(&readfds);    // Erase the set of socket descriptors
-        FD_SET(s0, &readfds); // Add the socket "s0" to the set
+        FD_ZERO(&readfds);
+        FD_SET(s0, &readfds);
+        tv = {0, 100 * 1000};
 
-        tv = {1, 0};        // Timeout value for the reading to finish.
-
-        //=== "select" is the key point of the program! ============
-        int res = select(
-            s0 + 1,   // Max. number of socket in all sets + 1
-            &readfds, // Set of socket descriptors for reading
-            NULL,     // Set of sockets for writing -- not used
-            NULL,     // Set of sockets with exceptions -- not used
-            &tv       // Timeout value
-        );
-        //=========================================================
+        int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
 
         if (res < 0) {
-            perror("Select error");
-            _isReading = false;
-            const Json data = Json::object {{"Type", "Disconnect"}};
-            emit input(data.dump());
+            socket_error();
+            break;
         } else if (res > 0) {
             res = read(
                 s0,
@@ -78,14 +65,17 @@ void Reader::run() {
                 BUFFER_SIZE - received
             );
 
-            if (res > 0) {
-                received += res;
-                readBuffer[received] = '\0';
-                emit input(readBuffer);
+            if (res <= 0) {
+                socket_error();
+                break;
             }
-            else {
-                socket_error(res);
-            }
+            received += res;
+        }
+
+        // Success reading
+        if (readBuffer[received-1] == 0 && received > 0) {
+            emit input(readBuffer);
+            received = 0;
         }
     }
 }
