@@ -11,9 +11,8 @@ class ScreenRefresher : public QThread {
 
 public:
     ScreenRefresher();
-    ~ScreenRefresher();
-    void stop();
     void run();
+    void stop();
 
 signals:
     void repaint();

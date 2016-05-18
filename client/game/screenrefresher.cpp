@@ -4,10 +4,6 @@ ScreenRefresher::ScreenRefresher() : _isRunning(true) {
 
 }
 
-ScreenRefresher::~ScreenRefresher() {
-
-}
-
 void ScreenRefresher::run() {
     while (_isRunning) {
         emit repaint();

@@ -13,7 +13,6 @@ class KeyboardController : public QThread {
 
 public:
     KeyboardController(char);
-    ~KeyboardController();
     void stop();
     void run();
 };

@@ -45,29 +45,12 @@ bool connection::output(const Json object) {
         }
     }
 
-    std::string temp = object.dump();
-    char data[temp.size()+1];
-    strcpy(data, temp.c_str());
-
+    const std::string data = object.dump();
     output_mutex.lock();
-    int res = write(s0, data, strlen(data) + 1);
+    int res = write(s0, data.c_str(), data.size() + 1);
     output_mutex.unlock();
 
-    if (res <= 0) {
-        if (errno != EAGAIN) {
-            perror("Write error");
-        }
-        else if(res == 0) {
-            std::cerr << "Connection closed" << std::endl;
-        }
-
-        else {
-            perror("Incompleted send");
-        }
-        return false;
-    }
-    else
-        return true;
+    return res > 0;
 }
 
 void connection::disconnect() {

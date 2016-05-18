@@ -21,12 +21,12 @@ type Environment struct {
 
 var map_mutex = &sync.Mutex{}
 
-var map_players [MAP_X + 1][MAP_Y + 1] (map[string]*Player)
-var map_environment [MAP_X + 1][MAP_Y + 1] ([]Environment)	// NEEDS TO HAVE MUTEX IF GONNA BE DYNAMIC!
+var map_players [MAP_X][MAP_Y] (map[string]*Player)
+var map_environment [MAP_X][MAP_Y] ([]Environment)	// NEEDS TO HAVE MUTEX IF GONNA BE DYNAMIC!
 
 func InitiateMapStructure() (error) {
-	for i := 0; i <= MAP_X; i++ {
-		for j := 0; j <= MAP_Y; j++ {
+	for i := 0; i < MAP_X; i++ {
+		for j := 0; j < MAP_Y; j++ {
 			map_players[i][j] = map[string]*Player{}
 		}
 	}

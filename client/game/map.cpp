@@ -85,7 +85,7 @@ Environment * parse_environment(const Json environment) {
 }
 
 void map::parse_map(const Json data) {
-    Json::array players = data["Players"].array_items();
+    const Json::array players = data["Players"].array_items();
     others_mutex.lock();
     _other_players.clear();
     for (const Json & p : players) {
@@ -94,7 +94,7 @@ void map::parse_map(const Json data) {
     others_mutex.unlock();
     check_target();
 
-    Json::array environments = data["Environment"].array_items();
+    const Json::array environments = data["Environment"].array_items();
     environment_mutex.lock();
     clearEnvironment();
     for (const Json & e : environments) {

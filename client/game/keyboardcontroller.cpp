@@ -9,9 +9,6 @@ const int SLEEP_TIME = 250000;
 bool _isRunning;
 
 KeyboardController::KeyboardController(char key) : _key(key), _isRunning(true) {
-}
-
-KeyboardController::~KeyboardController() {
 
 }
 
