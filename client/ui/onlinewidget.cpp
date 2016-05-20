@@ -105,11 +105,10 @@ void OnlineWidget::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void OnlineWidget::setKeyboardController(char key) {
+void OnlineWidget::setKeyboardController(const char key) {
     if(_keyMap.find(key) == _keyMap.end()) {
-        KeyboardController * temp = new KeyboardController(key);
-        _keyMap[key] = temp;
-        temp->start();
+        _keyMap[key] = new KeyboardController(key);
+        _keyMap[key]->start();
     }
 }
 
@@ -124,8 +123,7 @@ void OnlineWidget::keyReleaseEvent(QKeyEvent *event) {
             default: return;
         }
 
-        KeyboardController * temp = _keyMap[c];
-        temp->stop();
+        _keyMap[c]->stop();
         _keyMap.erase(c);
     }
 }
