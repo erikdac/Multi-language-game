@@ -6,12 +6,13 @@
 #include "ui/targetwidget.h"
 #include "ui/playerwidget.h"
 #include "objects/environment.h"
+#include "game/objects/self.h"
 
 #include <QWidget>
 #include <vector>
 #include <mutex>
 
-extern Player * _self;
+extern Self * _self;
 extern std::vector<Player> _other_players;
 extern std::mutex others_mutex;
 extern std::vector<Environment *> _environment;

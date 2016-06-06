@@ -52,15 +52,7 @@ void GameWidget::paintGL() {
     }
     others_mutex.unlock();
 
-    // Self
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(-0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, -0.5f/VIEW_HEIGHT);
-        glVertex2f(0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-        glVertex2f(-0.5f/VIEW_WIDTH, 0.5f/VIEW_HEIGHT);
-    glEnd();
-
+    _self->load_graphics();
 }
 
 void GameWidget::resizeGL() {

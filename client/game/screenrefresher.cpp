@@ -7,7 +7,7 @@ ScreenRefresher::ScreenRefresher() : _isRunning(true) {
 void ScreenRefresher::run() {
     while (_isRunning) {
         emit repaint();
-        usleep(40000);
+        usleep(25000);
     }
 }
 

@@ -5,7 +5,7 @@
 #include "network/connection.h"
 #include "mainwindow.h"
 #include "game/objects/player.h"
-#include "game/keyboardcontroller.h"
+#include "game/movementcontroller.h"
 #include "game/screenrefresher.h"
 #include "game/map.h"
 #include "game/objects/graphics.h"
@@ -54,19 +54,25 @@ void OnlineWidget::input(std::string input) {
     }
 
     std::string type = data["Type"].string_value();
-    if(type == "Disconnect") {
+    if (type == "Disconnect") {
         logout();
     }
-    else if(type == "Map") {
+    else if (type == "Map") {
         map::parse_map(data);
     }
-    else if(type == "Player_update") {
+    else if (type == "Player_update") {
         map::update_player(data);
     }
-    else if(type == "Player_removed") {
+    else if (type == "Player_removed") {
         map::remove_player(data);
     }
-    else if(type == "Attacked") {
+
+    // SELF
+
+    else if (type == "Moved") {
+        _self->update_position(data["X"].number_value(), data["Y"].number_value());
+    }
+    else if (type == "Attacked") {
         _self->update_health(data["Health"].number_value());
         _player_widget->update();
     }
@@ -88,27 +94,20 @@ void OnlineWidget::keyPressEvent(QKeyEvent *event) {
 
     switch(event->key()) {
         case Qt::Key_W:
-            setKeyboardController('w');
+            movement_controller::start('w');
         break;
         case Qt::Key_A:
-            setKeyboardController('a');
+            movement_controller::start('a');
         break;
         case Qt::Key_S:
-            setKeyboardController('s');
+            movement_controller::start('s');
         break;
         case Qt::Key_D:
-            setKeyboardController('d');
+            movement_controller::start('d');
         break;
         case Qt::Key_Escape:
             openMenu();
         break;
-    }
-}
-
-void OnlineWidget::setKeyboardController(const char key) {
-    if(_keyMap.find(key) == _keyMap.end()) {
-        _keyMap[key] = new KeyboardController(key);
-        _keyMap[key]->start();
     }
 }
 
@@ -123,8 +122,9 @@ void OnlineWidget::keyReleaseEvent(QKeyEvent *event) {
             default: return;
         }
 
-        _keyMap[c]->stop();
-        _keyMap.erase(c);
+        if(c == 'w' || c == 'a' || c == 's' || c == 'd') {
+            movement_controller::released(c);
+        }
     }
 }
 

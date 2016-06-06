@@ -7,12 +7,13 @@
 
 class Player : public Graphics {
 
-std::string _name;
-unsigned int _x;
-unsigned int _y;
-unsigned int _level;
-unsigned int _health;
-unsigned int _mana;
+protected:
+    std::string _name;
+    unsigned int _x;
+    unsigned int _y;
+    unsigned int _level;
+    unsigned int _health;
+    unsigned int _mana;
 
 public:
     Player();
@@ -28,21 +29,11 @@ public:
     unsigned int mana() const;
     unsigned int max_mana() const;
 
-    void moveUp();
-    void moveDown();
-    void moveLeft();
-    void moveRight();
-
-    void update_health(int);
-
     bool operator==(const Player) const;
 
     unsigned int distance_to_player(const Player &) const;
 
     virtual void load_graphics() const override;
-
-private:
-    void sendMovement() const;
 };
 
 #endif // PLAYER_H

@@ -29,7 +29,6 @@ private:
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
 
-    void setKeyboardController(const char);
     void openMenu();
     void logout();
 

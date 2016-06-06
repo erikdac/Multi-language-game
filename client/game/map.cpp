@@ -13,7 +13,7 @@
 #include <QWidget>
 #include <QLabel>
 
-Player * _self;
+Self * _self;
 
 std::vector<Player> _other_players;
 std::mutex others_mutex;

@@ -56,39 +56,6 @@ unsigned int Player::max_mana() const {
     return 20 + (_level - 1) * 2;
 }
 
-void Player::moveUp() {
-    --_y;
-    sendMovement();
-}
-
-void Player::moveDown() {
-    ++_y;
-    sendMovement();
-}
-
-void Player::moveLeft() {
-    --_x;
-    sendMovement();
-}
-
-void Player::moveRight() {
-    ++_x;
-    sendMovement();
-}
-
-void Player::update_health(int health) {
-    _health = health;
-}
-
-void Player::sendMovement() const {
-    const json11::Json data = json11::Json::object {
-        {"Type", "Movement"},
-        {"ToX", std::to_string(_x)},
-        {"ToY", std::to_string(_y)}
-    };
-    connection::output(data);
-}
-
 unsigned int Player::distance_to_player(const Player & p) const {
     int x = std::abs(_x - p.x());
     int y = std::abs(_y - p.y());

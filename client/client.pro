@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
     game/map.cpp \
-    game/keyboardcontroller.cpp \
     game/screenrefresher.cpp \
     game/objects/player.cpp \
     ui/onlinewidget.cpp \
@@ -28,7 +27,9 @@ SOURCES += main.cpp\
     game/objects/environment.cpp \
     game/objects/water.cpp \
     game/objects/grass.cpp \
-    game/objects/stone.cpp
+    game/objects/stone.cpp \
+    game/movementcontroller.cpp \
+    game/objects/self.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -38,7 +39,6 @@ HEADERS  += mainwindow.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
     game/map.h \
-    game/keyboardcontroller.h \
     game/screenrefresher.h \
     game/objects/player.h \
     game/objects/graphics.h \
@@ -48,7 +48,9 @@ HEADERS  += mainwindow.h \
     game/objects/environment.h \
     game/objects/water.h \
     game/objects/grass.h \
-    game/objects/stone.h
+    game/objects/stone.h \
+    game/movementcontroller.h \
+    game/objects/self.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
