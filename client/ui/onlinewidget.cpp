@@ -46,6 +46,7 @@ void OnlineWidget::input(std::string input) {
     std::string error;
     Json data = Json::parse(input, error);
 
+    // TODO: Remove debug prints
     if(error.size() > 0) {
         std::cout << "ONLINEWIDGET ERROR: " << error << std::endl;
     }
@@ -53,7 +54,7 @@ void OnlineWidget::input(std::string input) {
         std::cout << "ONLINEWIDGET: " << data.dump() << std::endl;
     }
 
-    std::string type = data["Type"].string_value();
+    const std::string type = data["Type"].string_value();
     if (type == "Disconnect") {
         logout();
     }
@@ -70,7 +71,7 @@ void OnlineWidget::input(std::string input) {
     // SELF
 
     else if (type == "Moved") {
-        _self->update_position(data["X"].number_value(), data["Y"].number_value());
+        _self->update_position(data["NewX"].number_value(), data["NewY"].number_value());
     }
     else if (type == "Attacked") {
         _self->update_health(data["Health"].number_value());
@@ -94,16 +95,16 @@ void OnlineWidget::keyPressEvent(QKeyEvent *event) {
 
     switch(event->key()) {
         case Qt::Key_W:
-            movement_controller::start('w');
+            movement_controller::pushed('w');
         break;
         case Qt::Key_A:
-            movement_controller::start('a');
+            movement_controller::pushed('a');
         break;
         case Qt::Key_S:
-            movement_controller::start('s');
+            movement_controller::pushed('s');
         break;
         case Qt::Key_D:
-            movement_controller::start('d');
+            movement_controller::pushed('d');
         break;
         case Qt::Key_Escape:
             openMenu();

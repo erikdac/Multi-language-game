@@ -11,12 +11,12 @@ static constexpr int SLEEP_TIME = 250 * 1000;
 
 bool _isRunning;
 
-char active_key;
+char activeKey;
+char previousKey;
 
 typedef void (Self::*function)();
 
 void run(const char key) {
-    active_key = key;
 
     function fp;
     switch (key) {
@@ -35,44 +35,41 @@ void run(const char key) {
 
 static std::thread * t;
 
-char previousKey;
+static std::mutex key_mutex;
 
 void stop() {
     _isRunning = false;
+    activeKey = 0;
     if(t && t->joinable()) {
         t->join();
     }
 }
 
-static std::mutex key_mutex;
-
-void movement_controller::start(const char key) {
-    key_mutex.lock();
+void start(const char key) {
+    previousKey = activeKey;
     stop();
-    previousKey = active_key;
+    activeKey = key;
     _isRunning = true;
     t = new std::thread(run, key);
-//    t->detach();
+}
+
+void movement_controller::pushed(const char key) {
+    key_mutex.lock();
+    start(key);
     key_mutex.unlock();
 }
 
 void movement_controller::released(const char key) {
-    if (key == active_key && previousKey != 0) {
-        // MAY CAUSE RACE-CONDITION!
+    key_mutex.lock();
+    if (key == activeKey && previousKey != 0) {
         start(previousKey);
-        key_mutex.lock();
         previousKey = 0;
-        key_mutex.unlock();
     }
-    else if (key == active_key) {
-        key_mutex.lock();
+    else if (key == activeKey) {
         stop();
-        active_key = 0;
-        key_mutex.unlock();
     }
     else if (key == previousKey) {
-        key_mutex.lock();
         previousKey = 0;
-        key_mutex.unlock();
     }
+    key_mutex.unlock();
 }

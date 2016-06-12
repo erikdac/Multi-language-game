@@ -84,6 +84,18 @@ func (player *Player) localEnvironmentMap() ([]Environment) {
 func (player *Player) Movement(movement map[string]string) {
 	newX, _ := strconv.Atoi(movement["ToX"])
 	newY, _ := strconv.Atoi(movement["ToY"])
+
+	if (math.Abs(float64(player.X - newX)) + math.Abs(float64(player.Y - newY)) > 1) {
+		packet := player_moved_packet {
+			Type: "Moved",
+			NewX: player.X,
+			NewY: player.Y,
+		}
+		data,  _ := json.Marshal(packet)
+		clientList[player.Name].write(data)
+		return;
+	}
+
 	newSectionX, newSectionY := SliceMap(newX, newY)
 	oldSectionX, oldSectionY := SliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {

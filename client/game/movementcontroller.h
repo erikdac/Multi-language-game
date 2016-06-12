@@ -2,7 +2,7 @@
 #define MOVEMENTCONTROLLER_H
 
 namespace movement_controller {
-    void start(const char);
+    void pushed(const char);
     void released(const char);
 }
 

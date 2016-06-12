@@ -24,3 +24,9 @@ type player_attacked_packet struct {
 	Health		int
 	Attacker	string
 }
+
+type player_moved_packet struct {
+	Type 		string
+	NewX		int
+	NewY		int
+}

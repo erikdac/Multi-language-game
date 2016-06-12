@@ -3,6 +3,7 @@
 #include "network/connection.h"
 #include "game/map.h"
 
+#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
@@ -40,6 +41,7 @@ void Self::update_health(const int health) {
 }
 
 void Self::update_position(const int x, const int y) {
+    std::cout << "LOL" << std::endl;
     _x = x;
     _y = y;
 }
