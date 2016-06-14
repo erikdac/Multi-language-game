@@ -6,7 +6,6 @@ import (
 	"math"
 	"sync"
 	"time"
-	"./basic"
 )
 
 type Player struct {
@@ -36,11 +35,11 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 
 	x, y := SliceMap(player.X, player.Y)
 
-	fromX := basic.Max(x-1, 0)
-	toX := basic.Min(x+1, MAP_X-1)
+	fromX := int(math.Max(float64(x-1), 0.0))
+	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
 
-	fromY := basic.Max(y-1, 0)
-	toY := basic.Min(y+1, MAP_Y-1)
+	fromY := int(math.Max(float64(y-1), 0.0))
+	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
 
 	var list []Player
 
@@ -64,11 +63,11 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 func (player *Player) localEnvironmentMap() ([]Environment) {
 	x, y := SliceMap(player.X, player.Y)
 
-	fromX := basic.Max(x-1, 0)
-	toX := basic.Min(x+1, MAP_X-1)
+	fromX := int(math.Max(float64(x-1), 0.0))
+	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
 
-	fromY := basic.Max(y-1, 0)
-	toY := basic.Min(y+1, MAP_Y-1)
+	fromY := int(math.Max(float64(y-1), 0.0))
+	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
 
 	var list []Environment
 
