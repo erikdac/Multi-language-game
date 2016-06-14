@@ -111,7 +111,7 @@ func readKeyboard() string {
 func onlineList() {
 	fmt.Println("IP-address: ", "\t\t", "Player name:")
 	for _, c := range clientList {
-		fmt.Println(c.connection.RemoteAddr(), "\t\t", c.player.Name)
+		fmt.Println(c.net.Ip(), "\t\t", c.player.Name)
 	}
 }
 
@@ -122,8 +122,8 @@ func kickPlayer() {
 	if exists == true {
 		message := map[string]string {"Type": "Disconnect"}
 		data,  _ := json.Marshal(message)
-		client.write(data)
-		client.connection.Close()
+		client.sendPacket(data)
+		client.net.Disconnect()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")

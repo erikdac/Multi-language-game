@@ -2,33 +2,31 @@ package main
 
 import (
 	"net"
-	"sync"
 	"encoding/json"
-	"bufio"
 	"fmt"
+	"./nethandler"
 )
 
 // Binds the player names to their clients.
 var clientList map[string]*Client
 
 type Client struct {
-	connection 		net.Conn
-	output_mutex 	sync.Mutex // TODO: Change to a unbuffered channel instead.
-	player     		Player
+	net			nethandler.Nethandler
+	player     	Player
 }
 
 /**
- * Creates the client with its connection and channel.
+ * Creates the client with its netection and channel.
  * Returns a pointer to the client.
  */
-func createClient(connection net.Conn) *Client {
+func createClient(netection net.Conn) *Client {
 	client := new(Client)
-	client.connection = connection
+	client.net = nethandler.New(netection)
 	return client
 }
 
 /**
- * This function is called everytime a new client has connected.
+ * This function is called everytime a new client has netected.
  * It calls the function 'accountManager()' so that the client can login.
  * If the login is successful it will set up a reader-function so the client
  * can talk to the server. It also adds it to the clientList with its remote
@@ -41,33 +39,33 @@ func (client *Client) handleRequest() {
 		client.player.sendLocalMap()
 		go client.reader()
 	} else {
-		client.connection.Close()
+		client.net.Disconnect()
 	}
 }
 
 func (client *Client) login() bool {
 	for {
-		input, err := client.readPacket()
+		input, err := client.net.ReadPacket()
 		if err != nil {
 			return false
 		}
 
 		data, errorResponse := parseJson(input)
 		if errorResponse != nil {
-			client.write(errorResponse)
+			client.net.Write(errorResponse)
 		} else {
 			player, err := checkLogin(data)
 			packet := &login_packet {Type: "Login_Success"}
 			if err != nil {
 				packet.Success = false
 				data,  _ := json.Marshal(packet)
-				client.write(data)
+				client.net.Write(data)
 			} else {
 				client.player = player
 				packet.Success = true
 				packet.Player = player
 			    data, _ := json.Marshal(packet)
-				client.write(data)
+				client.net.Write(data)
 
 				return client.waitForClient()
 			}
@@ -77,52 +75,26 @@ func (client *Client) login() bool {
 }
 
 func (client *Client) waitForClient() (bool) {
-	signal, err := client.readPacket()
+	data, err := client.net.ReadPacket()
 	if err != nil {
 		return false
 	}
-	ready, fail := parseJson(signal)
+	ready, fail := parseJson(data)
 	if fail != nil {
 		return false
 	}
 	return ready["Type"] == "Ready"
 }
 
-// This method reads the data from the client until it reaches a null-byte 
-// in which case it will return all the data.
-func (client *Client) readPacket() ([]byte, error) {
-	socket_reader := bufio.NewReader(client.connection)
-	data, err := socket_reader.ReadBytes(0)
-	if err == nil {
-		data = data[:len(data)-1]
-	}
-	return data, err
-}
-
-/**
- * The protocol for sending out all the data. 
- *
- * THE PROTOCOL:
- * 1. Takes the data as an byte array.
- * 2. Appends a null-byte to the end of the array.
- * 3. Sends the data.
- *
- * The message sent will look something like:
- * ['H', 'e', 'l', 'l', 'o', \0]
- *
- */
-func (client *Client) write(data []byte) {
-	data = append(data, 0)
-	client.output_mutex.Lock()
-	client.connection.Write(data)
-	client.output_mutex.Unlock()
+func (client *Client) sendPacket(data []byte) {
+	client.net.Write(data);
 }
 
 // This method will read the data from the client and call the method
 // handleInput() to deal with whatever kind of input it recieves.
 func (client *Client) reader() {
 	for {
-		data, err := client.readPacket()
+		data, err := client.net.ReadPacket()
 		if err != nil {
 			if _, ok := clientList[client.player.Name]; ok {
 				client.disconnect()
@@ -141,7 +113,7 @@ func (client *Client) handleInput(input []byte) {
 
 	data, errorResponse := parseJson(input)
 	if errorResponse != nil {
-		client.write(errorResponse)
+		client.net.Write(errorResponse)
 		return;
 	}
 
@@ -154,12 +126,12 @@ func (client *Client) handleInput(input []byte) {
 	}
 }
 
-// This method is called when a client has diconnected. It closes the connection 
+// This method is called when a client has dinetected. It closes the netection 
 // with the client, removes it from the Hashmaps and also change its 
 // online status in the database to 'false'.
 func (client *Client) disconnect() {
 	delete(clientList, client.player.Name)
-	client.connection.Close()
+	client.net.Disconnect()
 	RemovePlayer(&client.player)
 	client.player.logOut()
 }
