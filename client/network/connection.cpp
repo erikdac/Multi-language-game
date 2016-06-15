@@ -106,16 +106,6 @@ bool connection::connectToServer() {
 
     peeraddr.sin_port = htons(peerPort);
 
-    // Print a resolved address of server (the first IP of the host)
-    printf(
-        "Peer address = %d.%d.%d.%d, Port %d\n",
-        host->h_addr_list[0][0] & 0xff,
-        host->h_addr_list[0][1] & 0xff,
-        host->h_addr_list[0][2] & 0xff,
-        host->h_addr_list[0][3] & 0xff,
-        (int) peerPort
-    );
-
     // Write resolved IP address of a server to the address structure
     memmove(&(peeraddr.sin_addr.s_addr), host->h_addr_list[0], 4);
 
