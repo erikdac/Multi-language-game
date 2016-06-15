@@ -66,7 +66,7 @@ func sendPlayerUpdate(player *Player, removed bool) {
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range player.LocalPlayerMap() {
-		clientList[p.Name].sendPacket(data)
+		playerToClient[p.Name].sendPacket(data)
 	}
 }
 
@@ -79,7 +79,7 @@ func playerAttacked(victim *Player, attacker string, damage int) {
 		Attacker: attacker,
 	}
 	data, _ := json.Marshal(packet)
-	clientList[victim.Name].sendPacket(data)
+	playerToClient[victim.Name].sendPacket(data)
 	victim.mutex.Unlock()
 
 	sendPlayerUpdate(victim, false)

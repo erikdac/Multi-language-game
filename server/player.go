@@ -28,7 +28,7 @@ func (player *Player) sendLocalMap() {
 		Environment: player.localEnvironmentMap(),
 	}
 	data,  _ := json.Marshal(packet)
-	clientList[player.Name].sendPacket(data)
+	playerToClient[player.Name].sendPacket(data)
 }
 
 func (player *Player) LocalPlayerMap() ([]Player) {
@@ -91,7 +91,7 @@ func (player *Player) Movement(movement map[string]string) {
 			NewY: player.Y,
 		}
 		data,  _ := json.Marshal(packet)
-		clientList[player.Name].sendPacket(data)
+		playerToClient[player.Name].sendPacket(data)
 		return;
 	}
 

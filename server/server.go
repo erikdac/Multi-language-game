@@ -21,6 +21,9 @@ const (
 	CONNECTION_TYPE = "tcp"
 )
 
+// Binds the player names to their clients.
+var playerToClient map[string]*Client
+
 func main() {
 
 	err := InitiateGameStructure()
@@ -29,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	clientList = make(map[string]*Client)
+	playerToClient = make(map[string]*Client)
 
 	// Sets up the server.
 	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)
@@ -105,12 +108,12 @@ func readKeyboard() string {
 }
 
 /**
- * Method for getting a list of all online clients. It goes through the clientList
- * and prints out the connections remote-adresses.
+ * Method for getting a list of all online clients. It goes through the 
+ * playerToClient map and prints out the connections remote-adresses.
  */
 func onlineList() {
 	fmt.Println("IP-address: ", "\t\t", "Player name:")
-	for _, c := range clientList {
+	for _, c := range playerToClient {
 		fmt.Println(c.net.Ip(), "\t\t", c.player.Name)
 	}
 }
@@ -118,7 +121,7 @@ func onlineList() {
 func kickPlayer() {
 	fmt.Print("Player name: ")
 	name := readKeyboard()
-	client, exists := clientList[name]
+	client, exists := playerToClient[name]
 	if exists == true {
 		message := map[string]string {"Type": "Disconnect"}
 		data,  _ := json.Marshal(message)
@@ -133,7 +136,7 @@ func kickPlayer() {
 func shutdown() {
 	fmt.Println("SHUTTING DOWN!")
 	var wg sync.WaitGroup
-	for _, c := range clientList {
+	for _, c := range playerToClient {
 		wg.Add(1)
 		go func (client *Client)() {
 			client.disconnect()
