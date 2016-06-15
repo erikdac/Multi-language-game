@@ -19,7 +19,7 @@
 
 using namespace json11;
 
-const static std::size_t BUFFER_SIZE= 131070;
+const static std::size_t BUFFER_SIZE= 64 * 1024;
 
 Reader::Reader() {
     qRegisterMetaType<std::string>();
@@ -41,14 +41,25 @@ void Reader::socket_error() {
 }
 
 void Reader::run() {
-
     _isReading = true;
-    fd_set readfds;                     // Set of socket descriptors for select
+    while(_isReading) {
+        std::string packet = readPacket();
+        if (packet.size() > 0) {
+            emit input(packet);
+        }
+    }
+}
+
+/**
+ * Has a 5 second timeout value.
+ */
+std::string Reader::readPacket() const {
+    fd_set readfds;
     struct timeval tv;
-    char readBuffer[BUFFER_SIZE + 2];   // Read buffer
+    char readBuffer[BUFFER_SIZE + 1];
     int received = 0;
 
-    while(_isReading) {
+    for (int i = 0; i < 50; ++i) {
         FD_ZERO(&readfds);
         FD_SET(s0, &readfds);
         tv = {0, 100 * 1000};
@@ -56,7 +67,7 @@ void Reader::run() {
         int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
 
         if (res < 0) {
-            socket_error();
+            std::cerr << "Socket error!" << std::endl;
             break;
         } else if (res > 0) {
             res = read(
@@ -66,7 +77,7 @@ void Reader::run() {
             );
 
             if (res <= 0) {
-                socket_error();
+                std::cerr << "Read error!" << std::endl;
                 break;
             }
             received += res;
@@ -74,8 +85,8 @@ void Reader::run() {
 
         // Success reading
         if (readBuffer[received-1] == 0 && received > 0) {
-            emit input(readBuffer);
-            received = 0;
+            return std::string(readBuffer);
         }
     }
+    return "";
 }

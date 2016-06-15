@@ -15,6 +15,7 @@ public:
     ~Reader();
     void stopReading();
     void run();
+    std::string readPacket() const;
 
 private:
     bool _isReading;

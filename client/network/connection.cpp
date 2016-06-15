@@ -33,16 +33,23 @@ void connection::setActiveWidget(QWidget * object) {
     );
 }
 
-static std::mutex output_mutex;
-
-bool connection::output(const Json object) {
+bool brokenConnection() {
     if(!_online) {
         if(connection::connectToServer() == false) {
-            return false;
+            return true;
         }
         else {
             _online = true;
         }
+    }
+    return false;
+}
+
+static std::mutex output_mutex;
+
+bool connection::output(const Json object) {
+    if(brokenConnection()) {
+        return false;
     }
 
     const std::string data = object.dump();
