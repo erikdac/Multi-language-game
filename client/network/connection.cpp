@@ -7,17 +7,14 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <netdb.h>
 #include <fcntl.h>
-#include <errno.h>
 #include <signal.h>
-#include <thread>
 #include <mutex>
-#include <QWidget>
-#include <QThread>
 
 using namespace json11;
+
+const static std::size_t READ_BUFFER_SIZE= 128 * 1024;
 
 int s0; // Socket.
 bool _online = false;
@@ -33,60 +30,25 @@ void connection::setActiveWidget(QWidget * object) {
     );
 }
 
-bool brokenConnection() {
-    if(!_online) {
-        if(connection::connectToServer() == false) {
-            return true;
-        }
-        else {
-            _online = true;
-        }
-    }
-    return false;
-}
-
-static std::mutex output_mutex;
-
-bool connection::output(const Json object) {
-    if(brokenConnection()) {
-        return false;
-    }
-
-    const std::string data = object.dump();
-    output_mutex.lock();
-    int res = write(s0, data.c_str(), data.size() + 1);
-    output_mutex.unlock();
-
-    return res > 0;
-}
-
-void connection::disconnect() {
-    reader->stopReading();
-    shutdown(s0, 2);
-    close(s0);
-    map::cleanMap();
-    _online = false;
-}
-
 void sigHandler(int sigID) {
     std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
-    std::cout << "Sig ID: " << sigID << std::endl;
     reader->stopReading();
 }
 
-bool connection::connectToServer() {
+
+bool connectToServer() {
 
     // Set signal handler for the "SIGPIPE" signal
     // (used to intercept the signal about broken connection).
     if (signal(SIGPIPE, &sigHandler) == SIG_ERR) {
-        perror("Cannot install a signal handler");
+        std::cerr << "Cannot install a signal handler" << std::endl;
         return false;
     }
 
     // Create a socket
     s0 = socket(AF_INET, SOCK_STREAM, 0);
     if (s0 < 0) {
-        perror("Cannot create a socket");
+        std::cerr << "Cannot create a socket" << std::endl;
         return false;
     }
 
@@ -125,4 +87,85 @@ bool connection::connectToServer() {
 
     reader->start();
     return true;
+}
+
+bool brokenConnection() {
+    if(!_online) {
+        if(connectToServer() == false) {
+            return true;
+        }
+        else {
+            _online = true;
+        }
+    }
+    return false;
+}
+
+static std::mutex output_mutex;
+
+bool connection::output(const Json object) {
+    if(brokenConnection()) {
+        return false;
+    }
+
+    const std::string data = object.dump();
+    output_mutex.lock();
+    int res = write(s0, data.c_str(), data.size() + 1);
+    output_mutex.unlock();
+
+    return res > 0;
+}
+
+/**
+ * Has a 4 second timeout value.
+ */
+std::string connection::readPacket() {
+    if(brokenConnection()) {
+        return "";
+    }
+
+    fd_set readfds;
+    char readBuffer[READ_BUFFER_SIZE + 1];
+    int received = 0;
+
+    for (int i = 0; i < 40; ++i) {
+        FD_ZERO(&readfds);
+        FD_SET(s0, &readfds);
+        struct timeval tv = {0, 100 * 1000};
+
+        int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
+
+        if (res < 0) {
+            reader->socket_error();
+            break;
+        } else if (res > 0) {
+            res = read(
+                s0,
+                readBuffer + received,
+                READ_BUFFER_SIZE - received
+            );
+
+            if (res <= 0) {
+                reader->socket_error();
+                break;
+            } else {
+                received += res;
+                i = 0;
+            }
+        }
+
+        // Success reading
+        if (readBuffer[received-1] == 0 && received > 0) {
+            return std::string(readBuffer);
+        }
+    }
+    return "";
+}
+
+void connection::disconnect() {
+    reader->stopReading();
+    shutdown(s0, 2);
+    close(s0);
+    map::cleanMap();
+    _online = false;
 }

@@ -15,11 +15,10 @@ public:
     ~Reader();
     void stopReading();
     void run();
-    std::string readPacket() const;
+    void socket_error();
 
 private:
     bool _isReading;
-    void socket_error();
 
 signals:
     void input(std::string);

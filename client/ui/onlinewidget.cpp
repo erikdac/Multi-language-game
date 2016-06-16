@@ -15,6 +15,8 @@
 #include <QLabel>
 #include <QKeyEvent>
 
+using namespace json11;
+
 OnlineWidget::OnlineWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OnlineWidget)
