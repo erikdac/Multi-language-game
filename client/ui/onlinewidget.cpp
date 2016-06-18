@@ -6,7 +6,6 @@
 #include "mainwindow.h"
 #include "game/objects/player.h"
 #include "game/movementcontroller.h"
-#include "game/screenrefresher.h"
 #include "game/map.h"
 #include "game/objects/graphics.h"
 

@@ -14,11 +14,9 @@ TEMPLATE = app
 SOURCES += main.cpp\
     json11/json11.cpp \
     network/connection.cpp \
-    network/reader.cpp \
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
     game/map.cpp \
-    game/screenrefresher.cpp \
     game/objects/player.cpp \
     ui/onlinewidget.cpp \
     ui/targetwidget.cpp \
@@ -29,17 +27,16 @@ SOURCES += main.cpp\
     game/objects/stone.cpp \
     game/movementcontroller.cpp \
     game/objects/self.cpp \
-    ui/gamewidget.cpp
+    ui/gamewidget.cpp \
+    network/reader.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
     network/connection.h \
-    network/reader.h \
     ui/gamewidget.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
     game/map.h \
-    game/screenrefresher.h \
     game/objects/player.h \
     game/objects/graphics.h \
     ui/onlinewidget.h \
@@ -50,7 +47,8 @@ HEADERS  += mainwindow.h \
     game/objects/grass.h \
     game/objects/stone.h \
     game/movementcontroller.h \
-    game/objects/self.h
+    game/objects/self.h \
+    network/reader.h
 
 FORMS    += ui/gamewidget.ui \
     ui/loginwidget.ui \
@@ -58,7 +56,7 @@ FORMS    += ui/gamewidget.ui \
     ui/onlinewidget.ui \
     ui/playerwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -pthread
 
 LIBS += -lglut
 

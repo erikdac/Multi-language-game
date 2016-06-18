@@ -67,7 +67,7 @@ Player map::parse_player(const Json player) {
     return Player(name, x, y, level, health, mana);
 }
 
-Environment * parse_environment(const Json environment) {
+Environment * parse_environment(const Json & environment) {
     int x = environment["X"].number_value();
     int y = environment["Y"].number_value();
 

@@ -1,8 +1,6 @@
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 
-#include "game/screenrefresher.h"
-
 #include <QOpenGLWidget>
 
 namespace Ui {
@@ -29,7 +27,11 @@ protected:
 private:
     Ui::GameWidget *ui;
 
-    ScreenRefresher * _screenRefresher;
+    bool _keepRefreshing;
+    void screenRefresher();
 
+signals:
+    void repaint();
 };
+
 #endif

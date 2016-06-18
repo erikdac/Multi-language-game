@@ -5,23 +5,27 @@
 #include "network/connection.h"
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
-#include "game/screenrefresher.h"
 #include "game/map.h"
 
+#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 #include <QMouseEvent>
+#include <thread>
+#include <unistd.h>
 
 GameWidget::GameWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , ui(new Ui::GameWidget)
 {
     ui->setupUi(this);
+
+    QObject::connect(this, SIGNAL(repaint()), this, SLOT(repaint()));
 }
 
 GameWidget::~GameWidget() {
-    _screenRefresher->stop();
+    _keepRefreshing = false;
     delete ui;
 }
 
@@ -49,17 +53,23 @@ void GameWidget::resizeGL() {
 
 }
 
-void GameWidget::stop_refreshing() {
-    _screenRefresher->stop();
+void GameWidget::start_refreshing() {
+    std::thread(&GameWidget::screenRefresher, this).detach();
 }
 
+void GameWidget::stop_refreshing() {
+    _keepRefreshing = false;
+}
 
-void GameWidget::start_refreshing() {
-    _screenRefresher = new ScreenRefresher();
-    QObject::connect(
-        _screenRefresher, SIGNAL(repaint()), this, SLOT(repaint())
-    );
-    _screenRefresher->start();
+/**
+ * Responsible for handling the screen FPS.
+ */
+void GameWidget::screenRefresher() {
+    _keepRefreshing = true;
+    while (_keepRefreshing) {
+        emit repaint();
+        usleep(20 * 1000);
+    }
 }
 
 void GameWidget::mousePressEvent(QMouseEvent * event) {

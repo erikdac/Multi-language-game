@@ -1,8 +1,8 @@
 #include "connection.h"
 #include "ui/loginwidget.h"
 #include "json11/json11.hpp"
-#include "reader.h"
 #include "game/map.h"
+#include "reader.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -21,9 +21,9 @@ bool _online = false;
 
 Reader * _reader;
 
-void connection::readAsync(QWidget * object) {
+void connection::readAsync(QObject * const receiver) {
     delete _reader;
-    _reader = new Reader(object);
+    _reader = new Reader(receiver);
     _reader->start();
 }
 

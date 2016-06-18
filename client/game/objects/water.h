@@ -7,6 +7,7 @@ class Water : public Environment {
 
 public:
     using Environment::Environment;
+    virtual ~Water();
 
     virtual void load_graphics() const override;
 };

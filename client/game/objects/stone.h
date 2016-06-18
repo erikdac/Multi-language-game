@@ -7,6 +7,7 @@ class Stone : public Environment {
 
 public:
     using Environment::Environment;
+    virtual ~Stone();
 
     virtual void load_graphics() const override;
 };

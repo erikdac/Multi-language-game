@@ -7,6 +7,7 @@ class Grass : public Environment {
 
 public:
     using Environment::Environment;
+    virtual ~Grass();
 
     virtual void load_graphics() const override;
 };

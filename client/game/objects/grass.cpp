@@ -5,6 +5,10 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
+Grass::~Grass() {
+
+}
+
 void Grass::load_graphics() const {
     float x = (-0.5f + _x - _self->x())/VIEW_WIDTH;
     float y = -(0.5f + _y - _self->y())/VIEW_HEIGHT;

@@ -1,5 +1,4 @@
 #include "targetwidget.h"
-#include "ui_targetwidget.h"
 #include "playerwidget.h"
 #include "network/connection.h"
 #include "json11/json11.hpp"
