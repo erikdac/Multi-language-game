@@ -14,16 +14,17 @@ class Reader : public QThread
 {
     Q_OBJECT
 
+    bool _keepReading;
+    bool _isRunning;
+
 public:
-    explicit Reader();
+    explicit Reader(QObject *);
     ~Reader();
     void stopReading();
     void run();
-    void socket_error();
 
 private:
-    bool _keepReading;
-    bool _isRunning;
+    void socket_error();
 
 signals:
     void input(std::string);

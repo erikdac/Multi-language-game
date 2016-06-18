@@ -15,7 +15,6 @@ SOURCES += main.cpp\
     json11/json11.cpp \
     network/connection.cpp \
     network/reader.cpp \
-    ui/gamewidget.cpp \
     ui/loginwidget.cpp \
     ui/mainwindow.cpp \
     game/map.cpp \
@@ -29,7 +28,8 @@ SOURCES += main.cpp\
     game/objects/grass.cpp \
     game/objects/stone.cpp \
     game/movementcontroller.cpp \
-    game/objects/self.cpp
+    game/objects/self.cpp \
+    ui/gamewidget.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \

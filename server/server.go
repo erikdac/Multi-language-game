@@ -122,7 +122,7 @@ func kickPlayer() {
 	name := readKeyboard()
 	client, exists := playerToClient[name]
 	if exists == true {
-		client.kick()
+		client.disconnect()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")
@@ -135,7 +135,7 @@ func shutdown() {
 	for _, c := range playerToClient {
 		wg.Add(1)
 		go func (client *Client)() {
-			client.kick()
+			client.disconnect()
 			wg.Done()
 		}(c)
 	}

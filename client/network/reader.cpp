@@ -9,8 +9,14 @@
 
 using namespace json11;
 
-Reader::Reader() {
+Reader::Reader(QObject * reciever) {
     qRegisterMetaType<std::string>();
+    QObject::connect(
+        this,
+        SIGNAL(input(std::string)),
+        reciever,
+        SLOT(input(std::string))
+    );
 }
 
 Reader::~Reader() {
@@ -38,6 +44,7 @@ void Reader::run() {
     while(_keepReading) {
         if (packet == "Error") {
             socket_error();
+            break;
         }
         else if (packet.size() > 0) {
             emit input(packet);

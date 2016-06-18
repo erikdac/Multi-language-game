@@ -19,37 +19,19 @@ const static std::size_t READ_BUFFER_SIZE= 128 * 1024;
 int s0; // Socket.
 bool _online = false;
 
-Reader * const reader = new Reader();
+Reader * _reader;
 
 void connection::readAsync(QWidget * object) {
-    QObject::connect(
-        reader,
-        SIGNAL(input(std::string)),
-        object,
-        SLOT(input(std::string))
-    );
-    reader->start();
+    delete _reader;
+    _reader = new Reader(object);
+    _reader->start();
 }
-
-void sigHandler(int sigID) {
-    std::cout << "The SIGPIPE signal (connection is broken)!" << std::endl;
-    reader->stopReading();
-}
-
 
 bool connectToServer() {
-
-    // Set signal handler for the "SIGPIPE" signal
-    // (used to intercept the signal about broken connection).
-    if (signal(SIGPIPE, &sigHandler) == SIG_ERR) {
-        std::cerr << "Cannot install a signal handler" << std::endl;
-        return false;
-    }
 
     // Create a socket
     s0 = socket(AF_INET, SOCK_STREAM, 0);
     if (s0 < 0) {
-        std::cerr << "Cannot create a socket" << std::endl;
         return false;
     }
 
@@ -61,7 +43,6 @@ bool connectToServer() {
     // Resolve the server address (convert from symbolic name to IP number)
     struct hostent *host = gethostbyname(peerHost);
     if (host == NULL) {
-        perror("Cannot define host address");
         return false;
     }
     peeraddr.sin_family = AF_INET;
@@ -75,14 +56,12 @@ bool connectToServer() {
     // Connect to a remote server
     int res = connect(s0, (struct sockaddr*) &peeraddr, sizeof(peeraddr));
     if (res < 0) {
-        perror("Cannot connect");
         return false;
     }
 
     // Define socket as non-blocking
     res = fcntl(s0, F_SETFL, O_NONBLOCK);
     if (res < 0) {
-        perror("Cannot set a socket as non-blocking");
         return false;
     }
 
@@ -125,7 +104,7 @@ std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
 
-    for (int i = 0; i < timeout_tenth_sec; ++i) {
+    for (unsigned int i = 0; i < timeout_tenth_sec; ++i) {
         FD_ZERO(&readfds);
         FD_SET(s0, &readfds);
         struct timeval tv = {0, 100 * 1000};
@@ -158,11 +137,9 @@ std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
 }
 
 void connection::disconnect() {
-    if (_online) {
-        _online = false;
-        reader->stopReading();
-        shutdown(s0, 2);
-        close(s0);
-        map::cleanMap();
-    }
+    _online = false;
+    _reader->stopReading();
+    shutdown(s0, 2);
+    close(s0);
+    map::cleanMap();
 }
