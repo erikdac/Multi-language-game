@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"encoding/json"
 )
 
 // The connection settings.
@@ -123,10 +122,7 @@ func kickPlayer() {
 	name := readKeyboard()
 	client, exists := playerToClient[name]
 	if exists == true {
-		message := map[string]string {"Type": "Disconnect"}
-		data,  _ := json.Marshal(message)
-		client.sendPacket(data)
-		client.net.Disconnect()
+		client.kick()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")
@@ -139,7 +135,7 @@ func shutdown() {
 	for _, c := range playerToClient {
 		wg.Add(1)
 		go func (client *Client)() {
-			client.disconnect()
+			client.kick()
 			wg.Done()
 		}(c)
 	}

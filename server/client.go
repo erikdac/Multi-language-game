@@ -63,24 +63,11 @@ func (client *Client) login() bool {
 				packet.Player = player
 			    data, _ := json.Marshal(packet)
 				client.net.Write(data)
-
-				return client.waitForClient()
+				return true;
 			}
 		}
 	}
 	return false
-}
-
-func (client *Client) waitForClient() (bool) {
-	data, err := client.net.ReadPacket()
-	if err != nil {
-		return false
-	}
-	ready, fail := parseJson(data)
-	if fail != nil {
-		return false
-	}
-	return ready["Type"] == "Ready"
 }
 
 func (client *Client) sendPacket(data []byte) {
@@ -143,4 +130,11 @@ func parseJson(input []byte) (map[string]string, []byte) {
 	} else {
 		return data, nil
 	}
+}
+
+func (client *Client) kick() {
+	message := map[string]string {"Type": "Disconnect"}
+	data,  _ := json.Marshal(message)
+	client.sendPacket(data)
+	client.disconnect()
 }

@@ -8,9 +8,9 @@
 using namespace json11;
 
 namespace connection {
-    void setActiveWidget(QWidget *);
+    void readAsync(QWidget *);
     bool output(const Json);
-    std::string readPacket();
+    std::string readPacket(const unsigned int);
     void disconnect();
 }
 

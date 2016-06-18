@@ -18,22 +18,31 @@ Reader::~Reader() {
 }
 
 void Reader::stopReading() {
-    _isReading = false;
+    _keepReading = false;
+    while (_isRunning) {
+        usleep(100 * 1000);
+    }
 }
 
 void Reader::socket_error() {
     std::cerr << "Socket error" << std::endl;
-    stopReading();
+    _keepReading = false;
     const Json data = Json::object {{"Type", "Disconnect"}};
     emit input(data.dump());
 }
 
 void Reader::run() {
-    _isReading = true;
-    while(_isReading) {
-        std::string packet = connection::readPacket();
-        if (packet.size() > 0) {
+    _isRunning = true;
+    _keepReading = true;
+    std::string packet = connection::readPacket(2);
+    while(_keepReading) {
+        if (packet == "Error") {
+            socket_error();
+        }
+        else if (packet.size() > 0) {
             emit input(packet);
         }
+        packet = connection::readPacket(2);
     }
+    _isRunning = false;
 }

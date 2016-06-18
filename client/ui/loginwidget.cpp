@@ -21,7 +21,6 @@ LoginWidget::LoginWidget(QWidget *parent)
 {
     ui->setupUi(this);
     findChild<QLineEdit*>("username")->setFocus();
-    _online = true;
 }
 
 LoginWidget::~LoginWidget() {
@@ -29,20 +28,24 @@ LoginWidget::~LoginWidget() {
 }
 
 void LoginWidget::on_pushButton_clicked() {
-    const QLineEdit * username = findChild<QLineEdit*>("username");
-    const QLineEdit * password = findChild<QLineEdit*>("password");
+    QLineEdit * username = findChild<QLineEdit*>("username");
+    QLineEdit * password = findChild<QLineEdit*>("password");
 
     const Json data = Json::object {
         {"Username", username->text().toStdString()},
         {"Password", password->text().toStdString()}
     };
+    password->clear();
 
     if(connection::output(data) == false) {
         popupBox("Connection failed!");
+    } else {
+        checkResult();
     }
 }
 
-void LoginWidget::input(std::string input) {
+void LoginWidget::checkResult() {
+    std::string input = connection::readPacket(50);
     std::string error;
     Json data = Json::parse(input, error);
 
@@ -53,8 +56,6 @@ void LoginWidget::input(std::string input) {
             _self = new Self(std::move(map::parse_player(data["Player"])));
             MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
             w->setUpGameUi();
-            _online = true;
-            connection::output(Json::object{{"Type", "Ready"}});
         }
         else
             popupBox("Login failed!");

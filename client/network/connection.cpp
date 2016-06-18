@@ -21,13 +21,14 @@ bool _online = false;
 
 Reader * const reader = new Reader();
 
-void connection::setActiveWidget(QWidget * object) {
+void connection::readAsync(QWidget * object) {
     QObject::connect(
         reader,
         SIGNAL(input(std::string)),
         object,
         SLOT(input(std::string))
     );
+    reader->start();
 }
 
 void sigHandler(int sigID) {
@@ -85,7 +86,6 @@ bool connectToServer() {
         return false;
     }
 
-    reader->start();
     return true;
 }
 
@@ -116,10 +116,7 @@ bool connection::output(const Json object) {
     return res > 0;
 }
 
-/**
- * Has a 4 second timeout value.
- */
-std::string connection::readPacket() {
+std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
     if(brokenConnection()) {
         return "";
     }
@@ -128,7 +125,7 @@ std::string connection::readPacket() {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
 
-    for (int i = 0; i < 40; ++i) {
+    for (int i = 0; i < timeout_tenth_sec; ++i) {
         FD_ZERO(&readfds);
         FD_SET(s0, &readfds);
         struct timeval tv = {0, 100 * 1000};
@@ -136,8 +133,7 @@ std::string connection::readPacket() {
         int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
 
         if (res < 0) {
-            reader->socket_error();
-            break;
+            return "Error";
         } else if (res > 0) {
             res = read(
                 s0,
@@ -146,8 +142,7 @@ std::string connection::readPacket() {
             );
 
             if (res <= 0) {
-                reader->socket_error();
-                break;
+                return "Error";
             } else {
                 received += res;
                 i = 0;
@@ -163,9 +158,11 @@ std::string connection::readPacket() {
 }
 
 void connection::disconnect() {
-    reader->stopReading();
-    shutdown(s0, 2);
-    close(s0);
-    map::cleanMap();
-    _online = false;
+    if (_online) {
+        _online = false;
+        reader->stopReading();
+        shutdown(s0, 2);
+        close(s0);
+        map::cleanMap();
+    }
 }

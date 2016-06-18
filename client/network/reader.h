@@ -4,6 +4,10 @@
 #include <iostream>
 #include <QThread>
 
+#include "json11/json11.hpp"
+
+using namespace json11;
+
 Q_DECLARE_METATYPE(std::string)
 
 class Reader : public QThread
@@ -18,7 +22,8 @@ public:
     void socket_error();
 
 private:
-    bool _isReading;
+    bool _keepReading;
+    bool _isRunning;
 
 signals:
     void input(std::string);

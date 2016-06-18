@@ -37,14 +37,14 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
     gameLayout->addWidget(new GameWidget(this));
-
-    setFocus();
 }
 
 void OnlineWidget::start() {
     _player_widget->setPlayer(_self);
     GameWidget * gameWidget = findChild<GameWidget *>("GameWidget");
     gameWidget->start_refreshing();
+    connection::readAsync(this);
+    setFocus();
 }
 
 OnlineWidget::~OnlineWidget() {

@@ -27,12 +27,9 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setUpLoginUi() {
     this->setCurrentIndex(0);
-    connection::setActiveWidget(this->currentWidget());
 }
 
 void MainWindow::setUpGameUi() {
     this->setCurrentIndex(1);
-    connection::setActiveWidget(this->currentWidget());
     (dynamic_cast<OnlineWidget *> (this->currentWidget()))->start();
 }
-
