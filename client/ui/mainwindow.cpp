@@ -6,14 +6,19 @@
 #include "onlinewidget.h"
 
 #include <iostream>
+#include <QStackedWidget>
 #include <QGridLayout>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QWidget(parent)
+MainWindow::MainWindow(QStackedWidget *parent)
+    : QStackedWidget(parent)
     , ui(new Ui::MainWindow)
 {
-    setUpLoginUi();
     ui->setupUi(this);
+
+    this->addWidget(new LoginWidget(this));
+    this->addWidget(new OnlineWidget(this));
+
+    setUpLoginUi();
 }
 
 MainWindow::~MainWindow() {
@@ -21,27 +26,13 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setUpLoginUi() {
-    removePreviousUi();
-    LoginWidget * loginWidget = new LoginWidget(this);
-    changeWidget(loginWidget);
+    this->setCurrentIndex(0);
+    connection::setActiveWidget(this->currentWidget());
 }
 
 void MainWindow::setUpGameUi() {
-    removePreviousUi();
-    OnlineWidget * onlineWidget = new OnlineWidget(this);
-    changeWidget(onlineWidget);
+    this->setCurrentIndex(1);
+    connection::setActiveWidget(this->currentWidget());
+    (dynamic_cast<OnlineWidget *> (this->currentWidget()))->start();
 }
 
-void MainWindow::changeWidget(QWidget * widget) {
-    connection::setActiveWidget(widget);
-    QGridLayout * layout = new QGridLayout;
-    layout->setContentsMargins(0,0,0,0);
-    layout->addWidget(widget);
-    setLayout(layout);
-}
-
-void MainWindow::removePreviousUi() {
-    delete this->layout();
-    while ( QWidget * w = findChild<QWidget*>() )
-        delete w;
-}

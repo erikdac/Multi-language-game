@@ -18,21 +18,11 @@ GameWidget::GameWidget(QWidget *parent)
     , ui(new Ui::GameWidget)
 {
     ui->setupUi(this);
-
-    setScreenRefresher();
 }
 
 GameWidget::~GameWidget() {
     _screenRefresher->stop();
     delete ui;
-}
-
-void GameWidget::setScreenRefresher() {
-    _screenRefresher = new ScreenRefresher();
-    QObject::connect(
-        _screenRefresher, SIGNAL(repaint()), this, SLOT(repaint())
-    );
-    _screenRefresher->start();
 }
 
 void GameWidget::intitializeGL() {
@@ -61,6 +51,15 @@ void GameWidget::resizeGL() {
 
 void GameWidget::stop_refreshing() {
     _screenRefresher->stop();
+}
+
+
+void GameWidget::start_refreshing() {
+    _screenRefresher = new ScreenRefresher();
+    QObject::connect(
+        _screenRefresher, SIGNAL(repaint()), this, SLOT(repaint())
+    );
+    _screenRefresher->start();
 }
 
 void GameWidget::mousePressEvent(QMouseEvent * event) {

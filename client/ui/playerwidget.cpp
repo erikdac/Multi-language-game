@@ -9,16 +9,19 @@
 #include <iostream>
 #include <QSizePolicy>
 
-PlayerWidget::PlayerWidget(QWidget *parent, Player * player) :
+PlayerWidget::PlayerWidget(QWidget * parent) :
     QWidget(parent),
-    ui(new Ui::PlayerWidget),
-    _player(player)
+    ui(new Ui::PlayerWidget)
 {
     ui->setupUi(this);
 }
 
 PlayerWidget::~PlayerWidget() {
     delete ui;
+}
+
+void PlayerWidget::setPlayer(Self * self) {
+    _player = self;
 }
 
 void PlayerWidget::paintEvent(QPaintEvent * event) {

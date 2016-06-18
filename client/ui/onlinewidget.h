@@ -19,6 +19,8 @@ public:
     explicit OnlineWidget(QWidget *parent = 0);
     ~OnlineWidget();
 
+    void start();
+
     void switch_target(Player * player);
 
 private:

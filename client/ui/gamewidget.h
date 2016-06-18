@@ -17,10 +17,10 @@ public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget();
 
+    void start_refreshing();
     void stop_refreshing();
 
 protected:
-
     void intitializeGL();
     void paintGL();
     void resizeGL();
@@ -31,6 +31,5 @@ private:
 
     ScreenRefresher * _screenRefresher;
 
-    void setScreenRefresher();
 };
 #endif

@@ -21,9 +21,10 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OnlineWidget)
 {
+
     ui->setupUi(this);
 
-    PlayerWidget * playerWidget = new PlayerWidget(this, _self);
+   PlayerWidget * playerWidget = new PlayerWidget(this);
     _player_widget = playerWidget;
 
     TargetWidget * targetWidget = new TargetWidget(this);
@@ -38,6 +39,12 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     gameLayout->addWidget(new GameWidget(this));
 
     setFocus();
+}
+
+void OnlineWidget::start() {
+    _player_widget->setPlayer(_self);
+    GameWidget * gameWidget = findChild<GameWidget *>("GameWidget");
+    gameWidget->start_refreshing();
 }
 
 OnlineWidget::~OnlineWidget() {
