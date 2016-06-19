@@ -22,7 +22,6 @@ std::vector<Environment *> _environment;
 std::mutex environment_mutex;
 
 // TODO: Find better place for this.
-PlayerWidget * _player_widget;
 TargetWidget * _target_widget;
 
 using namespace json11;
@@ -134,16 +133,29 @@ void map::remove_player(const Json data) {
     others_mutex.unlock();
 
     std::string target_name = _target_widget->target();
-    if(player.name() == target_name) {
+    if (player.name() == target_name) {
         _target_widget->unselect_target();
     }
 }
 
 Player * map::player_at_position(const unsigned int x, const unsigned int y) {
     for (Player & p : _other_players) {
-        if(p.x() == x && p.y() == y) {
+        if( p.x() == x && p.y() == y) {
             return &p;
         }
     }
     return 0;
+}
+
+bool map::walkable(const int x, const int y) {
+    bool isWalkable = true;
+    environment_mutex.lock();
+    for (Environment * e : _environment) {
+        if (e->x() == x && e->y() == y && e->isWalkable() == false) {
+            isWalkable = false;
+            break;
+        }
+    }
+    environment_mutex.unlock();
+    return isWalkable;
 }

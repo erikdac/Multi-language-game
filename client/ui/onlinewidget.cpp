@@ -1,6 +1,6 @@
 #include "onlinewidget.h"
 #include "ui_onlinewidget.h"
-#include "gamewidget.h"
+#include "screenwidget.h"
 #include "targetwidget.h"
 #include "network/connection.h"
 #include "mainwindow.h"
@@ -35,19 +35,20 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
     bar->layout()->addWidget(targetWidget);
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
-    gameLayout->addWidget(new GameWidget(this));
+    gameLayout->addWidget(new ScreenWidget(this));
 }
 
 void OnlineWidget::start() {
     _player_widget->setPlayer(_self);
-    GameWidget * gameWidget = findChild<GameWidget *>("GameWidget");
-    gameWidget->start_refreshing();
+    ScreenWidget * screenWidget = findChild<ScreenWidget *>("ScreenWidget");
+    screenWidget->start_refreshing();
     connection::readAsync(this);
     setFocus();
 }
 
 OnlineWidget::~OnlineWidget() {
     delete ui;
+    delete _player_widget;
 }
 
 void OnlineWidget::input(std::string input) {
@@ -88,8 +89,8 @@ void OnlineWidget::input(std::string input) {
 }
 
 void OnlineWidget::logout() {
-    GameWidget * gameWidget = findChild<GameWidget*>();
-    gameWidget->stop_refreshing();
+    ScreenWidget * screenWidget = findChild<ScreenWidget*>();
+    screenWidget->stop_refreshing();
     connection::disconnect();
     MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
     w->setUpLoginUi();

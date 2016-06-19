@@ -14,6 +14,8 @@ public:
     virtual ~Environment();
     int x() const;
     int y() const;
+
+    virtual bool isWalkable() const = 0;
 };
 
 #endif

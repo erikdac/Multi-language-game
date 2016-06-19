@@ -28,8 +28,9 @@ func (scanner *Mapscanner) NextSection() ([]Environment, error) {
 		env := scanner.nextToken()
 		x, _ := strconv.Atoi(scanner.nextToken())
 		y, _ := strconv.Atoi(scanner.nextToken())
+		isWalkable := checkWalkable(env);
 
-		e := Environment{env, x, y}
+		e := Environment{env, x, y, isWalkable}
 		section = append(section, e);
 	}
 	return section, nil;
@@ -38,4 +39,12 @@ func (scanner *Mapscanner) NextSection() ([]Environment, error) {
 func (scanner *Mapscanner) nextToken() (string) {
 	scanner.sc.Scan()
 	return scanner.sc.Text()
+}
+
+func checkWalkable(env string) (bool) {
+	if (env == "GRASS") {
+		return true;
+	} else {
+		return false;
+	}
 }

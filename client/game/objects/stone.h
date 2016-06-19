@@ -9,6 +9,8 @@ public:
     using Environment::Environment;
     virtual ~Stone();
 
+    virtual bool isWalkable() const override;
+
     virtual void load_graphics() const override;
 };
 

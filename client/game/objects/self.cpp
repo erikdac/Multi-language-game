@@ -3,7 +3,6 @@
 #include "network/connection.h"
 #include "game/map.h"
 
-#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
@@ -17,23 +16,31 @@ Self::~Self() {
 }
 
 void Self::moveUp() {
-    --_y;
-    sendMovement();
+    if (map::walkable(_x, _y - 1)) {
+        --_y;
+        sendMovement();
+    }
 }
 
 void Self::moveDown() {
-    ++_y;
-    sendMovement();
+    if (map::walkable(_x, _y + 1)) {
+        ++_y;
+        sendMovement();
+    }
 }
 
 void Self::moveLeft() {
-    --_x;
-    sendMovement();
+    if (map::walkable(_x - 1, _y)) {
+        --_x;
+        sendMovement();
+    }
 }
 
 void Self::moveRight() {
-    ++_x;
-    sendMovement();
+    if (map::walkable(_x + 1, _y)) {
+        ++_x;
+        sendMovement();
+    }
 }
 
 void Self::update_health(const int health) {
@@ -41,7 +48,6 @@ void Self::update_health(const int health) {
 }
 
 void Self::update_position(const int x, const int y) {
-    std::cout << "LOL" << std::endl;
     _x = x;
     _y = y;
 }

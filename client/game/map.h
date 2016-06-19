@@ -16,8 +16,8 @@ extern Self * _self;
 extern std::vector<Player> _other_players;
 extern std::mutex others_mutex;
 extern std::vector<Environment *> _environment;
+extern std::mutex environment_mutex;
 
-extern PlayerWidget * _player_widget;
 extern TargetWidget * _target_widget;
 
 namespace map {
@@ -27,5 +27,6 @@ namespace map {
     void remove_player(const json11::Json data);
     Player parse_player(const json11::Json);
     Player * player_at_position(const unsigned int x, const unsigned int y);
+    bool walkable(const int x, const int y);
 }
 #endif // MAP_H

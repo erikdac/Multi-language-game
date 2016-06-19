@@ -1,7 +1,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 #include "loginwidget.h"
-#include "gamewidget.h"
+#include "screenwidget.h"
 #include "network/connection.h"
 #include "onlinewidget.h"
 

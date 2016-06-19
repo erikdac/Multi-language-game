@@ -19,42 +19,43 @@ SOURCES += main.cpp\
     game/map.cpp \
     game/objects/player.cpp \
     ui/onlinewidget.cpp \
-    ui/targetwidget.cpp \
-    ui/playerwidget.cpp \
     game/objects/environment.cpp \
     game/objects/water.cpp \
     game/objects/grass.cpp \
     game/objects/stone.cpp \
     game/movementcontroller.cpp \
     game/objects/self.cpp \
-    ui/gamewidget.cpp \
-    network/reader.cpp
+    network/reader.cpp \
+    ui/playerwidget.cpp \
+    ui/targetwidget.cpp \
+    ui/screenwidget.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
     network/connection.h \
-    ui/gamewidget.h \
     ui/loginwidget.h \
     ui/mainwindow.h \
     game/map.h \
     game/objects/player.h \
     game/objects/graphics.h \
     ui/onlinewidget.h \
-    ui/targetwidget.h \
-    ui/playerwidget.h \
     game/objects/environment.h \
     game/objects/water.h \
     game/objects/grass.h \
     game/objects/stone.h \
     game/movementcontroller.h \
     game/objects/self.h \
-    network/reader.h
+    network/reader.h \
+    ui/playerwidget.h \
+    ui/targetwidget.h \
+    ui/screenwidget.h
 
-FORMS    += ui/gamewidget.ui \
+FORMS    += \
     ui/loginwidget.ui \
     ui/mainwindow.ui \
     ui/onlinewidget.ui \
-    ui/playerwidget.ui
+    ui/playerwidget.ui \
+    ui/screenwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 

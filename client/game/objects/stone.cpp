@@ -10,6 +10,10 @@ Stone::~Stone() {
 
 }
 
+bool Stone::isWalkable() const {
+    return false;
+}
+
 void Stone::load_graphics() const {
     float x = (-0.5f + _x - _self->x())/VIEW_WIDTH;
     float y = -(0.5f + _y - _self->y())/VIEW_HEIGHT;

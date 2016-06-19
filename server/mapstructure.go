@@ -14,15 +14,16 @@ const (
 )
 
 type Environment struct {
-	Type 	string
-	X 		int
-	Y 		int
+	Type 		string
+	X 			int
+	Y 			int
+	isWalkable	bool
 }
 
 var map_mutex = &sync.Mutex{}
 
 var map_players [MAP_X][MAP_Y] (map[string]*Player)
-var map_environment [MAP_X][MAP_Y] ([]Environment)	// NEEDS TO HAVE MUTEX IF GONNA BE DYNAMIC!
+var map_environment [MAP_X][MAP_Y] ([]Environment)
 
 func InitiateMapStructure() (error) {
 	for i := 0; i < MAP_X; i++ {

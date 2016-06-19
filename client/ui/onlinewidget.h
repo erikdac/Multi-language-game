@@ -3,6 +3,7 @@
 
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
+#include "playerwidget.h"
 
 #include <QWidget>
 #include <unordered_map>
@@ -15,6 +16,10 @@ class OnlineWidget : public QWidget
 {
     Q_OBJECT
 
+    Ui::OnlineWidget *ui;
+
+    PlayerWidget * _player_widget;
+
 public:
     explicit OnlineWidget(QWidget *parent = 0);
     ~OnlineWidget();
@@ -24,9 +29,6 @@ public:
     void switch_target(Player * player);
 
 private:
-    Ui::OnlineWidget *ui;
-
-    std::unordered_map<char, KeyboardController*> _keyMap;
 
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);

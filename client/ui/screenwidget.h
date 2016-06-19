@@ -1,19 +1,19 @@
-#ifndef GAMEWIDGET_H
-#define GAMEWIDGET_H
+#ifndef SCREENWIDGET_H
+#define SCREENWIDGET_H
 
 #include <QOpenGLWidget>
 
 namespace Ui {
-    class GameWidget;
+    class ScreenWidget;
 }
 
-class GameWidget : public QOpenGLWidget
+class ScreenWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
 public:
-    explicit GameWidget(QWidget *parent = 0);
-    ~GameWidget();
+    explicit ScreenWidget(QWidget *parent = 0);
+    ~ScreenWidget();
 
     void start_refreshing();
     void stop_refreshing();
@@ -21,11 +21,10 @@ public:
 protected:
     void intitializeGL();
     void paintGL();
-    void resizeGL();
     void mousePressEvent(QMouseEvent *);
 
 private:
-    Ui::GameWidget *ui;
+    Ui::ScreenWidget *ui;
 
     bool _keepRefreshing;
     void screenRefresher();
