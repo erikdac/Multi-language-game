@@ -23,8 +23,8 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 
     ui->setupUi(this);
 
-   PlayerWidget * playerWidget = new PlayerWidget(this);
-    _player_widget = playerWidget;
+    PlayerWidget * playerWidget = new PlayerWidget(this);
+    playerWidget->setAccessibleName("PlayerWidget");
 
     TargetWidget * targetWidget = new TargetWidget(this);
     _target_widget = targetWidget;
@@ -36,10 +36,12 @@ OnlineWidget::OnlineWidget(QWidget *parent) :
 
     QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
     gameLayout->addWidget(new ScreenWidget(this));
+
+    _movementController = new MovementController();
 }
 
 void OnlineWidget::start() {
-    _player_widget->setPlayer(_self);
+    findChild<PlayerWidget *>("PlayerWidget")->setPlayer(_self);
     ScreenWidget * screenWidget = findChild<ScreenWidget *>("ScreenWidget");
     screenWidget->start_refreshing();
     connection::readAsync(this);
@@ -48,7 +50,7 @@ void OnlineWidget::start() {
 
 OnlineWidget::~OnlineWidget() {
     delete ui;
-    delete _player_widget;
+    delete _movementController;
 }
 
 void OnlineWidget::input(std::string input) {
@@ -84,11 +86,12 @@ void OnlineWidget::input(std::string input) {
     }
     else if (type == "Attacked") {
         _self->update_health(data["Health"].number_value());
-        _player_widget->update();
+        findChild<PlayerWidget *>("PlayerWidget")->update();
     }
 }
 
 void OnlineWidget::logout() {
+    _movementController->clear();
     ScreenWidget * screenWidget = findChild<ScreenWidget*>();
     screenWidget->stop_refreshing();
     connection::disconnect();
@@ -104,16 +107,16 @@ void OnlineWidget::keyPressEvent(QKeyEvent *event) {
 
     switch(event->key()) {
         case Qt::Key_W:
-            movement_controller::pushed('w');
+            _movementController->pushed('w');
         break;
         case Qt::Key_A:
-            movement_controller::pushed('a');
+            _movementController->pushed('a');
         break;
         case Qt::Key_S:
-            movement_controller::pushed('s');
+            _movementController->pushed('s');
         break;
         case Qt::Key_D:
-            movement_controller::pushed('d');
+            _movementController->pushed('d');
         break;
         case Qt::Key_Escape:
             openMenu();
@@ -133,7 +136,7 @@ void OnlineWidget::keyReleaseEvent(QKeyEvent *event) {
         }
 
         if(c == 'w' || c == 'a' || c == 's' || c == 'd') {
-            movement_controller::released(c);
+            _movementController->released(c);
         }
     }
 }

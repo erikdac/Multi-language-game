@@ -2,21 +2,13 @@
 #include "game/map.h"
 #include "objects/self.h"
 
-#include <iostream>
-#include <thread>
-#include <mutex>
 #include <unistd.h>
 
 static constexpr int SLEEP_TIME = 250 * 1000;
 
-bool _isRunning;
-
-char activeKey;
-char previousKey;
-
 typedef void (Self::*function)();
 
-void run(const char key) {
+void MovementController::run(const char key) {
 
     function fp;
     switch (key) {
@@ -33,43 +25,45 @@ void run(const char key) {
     }
 }
 
-static std::thread * t;
-
-static std::mutex key_mutex;
-
-void stop() {
+void MovementController::stop() {
     _isRunning = false;
-    activeKey = 0;
-    if(t && t->joinable()) {
-        t->join();
+    _activeKey = 0;
+    if(_t.joinable()) {
+        _t.join();
     }
 }
 
-void start(const char key) {
-    previousKey = activeKey;
+void MovementController::start(const char key) {
+    _previousKey = _activeKey;
     stop();
-    activeKey = key;
+    _activeKey = key;
     _isRunning = true;
-    t = new std::thread(run, key);
+    _t = std::thread(&MovementController::run, this, key);
 }
 
-void movement_controller::pushed(const char key) {
-    key_mutex.lock();
+void MovementController::pushed(const char key) {
+    _key_mutex.lock();
     start(key);
-    key_mutex.unlock();
+    _key_mutex.unlock();
 }
 
-void movement_controller::released(const char key) {
-    key_mutex.lock();
-    if (key == activeKey && previousKey != 0) {
-        start(previousKey);
-        previousKey = 0;
+void MovementController::released(const char key) {
+    _key_mutex.lock();
+    if (key == _activeKey && _previousKey != 0) {
+        start(_previousKey);
+        _previousKey = 0;
     }
-    else if (key == activeKey) {
+    else if (key == _activeKey) {
         stop();
     }
-    else if (key == previousKey) {
-        previousKey = 0;
+    else if (key == _previousKey) {
+        _previousKey = 0;
     }
-    key_mutex.unlock();
+    _key_mutex.unlock();
+}
+
+void MovementController::clear() {
+    stop();
+    _activeKey = 0;
+    _previousKey = 0;
 }

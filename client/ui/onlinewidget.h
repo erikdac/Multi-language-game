@@ -4,6 +4,7 @@
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
 #include "playerwidget.h"
+#include "game/movementcontroller.h"
 
 #include <QWidget>
 #include <unordered_map>
@@ -18,7 +19,7 @@ class OnlineWidget : public QWidget
 
     Ui::OnlineWidget *ui;
 
-    PlayerWidget * _player_widget;
+    MovementController * _movementController;
 
 public:
     explicit OnlineWidget(QWidget *parent = 0);
