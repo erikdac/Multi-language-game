@@ -1,6 +1,6 @@
 #include "ui_screenwidget.h"
 #include "screenwidget.h"
-#include "mainwindow.h"
+#include "window.h"
 #include "onlinewidget.h"
 #include "network/connection.h"
 #include "game/objects/player.h"
@@ -13,6 +13,9 @@
 #include <QMouseEvent>
 #include <thread>
 #include <unistd.h>
+#include <chrono>
+
+static const unsigned int MAX_FPS = 20;
 
 ScreenWidget::ScreenWidget(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -32,11 +35,11 @@ void ScreenWidget::intitializeGL() {
     glClearColor(255, 255, 255, 1);
 }
 
-void ScreenWidget::start_refreshing() {
+void ScreenWidget::resume() {
     std::thread(&ScreenWidget::screenRefresher, this).detach();
 }
 
-void ScreenWidget::stop_refreshing() {
+void ScreenWidget::pause() {
     _keepRefreshing = false;
 }
 
@@ -45,9 +48,13 @@ void ScreenWidget::stop_refreshing() {
  */
 void ScreenWidget::screenRefresher() {
     _keepRefreshing = true;
+
     while (_keepRefreshing) {
-        emit repaint();
-        usleep(20 * 1000);
+        auto begin = std::chrono::high_resolution_clock::now();
+        repaint();
+        auto end = std::chrono::high_resolution_clock::now();
+        int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+        usleep(((1000/MAX_FPS) - diff) * 1000);
     }
 }
 

@@ -15,7 +15,6 @@ SOURCES += main.cpp\
     json11/json11.cpp \
     network/connection.cpp \
     ui/loginwidget.cpp \
-    ui/mainwindow.cpp \
     game/map.cpp \
     game/objects/player.cpp \
     ui/onlinewidget.cpp \
@@ -28,13 +27,14 @@ SOURCES += main.cpp\
     network/reader.cpp \
     ui/playerwidget.cpp \
     ui/targetwidget.cpp \
-    ui/screenwidget.cpp
+    ui/screenwidget.cpp \
+    ui/stackedwidget.cpp \
+    ui/window.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
     network/connection.h \
     ui/loginwidget.h \
-    ui/mainwindow.h \
     game/map.h \
     game/objects/player.h \
     game/objects/graphics.h \
@@ -48,14 +48,17 @@ HEADERS  += mainwindow.h \
     network/reader.h \
     ui/playerwidget.h \
     ui/targetwidget.h \
-    ui/screenwidget.h
+    ui/screenwidget.h \
+    ui/gamestate.h \
+    ui/stackedwidget.h \
+    ui/window.h
 
 FORMS    += \
     ui/loginwidget.ui \
-    ui/mainwindow.ui \
     ui/onlinewidget.ui \
     ui/playerwidget.ui \
-    ui/screenwidget.ui
+    ui/screenwidget.ui \
+    ui/window.ui
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 

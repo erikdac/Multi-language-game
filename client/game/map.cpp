@@ -1,6 +1,7 @@
 #include "map.h"
 #include "json11/json11.hpp"
 #include "ui/onlinewidget.h"
+#include "ui/loginwidget.h"
 #include "game/objects/water.h"
 #include "game/objects/grass.h"
 #include "game/objects/stone.h"
@@ -21,9 +22,6 @@ std::mutex others_mutex;
 std::vector<Environment *> _environment;
 std::mutex environment_mutex;
 
-// TODO: Find better place for this.
-TargetWidget * _target_widget;
-
 using namespace json11;
 
 void clearEnvironment() {
@@ -40,19 +38,20 @@ void map::cleanMap() {
 }
 
 void check_target() {
-    std::string target_name = _target_widget->target();
+    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
+    std::string target_name = targetWidget->target();
     bool found = false;
     others_mutex.lock();
     for(Player & p : _other_players) {
         if (p.name() == target_name) {
             found = true;
-            _target_widget->update_target(p);
+            targetWidget->update_target(p);
             break;
         }
     }
     others_mutex.unlock();
     if(!found) {
-        _target_widget->unselect_target();
+        targetWidget->unselect_target();
     }
 }
 
@@ -115,9 +114,10 @@ void map::update_player(const Json data) {
     }
     others_mutex.unlock();
 
-    std::string target_name = _target_widget->target();
+    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
+    std::string target_name = targetWidget->target();
     if(player.name() == target_name) {
-        _target_widget->update_target(player);
+        targetWidget->update_target(player);
     }
 }
 
@@ -132,9 +132,10 @@ void map::remove_player(const Json data) {
     }
     others_mutex.unlock();
 
-    std::string target_name = _target_widget->target();
+    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
+    std::string target_name = targetWidget->target();
     if (player.name() == target_name) {
-        _target_widget->unselect_target();
+        targetWidget->unselect_target();
     }
 }
 

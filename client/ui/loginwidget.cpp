@@ -2,7 +2,7 @@
 #include "loginwidget.h"
 #include "network/connection.h"
 #include "json11/json11.hpp"
-#include "mainwindow.h"
+#include "window.h"
 #include "game/map.h"
 #include "game/objects/player.h"
 
@@ -10,21 +10,39 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QGlobalStatic>
 
 using namespace json11;
 
-std::mutex login_mutex;
-
-LoginWidget::LoginWidget(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::LoginWidget)
-{
+LoginWidget::LoginWidget() : ui(new Ui::LoginWidget) {
     ui->setupUi(this);
-    findChild<QLineEdit*>("username")->setFocus();
 }
 
 LoginWidget::~LoginWidget() {
+    clear();
     delete ui;
+}
+
+void LoginWidget::init(QWidget * parent) {
+    this->setParent(parent);
+}
+
+void LoginWidget::clear() {
+    findChild<QLineEdit*>("username")->clear();
+    findChild<QLineEdit*>("password")->clear();
+}
+
+void LoginWidget::resume() {
+    QLineEdit * username = findChild<QLineEdit*>("username");
+    if (username->text().size() > 0) {
+        findChild<QLineEdit*>("password")->setFocus();
+    } else {
+        username->setFocus();
+    }
+}
+
+void LoginWidget::pause() {
+
 }
 
 void LoginWidget::on_pushButton_clicked() {
@@ -54,7 +72,7 @@ void LoginWidget::checkResult() {
     if(data["Type"].string_value() == "Login_Success") {
         if(data["Success"].bool_value() == true) {
             _self = new Self(std::move(map::parse_player(data["Player"])));
-            MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
+            Window *w = dynamic_cast<Window *> (this->parentWidget());
             w->setUpGameUi();
         }
         else

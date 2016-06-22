@@ -18,8 +18,6 @@ extern std::mutex others_mutex;
 extern std::vector<Environment *> _environment;
 extern std::mutex environment_mutex;
 
-extern TargetWidget * _target_widget;
-
 namespace map {
     void cleanMap();
     void parse_map(const json11::Json);

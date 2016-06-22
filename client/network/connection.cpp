@@ -137,9 +137,11 @@ std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
 }
 
 void connection::disconnect() {
-    _online = false;
-    _reader->stopReading();
-    shutdown(s0, 2);
-    close(s0);
-    map::cleanMap();
+    if (_online) {
+        _online = false;
+        _reader->stopReading();
+        shutdown(s0, 2);
+        close(s0);
+        map::cleanMap();
+    }
 }

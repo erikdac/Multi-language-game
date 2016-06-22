@@ -1,19 +1,20 @@
 #ifndef ONLINEWIDGET_H
 #define ONLINEWIDGET_H
 
+#include "gamestate.h"
 #include "game/objects/player.h"
 #include "game/keyboardcontroller.h"
 #include "playerwidget.h"
 #include "game/movementcontroller.h"
+#include "ui/targetwidget.h"
 
 #include <QWidget>
-#include <unordered_map>
 
 namespace Ui {
     class OnlineWidget;
 }
 
-class OnlineWidget : public QWidget
+class OnlineWidget : public GameState
 {
     Q_OBJECT
 
@@ -22,12 +23,23 @@ class OnlineWidget : public QWidget
     MovementController * _movementController;
 
 public:
-    explicit OnlineWidget(QWidget *parent = 0);
-    ~OnlineWidget();
+    void init(QWidget *) override;
+    void clear() override;
 
-    void start();
+    void resume() override;
+    void pause() override;
 
+    static OnlineWidget * instance() {
+        static OnlineWidget * _instance = new OnlineWidget();
+        return _instance;
+    }
+
+    TargetWidget * target_widget() const;
     void switch_target(Player * player);
+
+protected:
+    OnlineWidget();
+    ~OnlineWidget();
 
 private:
 

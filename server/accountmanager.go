@@ -75,6 +75,7 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	player.max_mana = 20 + (player.Level - 1) * 2 
 	player.target = make(chan map[string]string)
 
+
 	return player, err		
 }
 

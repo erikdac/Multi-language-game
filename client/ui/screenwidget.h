@@ -15,8 +15,8 @@ public:
     explicit ScreenWidget(QWidget *parent = 0);
     ~ScreenWidget();
 
-    void start_refreshing();
-    void stop_refreshing();
+    void resume();
+    void pause();
 
 protected:
     void intitializeGL();

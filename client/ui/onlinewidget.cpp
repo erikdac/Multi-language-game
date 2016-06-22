@@ -3,7 +3,7 @@
 #include "screenwidget.h"
 #include "targetwidget.h"
 #include "network/connection.h"
-#include "mainwindow.h"
+#include "window.h"
 #include "game/objects/player.h"
 #include "game/movementcontroller.h"
 #include "game/map.h"
@@ -16,41 +16,37 @@
 
 using namespace json11;
 
-OnlineWidget::OnlineWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::OnlineWidget)
-{
-
+OnlineWidget::OnlineWidget() : ui(new Ui::OnlineWidget) {
     ui->setupUi(this);
+}
 
-    PlayerWidget * playerWidget = new PlayerWidget(this);
-    playerWidget->setAccessibleName("PlayerWidget");
+OnlineWidget::~OnlineWidget() {
+    clear();
+    delete ui;
+}
 
-    TargetWidget * targetWidget = new TargetWidget(this);
-    _target_widget = targetWidget;
-    targetWidget->setVisible(false);
-
-    QWidget * bar = findChild<QWidget *> ("Bar");
-    bar->layout()->addWidget(playerWidget);
-    bar->layout()->addWidget(targetWidget);
-
-    QGridLayout * gameLayout = findChild<QGridLayout *>("GameLayout");
-    gameLayout->addWidget(new ScreenWidget(this));
-
+void OnlineWidget::init(QWidget * parent) {
+    this->setParent(parent);
     _movementController = new MovementController();
 }
 
-void OnlineWidget::start() {
-    findChild<PlayerWidget *>("PlayerWidget")->setPlayer(_self);
-    ScreenWidget * screenWidget = findChild<ScreenWidget *>("ScreenWidget");
-    screenWidget->start_refreshing();
+void OnlineWidget::clear() {
+    delete _movementController;
+}
+
+void OnlineWidget::resume() {
+    findChild<PlayerWidget *>("playerwidget")->setPlayer(_self);
+    target_widget()->setVisible(false);
+    ScreenWidget * screenWidget = findChild<ScreenWidget *>("screenwidget");
+    screenWidget->resume();
     connection::readAsync(this);
     setFocus();
 }
 
-OnlineWidget::~OnlineWidget() {
-    delete ui;
-    delete _movementController;
+void OnlineWidget::pause() {
+    _movementController->clear();
+    ScreenWidget * screenWidget = findChild<ScreenWidget*>();
+    screenWidget->pause();
 }
 
 void OnlineWidget::input(std::string input) {
@@ -86,16 +82,14 @@ void OnlineWidget::input(std::string input) {
     }
     else if (type == "Attacked") {
         _self->update_health(data["Health"].number_value());
-        findChild<PlayerWidget *>("PlayerWidget")->update();
+        findChild<PlayerWidget *>("playerwidget")->update();
     }
 }
 
 void OnlineWidget::logout() {
-    _movementController->clear();
-    ScreenWidget * screenWidget = findChild<ScreenWidget*>();
-    screenWidget->stop_refreshing();
+    pause();
     connection::disconnect();
-    MainWindow *w = dynamic_cast<MainWindow *> (this->parentWidget());
+    Window * w = dynamic_cast<Window *> (this->parentWidget());
     w->setUpLoginUi();
 }
 
@@ -146,12 +140,15 @@ void OnlineWidget::openMenu() {
     logout();
 }
 
+TargetWidget * OnlineWidget::target_widget() const {
+    return findChild<TargetWidget *>("targetwidget");
+}
+
 void OnlineWidget::switch_target(Player * player) {
-    TargetWidget * targetWidget = findChild<TargetWidget *>();
     if(player) {
-        targetWidget->select_target(*player, true);
+        target_widget()->select_target(*player, true);
     }
     else {
-        targetWidget->unselect_target();
+        target_widget()->unselect_target();
     }
 }

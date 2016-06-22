@@ -55,18 +55,48 @@
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="PlayerWidget" name="playerwidget" native="true"/>
+      </item>
+      <item>
+       <widget class="TargetWidget" name="targetwidget" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
-    <layout class="QGridLayout" name="GameLayout">
+    <layout class="QGridLayout" name="screenlayout">
      <property name="spacing">
       <number>0</number>
      </property>
+     <item row="0" column="0">
+      <widget class="ScreenWidget" name="screenwidget" native="true"/>
+     </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlayerWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/playerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TargetWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/targetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ScreenWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/screenwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
