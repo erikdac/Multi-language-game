@@ -17,12 +17,13 @@ class TargetWidget : public PlayerWidget {
     Player _target;
 
 public:
-    TargetWidget(QWidget *parent = 0);
+    TargetWidget(QWidget *parent);
 
-    std::string target() const;
-    void select_target(Player &, bool);
+    const Player & target() const;
+    void check_target(const std::vector<Player> &);
+    void select_target(const Player &, bool);
     void unselect_target();
-    void update_target(Player &);
+    void update_target(const Player &);
 
     void stop_attack();
 

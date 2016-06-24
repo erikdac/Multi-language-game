@@ -1,7 +1,6 @@
 #include "connection.h"
 #include "ui/loginwidget.h"
 #include "json11/json11.hpp"
-#include "game/map.h"
 #include "reader.h"
 
 #include <iostream>
@@ -142,6 +141,5 @@ void connection::disconnect() {
         _reader->stopReading();
         shutdown(s0, 2);
         close(s0);
-        map::cleanMap();
     }
 }

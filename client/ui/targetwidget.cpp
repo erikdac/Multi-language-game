@@ -2,7 +2,6 @@
 #include "playerwidget.h"
 #include "network/connection.h"
 #include "json11/json11.hpp"
-#include "game/map.h"
 
 #include <QWidget>
 
@@ -14,11 +13,20 @@ TargetWidget::TargetWidget(QWidget *parent) : PlayerWidget(parent) {
     this->setSizePolicy(sp_retain);
 }
 
-std::string TargetWidget::target() const {
-    return _target.name();
+const Player & TargetWidget::target() const {
+    return _target;
 }
 
-void TargetWidget::select_target(Player & p, bool combat) {
+void TargetWidget::check_target(const std::vector<Player> & vec) {
+    auto it = std::find(vec.begin(), vec.end(), _target);
+    if(it != vec.end()) {
+        update_target(*it);
+    } else {
+        unselect_target();
+    }
+}
+
+void TargetWidget::select_target(const Player & p, bool combat) {
     update_target(p);
 
     if(combat) {
@@ -42,7 +50,7 @@ void TargetWidget::unselect_target() {
     stop_attack();
 }
 
-void TargetWidget::update_target(Player & p) {
+void TargetWidget::update_target(const Player & p) {
     attack_mutex.lock();
     _target = p;
     attack_mutex.unlock();

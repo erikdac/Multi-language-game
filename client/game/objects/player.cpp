@@ -20,7 +20,7 @@ Player::~Player() {
 
 }
 
-bool Player::operator==(const Player other) const {
+bool Player::operator==(const Player & other) const {
     return _name == other.name();
 }
 

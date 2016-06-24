@@ -1,13 +1,7 @@
 #include "ui_window.h"
 #include "window.h"
 #include "loginwidget.h"
-#include "screenwidget.h"
-#include "network/connection.h"
 #include "onlinewidget.h"
-
-#include <iostream>
-#include <QStackedWidget>
-#include <QGridLayout>
 
 Window::Window(QWidget * parent)
     : StackedWidget(parent)
@@ -15,20 +9,20 @@ Window::Window(QWidget * parent)
 {
     ui->setupUi(this);
 
-    addState(LoginWidget::instance());
-    addState(OnlineWidget::instance());
+    addState(new LoginWidget(this));
+    addState(new OnlineWidget(this));
 
-    setUpLoginUi();
+    setLoginUi();
 }
 
 Window::~Window() {
     delete ui;
 }
 
-void Window::setUpLoginUi() {
+void Window::setLoginUi() {
     setIndex(0);
 }
 
-void Window::setUpGameUi() {
+void Window::setGameUi() {
     setIndex(1);
 }

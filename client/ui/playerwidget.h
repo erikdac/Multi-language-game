@@ -13,18 +13,19 @@ class PlayerWidget : public QWidget {
 
     Q_OBJECT
 
+    const Self * _player;
+
 public:
-    explicit PlayerWidget(QWidget * parent = 0);
+    PlayerWidget(QWidget * parent);
     virtual ~PlayerWidget();
 
-    void setPlayer(Self *);
+    void setPlayer(const Self *);
 
 protected:
     Ui::PlayerWidget *ui;
-    Self * _player;
 
     virtual void paintEvent(QPaintEvent *);
-    void paint(QPaintEvent *, Player & p);
+    void paint(QPaintEvent *, const Player & p);
 };
 
 #endif // PLAYERWIDGET_H

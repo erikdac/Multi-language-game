@@ -3,8 +3,6 @@
 
 #include "gamestate.h"
 
-#include <QWidget>
-
 namespace Ui {
     class LoginWidget;
 }
@@ -13,23 +11,14 @@ class LoginWidget : public GameState {
 
     Q_OBJECT
 
-    Ui::LoginWidget *ui;
+    Ui::LoginWidget * ui;
 
 public:
-    void init(QWidget *) override;
-    void clear() override;
+    LoginWidget(QWidget *);
+    ~LoginWidget();
 
     void resume() override;
     void pause() override;
-
-    static LoginWidget * instance() {
-        static LoginWidget * _instance = new LoginWidget();
-        return _instance;
-    }
-
-protected:
-    LoginWidget();
-    ~LoginWidget();
 
 private:
     void checkResult();

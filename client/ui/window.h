@@ -14,8 +14,9 @@ class Window : public StackedWidget {
 public:
     explicit Window(QWidget * parent = 0);
     ~Window();
-    void setUpLoginUi();
-    void setUpGameUi();
+    void setLoginUi();
+    void setLoadingUi();
+    void setGameUi();
 
 private:
     Ui::Window *ui;

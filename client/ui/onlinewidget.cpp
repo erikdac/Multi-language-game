@@ -16,22 +16,17 @@
 
 using namespace json11;
 
-OnlineWidget::OnlineWidget() : ui(new Ui::OnlineWidget) {
-    ui->setupUi(this);
-}
-
-OnlineWidget::~OnlineWidget() {
-    clear();
-    delete ui;
-}
-
-void OnlineWidget::init(QWidget * parent) {
+OnlineWidget::OnlineWidget(QWidget * parent) : ui(new Ui::OnlineWidget) {
     this->setParent(parent);
+    ui->setupUi(this);
+
     _movementController = new MovementController();
 }
 
-void OnlineWidget::clear() {
+OnlineWidget::~OnlineWidget() {
+    map::cleanMap();
     delete _movementController;
+    delete ui;
 }
 
 void OnlineWidget::resume() {
@@ -67,12 +62,15 @@ void OnlineWidget::input(std::string input) {
     }
     else if (type == "Map") {
         map::parse_map(data);
+        others_mutex.lock();
+        target_widget()->check_target(_other_players);
+        others_mutex.unlock();
     }
     else if (type == "Player_update") {
-        map::update_player(data);
+        map::update_player(data, target_widget());
     }
     else if (type == "Player_removed") {
-        map::remove_player(data);
+        map::remove_player(data, target_widget());
     }
 
     // SELF
@@ -88,9 +86,12 @@ void OnlineWidget::input(std::string input) {
 
 void OnlineWidget::logout() {
     pause();
+    map::cleanMap();
+    std::cout << "BEFORE" << std::endl;
     connection::disconnect();
+    std::cout << "AFTER" << std::endl;
     Window * w = dynamic_cast<Window *> (this->parentWidget());
-    w->setUpLoginUi();
+    w->setLoginUi();
 }
 
 void OnlineWidget::keyPressEvent(QKeyEvent *event) {

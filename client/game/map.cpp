@@ -7,6 +7,7 @@
 #include "game/objects/stone.h"
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <algorithm>
 #include <mutex>
@@ -35,24 +36,6 @@ void map::cleanMap() {
     delete _self;
     _other_players.clear();
     clearEnvironment();
-}
-
-void check_target() {
-    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
-    std::string target_name = targetWidget->target();
-    bool found = false;
-    others_mutex.lock();
-    for(Player & p : _other_players) {
-        if (p.name() == target_name) {
-            found = true;
-            targetWidget->update_target(p);
-            break;
-        }
-    }
-    others_mutex.unlock();
-    if(!found) {
-        targetWidget->unselect_target();
-    }
 }
 
 Player map::parse_player(const Json player) {
@@ -90,7 +73,6 @@ void map::parse_map(const Json data) {
         _other_players.push_back(map::parse_player(p));
     }
     others_mutex.unlock();
-    check_target();
 
     const Json::array environments = data["Environment"].array_items();
     environment_mutex.lock();
@@ -101,7 +83,7 @@ void map::parse_map(const Json data) {
     environment_mutex.unlock();
 }
 
-void map::update_player(const Json data) {
+void map::update_player(const Json data, TargetWidget * targetWidget) {
     Player player = map::parse_player(data["Player"]);
 
     others_mutex.lock();
@@ -114,14 +96,12 @@ void map::update_player(const Json data) {
     }
     others_mutex.unlock();
 
-    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
-    std::string target_name = targetWidget->target();
-    if(player.name() == target_name) {
+    if(player == targetWidget->target()) {
         targetWidget->update_target(player);
     }
 }
 
-void map::remove_player(const Json data) {
+void map::remove_player(const Json data, TargetWidget * targetWidget) {
     Player player = map::parse_player(data["Player"]);
 
     others_mutex.lock();
@@ -132,9 +112,9 @@ void map::remove_player(const Json data) {
     }
     others_mutex.unlock();
 
-    TargetWidget * targetWidget = OnlineWidget::instance()->target_widget();
-    std::string target_name = targetWidget->target();
-    if (player.name() == target_name) {
+    if(player == targetWidget->target()) {
+        targetWidget->update_target(player);
+    } else {
         targetWidget->unselect_target();
     }
 }

@@ -14,22 +14,15 @@
 
 using namespace json11;
 
-LoginWidget::LoginWidget() : ui(new Ui::LoginWidget) {
+LoginWidget::LoginWidget(QWidget * parent) :
+    ui(new Ui::LoginWidget)
+{
+    this->setParent(parent);
     ui->setupUi(this);
 }
 
 LoginWidget::~LoginWidget() {
-    clear();
     delete ui;
-}
-
-void LoginWidget::init(QWidget * parent) {
-    this->setParent(parent);
-}
-
-void LoginWidget::clear() {
-    findChild<QLineEdit*>("username")->clear();
-    findChild<QLineEdit*>("password")->clear();
 }
 
 void LoginWidget::resume() {
@@ -73,7 +66,7 @@ void LoginWidget::checkResult() {
         if(data["Success"].bool_value() == true) {
             _self = new Self(std::move(map::parse_player(data["Player"])));
             Window *w = dynamic_cast<Window *> (this->parentWidget());
-            w->setUpGameUi();
+            w->setGameUi();
         }
         else
             popupBox("Login failed!");

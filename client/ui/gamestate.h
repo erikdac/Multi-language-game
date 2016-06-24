@@ -6,9 +6,6 @@
 class GameState : public QWidget {
 
 public:
-    virtual void init(QWidget *) = 0;
-    virtual void clear() = 0;
-
     virtual void resume() = 0;
     virtual void pause() = 0;
 };

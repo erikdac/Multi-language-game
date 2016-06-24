@@ -18,36 +18,27 @@ class OnlineWidget : public GameState
 {
     Q_OBJECT
 
-    Ui::OnlineWidget *ui;
+    Ui::OnlineWidget * ui;
 
     MovementController * _movementController;
 
 public:
-    void init(QWidget *) override;
-    void clear() override;
+    OnlineWidget(QWidget *);
+    ~OnlineWidget();
 
     void resume() override;
     void pause() override;
 
-    static OnlineWidget * instance() {
-        static OnlineWidget * _instance = new OnlineWidget();
-        return _instance;
-    }
-
-    TargetWidget * target_widget() const;
     void switch_target(Player * player);
 
-protected:
-    OnlineWidget();
-    ~OnlineWidget();
-
 private:
-
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
 
     void openMenu();
     void logout();
+
+    TargetWidget * target_widget() const;
 
 public slots:
     void input(std::string);

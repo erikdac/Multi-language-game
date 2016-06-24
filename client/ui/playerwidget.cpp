@@ -1,6 +1,5 @@
 #include "ui_playerwidget.h"
 #include "playerwidget.h"
-#include "game/map.h"
 
 #include <QLabel>
 #include <QRect>
@@ -20,7 +19,7 @@ PlayerWidget::~PlayerWidget() {
     delete ui;
 }
 
-void PlayerWidget::setPlayer(Self * self) {
+void PlayerWidget::setPlayer(const Self * self) {
     _player = self;
 }
 
@@ -28,7 +27,7 @@ void PlayerWidget::paintEvent(QPaintEvent * event) {
     paint(event, *_player);
 }
 
-void PlayerWidget::paint(QPaintEvent * event, Player & p) {
+void PlayerWidget::paint(QPaintEvent * event, const Player & p) {
     QRect rect = event->rect();
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);

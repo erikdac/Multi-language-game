@@ -29,7 +29,7 @@ public:
     unsigned int mana() const;
     unsigned int max_mana() const;
 
-    bool operator==(const Player) const;
+    bool operator==(const Player &) const;
 
     unsigned int distance_to_player(const Player &) const;
 
