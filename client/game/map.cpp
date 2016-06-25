@@ -120,11 +120,14 @@ void map::remove_player(const Json data, TargetWidget * targetWidget) {
 }
 
 Player * map::player_at_position(const unsigned int x, const unsigned int y) {
+    others_mutex.lock();
     for (Player & p : _other_players) {
         if( p.x() == x && p.y() == y) {
+            others_mutex.unlock();
             return &p;
         }
     }
+    others_mutex.unlock();
     return 0;
 }
 

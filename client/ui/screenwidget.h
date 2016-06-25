@@ -15,9 +15,6 @@ public:
     explicit ScreenWidget(QWidget *parent = 0);
     ~ScreenWidget();
 
-    void resume();
-    void pause();
-
 protected:
     void intitializeGL();
     void paintGL();
@@ -25,9 +22,6 @@ protected:
 
 private:
     Ui::ScreenWidget *ui;
-
-    bool _keepRefreshing;
-    void screenRefresher();
 
 signals:
     void repaint();

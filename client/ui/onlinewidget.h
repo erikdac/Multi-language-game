@@ -7,6 +7,7 @@
 #include "playerwidget.h"
 #include "game/movementcontroller.h"
 #include "ui/targetwidget.h"
+#include "ui/screenwidget.h"
 
 #include <QWidget>
 
@@ -20,7 +21,11 @@ class OnlineWidget : public GameState
 
     Ui::OnlineWidget * ui;
 
+    ScreenWidget * _screenWidget;
     MovementController * _movementController;
+
+    bool _isRunning;
+    bool _isFinished;
 
 public:
     OnlineWidget(QWidget *);
@@ -32,6 +37,10 @@ public:
     void switch_target(Player * player);
 
 private:
+    void gameLoop();
+    void process();
+    void processNetwork();
+
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
 
@@ -39,9 +48,6 @@ private:
     void logout();
 
     TargetWidget * target_widget() const;
-
-public slots:
-    void input(std::string);
 };
 
 #endif // ONLINEWIDGET_H

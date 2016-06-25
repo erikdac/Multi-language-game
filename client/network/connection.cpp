@@ -1,7 +1,6 @@
 #include "connection.h"
 #include "ui/loginwidget.h"
 #include "json11/json11.hpp"
-#include "reader.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -17,14 +16,6 @@ const static std::size_t READ_BUFFER_SIZE= 128 * 1024;
 
 int s0; // Socket.
 bool _online = false;
-
-Reader * _reader;
-
-void connection::readAsync(QObject * const receiver) {
-    delete _reader;
-    _reader = new Reader(receiver);
-    _reader->start();
-}
 
 bool connectToServer() {
 
@@ -94,7 +85,7 @@ bool connection::output(const Json object) {
     return res > 0;
 }
 
-std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
+std::string connection::readPacket(const unsigned int timeout_ms) {
     if(brokenConnection()) {
         return "";
     }
@@ -103,10 +94,10 @@ std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
 
-    for (unsigned int i = 0; i < timeout_tenth_sec; ++i) {
+    for (unsigned int i = 0; i < timeout_ms; ++i) {
         FD_ZERO(&readfds);
         FD_SET(s0, &readfds);
-        struct timeval tv = {0, 100 * 1000};
+        struct timeval tv = {0, 1000};
 
         int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
 
@@ -138,7 +129,6 @@ std::string connection::readPacket(const unsigned int timeout_tenth_sec) {
 void connection::disconnect() {
     if (_online) {
         _online = false;
-        _reader->stopReading();
         shutdown(s0, 2);
         close(s0);
     }

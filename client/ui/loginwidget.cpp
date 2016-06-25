@@ -56,7 +56,7 @@ void LoginWidget::on_pushButton_clicked() {
 }
 
 void LoginWidget::checkResult() {
-    std::string input = connection::readPacket(50);
+    std::string input = connection::readPacket(5000);
     std::string error;
     Json data = Json::parse(input, error);
 

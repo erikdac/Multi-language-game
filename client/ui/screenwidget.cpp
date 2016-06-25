@@ -15,7 +15,7 @@
 #include <chrono>
 #include "unistd.h"
 
-static const unsigned int MAX_FPS = 20;
+static const unsigned int MAX_FPS = 30;
 
 ScreenWidget::ScreenWidget(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -27,35 +27,11 @@ ScreenWidget::ScreenWidget(QWidget *parent)
 }
 
 ScreenWidget::~ScreenWidget() {
-    _keepRefreshing = false;
     delete ui;
 }
 
 void ScreenWidget::intitializeGL() {
     glClearColor(255, 255, 255, 1);
-}
-
-void ScreenWidget::resume() {
-    std::thread(&ScreenWidget::screenRefresher, this).detach();
-}
-
-void ScreenWidget::pause() {
-    _keepRefreshing = false;
-}
-
-/**
- * Responsible for handling the screen FPS.
- */
-void ScreenWidget::screenRefresher() {
-    _keepRefreshing = true;
-
-    while (_keepRefreshing) {
-        auto begin = std::chrono::high_resolution_clock::now();
-        repaint();
-        auto end = std::chrono::high_resolution_clock::now();
-        int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        usleep(((1000/MAX_FPS) - diff) * 1000);
-    }
 }
 
 void ScreenWidget::mousePressEvent(QMouseEvent * event) {

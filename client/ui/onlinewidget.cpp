@@ -13,13 +13,18 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QKeyEvent>
+#include <chrono>
+#include <unistd.h>
 
 using namespace json11;
+
+static const unsigned int MAX_FPS = 20;
 
 OnlineWidget::OnlineWidget(QWidget * parent) : ui(new Ui::OnlineWidget) {
     this->setParent(parent);
     ui->setupUi(this);
 
+    _screenWidget = findChild<ScreenWidget *>("screenwidget");
     _movementController = new MovementController();
 }
 
@@ -32,29 +37,44 @@ OnlineWidget::~OnlineWidget() {
 void OnlineWidget::resume() {
     findChild<PlayerWidget *>("playerwidget")->setPlayer(_self);
     target_widget()->setVisible(false);
-    ScreenWidget * screenWidget = findChild<ScreenWidget *>("screenwidget");
-    screenWidget->resume();
-    connection::readAsync(this);
+    std::thread(&OnlineWidget::gameLoop, this).detach();
     setFocus();
 }
 
 void OnlineWidget::pause() {
     _movementController->clear();
-    ScreenWidget * screenWidget = findChild<ScreenWidget*>();
-    screenWidget->pause();
+    _isRunning = false;
+    while (!_isFinished) {
+        usleep(1000);
+    }
 }
 
-void OnlineWidget::input(std::string input) {
-    std::string error;
-    Json data = Json::parse(input, error);
+void OnlineWidget::gameLoop() {
+    _isRunning = true;
+    _isFinished = false;
+    while(_isRunning) {
+        auto begin = std::chrono::high_resolution_clock::now();
+        process();
+        auto end = std::chrono::high_resolution_clock::now();
+        int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+        usleep(((1000/MAX_FPS) - diff) * 1000);
+    }
+    _isFinished = true;
+}
 
-    // TODO: Remove debug prints
-    if(error.size() > 0) {
-        std::cout << "ONLINEWIDGET ERROR: " << error << std::endl;
+void OnlineWidget::process() {
+    processNetwork();
+    _screenWidget->repaint();
+}
+
+void OnlineWidget::processNetwork() {
+    std::string packet = connection::readPacket(5);
+    if (packet.empty()) {
+        return;
     }
-    else {
-        std::cout << "ONLINEWIDGET: " << data.dump() << std::endl;
-    }
+
+    std::string error;
+    Json data = Json::parse(packet, error);
 
     const std::string type = data["Type"].string_value();
     if (type == "Disconnect") {
@@ -87,9 +107,7 @@ void OnlineWidget::input(std::string input) {
 void OnlineWidget::logout() {
     pause();
     map::cleanMap();
-    std::cout << "BEFORE" << std::endl;
     connection::disconnect();
-    std::cout << "AFTER" << std::endl;
     Window * w = dynamic_cast<Window *> (this->parentWidget());
     w->setLoginUi();
 }

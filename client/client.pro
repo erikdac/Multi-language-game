@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     game/objects/stone.cpp \
     game/movementcontroller.cpp \
     game/objects/self.cpp \
-    network/reader.cpp \
     ui/playerwidget.cpp \
     ui/targetwidget.cpp \
     ui/screenwidget.cpp \
@@ -45,7 +44,6 @@ HEADERS  += mainwindow.h \
     game/objects/stone.h \
     game/movementcontroller.h \
     game/objects/self.h \
-    network/reader.h \
     ui/playerwidget.h \
     ui/targetwidget.h \
     ui/screenwidget.h \
