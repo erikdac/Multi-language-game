@@ -87,7 +87,10 @@ bool connection::output(const Json object) {
 
 std::string connection::readPacket(const unsigned int timeout_ms) {
     if(brokenConnection()) {
-        return "";
+        const Json data = Json::object {
+            {"Type", "Disconnect"},
+        };
+        return data.dump();
     }
 
     fd_set readfds;

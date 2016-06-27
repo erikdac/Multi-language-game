@@ -14,9 +14,13 @@ class StackedWidget : public QStackedWidget {
     std::vector<GameState *> _gameStates;
 
 protected:
-    StackedWidget(QWidget *parent);
-    void addState(GameState *gameState);
-    void setIndex(unsigned int index);
+    StackedWidget(QWidget *);
+    void addState(GameState *);
+    GameState * currentState();
+
+protected slots:
+    void setIndex(unsigned int);
+
 };
 
 #endif

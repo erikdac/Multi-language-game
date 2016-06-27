@@ -84,7 +84,7 @@ func (player *Player) Movement(movement map[string]string) {
 	newX, _ := strconv.Atoi(movement["ToX"])
 	newY, _ := strconv.Atoi(movement["ToY"])
 
-	if (math.Abs(float64(player.X - newX)) + math.Abs(float64(player.Y - newY)) > 1) {
+	if (math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1) {
 		packet := player_moved_packet {
 			Type: "Moved",
 			NewX: player.X,

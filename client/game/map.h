@@ -14,9 +14,7 @@
 
 extern Self * _self;
 extern std::vector<Player> _other_players;
-extern std::mutex others_mutex;
 extern std::vector<Environment *> _environment;
-extern std::mutex environment_mutex;
 
 namespace map {
     void cleanMap();

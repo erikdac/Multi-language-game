@@ -11,15 +11,23 @@ class Window : public StackedWidget {
 
     Q_OBJECT
 
+    bool _isRunning;
+    int _nextIndex = -1;
+
 public:
     explicit Window(QWidget * parent = 0);
     ~Window();
+
+    void gameLoop();
+
     void setLoginUi();
-    void setLoadingUi();
     void setGameUi();
 
 private:
     Ui::Window *ui;
+
+signals:
+    void setIndex(unsigned int);
 
 };
 

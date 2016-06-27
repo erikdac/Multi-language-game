@@ -3,11 +3,12 @@
 
 #include "gamestate.h"
 #include "game/objects/player.h"
-#include "game/keyboardcontroller.h"
 #include "playerwidget.h"
 #include "game/movementcontroller.h"
 #include "ui/targetwidget.h"
 #include "ui/screenwidget.h"
+#include "handlers/mousehandler.h"
+#include "handlers/keyboardhandler.h"
 
 #include <QWidget>
 
@@ -15,13 +16,15 @@ namespace Ui {
     class OnlineWidget;
 }
 
-class OnlineWidget : public GameState
-{
+class OnlineWidget : public GameState {
+
     Q_OBJECT
 
     Ui::OnlineWidget * ui;
 
     ScreenWidget * _screenWidget;
+    MouseHandler _mouseHandler;
+    KeyboardHandler _keyboardHandler;
     MovementController * _movementController;
 
     bool _isRunning;
@@ -33,12 +36,11 @@ public:
 
     void resume() override;
     void pause() override;
-
-    void switch_target(Player * player);
+    void process() override;
 
 private:
-    void gameLoop();
-    void process();
+    void processMouse();
+    void processKeyboard();
     void processNetwork();
 
     void keyPressEvent(QKeyEvent *);

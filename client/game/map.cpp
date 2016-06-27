@@ -18,10 +18,8 @@
 Self * _self;
 
 std::vector<Player> _other_players;
-std::mutex others_mutex;
 
 std::vector<Environment *> _environment;
-std::mutex environment_mutex;
 
 using namespace json11;
 
@@ -67,26 +65,21 @@ Environment * parse_environment(const Json & environment) {
 
 void map::parse_map(const Json data) {
     const Json::array players = data["Players"].array_items();
-    others_mutex.lock();
     _other_players.clear();
     for (const Json & p : players) {
         _other_players.push_back(map::parse_player(p));
     }
-    others_mutex.unlock();
 
     const Json::array environments = data["Environment"].array_items();
-    environment_mutex.lock();
     clearEnvironment();
     for (const Json & e : environments) {
         _environment.push_back(parse_environment(e));
     }
-    environment_mutex.unlock();
 }
 
 void map::update_player(const Json data, TargetWidget * targetWidget) {
     Player player = map::parse_player(data["Player"]);
 
-    others_mutex.lock();
     auto it = std::find (_other_players.begin(), _other_players.end(), player);
     if(it != _other_players.end()) {
         *it = player;
@@ -94,7 +87,6 @@ void map::update_player(const Json data, TargetWidget * targetWidget) {
     else {
         _other_players.push_back(player);
     }
-    others_mutex.unlock();
 
     if(player == targetWidget->target()) {
         targetWidget->update_target(player);
@@ -104,13 +96,11 @@ void map::update_player(const Json data, TargetWidget * targetWidget) {
 void map::remove_player(const Json data, TargetWidget * targetWidget) {
     Player player = map::parse_player(data["Player"]);
 
-    others_mutex.lock();
     auto it = std::find (_other_players.begin(), _other_players.end(), player);
     if (it != _other_players.end()) {
         *it = _other_players[_other_players.size()-1];
         _other_players.erase(_other_players.begin() + _other_players.size()-1);
     }
-    others_mutex.unlock();
 
     if(player == targetWidget->target()) {
         targetWidget->update_target(player);
@@ -120,26 +110,21 @@ void map::remove_player(const Json data, TargetWidget * targetWidget) {
 }
 
 Player * map::player_at_position(const unsigned int x, const unsigned int y) {
-    others_mutex.lock();
     for (Player & p : _other_players) {
         if( p.x() == x && p.y() == y) {
-            others_mutex.unlock();
             return &p;
         }
     }
-    others_mutex.unlock();
     return 0;
 }
 
 bool map::walkable(const int x, const int y) {
     bool isWalkable = true;
-    environment_mutex.lock();
     for (Environment * e : _environment) {
         if (e->x() == x && e->y() == y && e->isWalkable() == false) {
             isWalkable = false;
             break;
         }
     }
-    environment_mutex.unlock();
     return isWalkable;
 }

@@ -38,6 +38,10 @@ void LoginWidget::pause() {
 
 }
 
+void LoginWidget::process() {
+
+}
+
 void LoginWidget::on_pushButton_clicked() {
     QLineEdit * username = findChild<QLineEdit*>("username");
     QLineEdit * password = findChild<QLineEdit*>("password");

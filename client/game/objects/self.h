@@ -13,6 +13,10 @@ public:
     void moveDown();
     void moveLeft();
     void moveRight();
+    void moveUpRight();
+    void moveUpLeft();
+    void moveDownRight();
+    void moveDownLeft();
 
     void update_health(const int);
     void update_position(const int, const int);

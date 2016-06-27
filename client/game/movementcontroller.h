@@ -6,23 +6,17 @@
 
 class MovementController {
 
-    bool _isRunning;
-
     char _activeKey;
     char _previousKey;
 
-    std::thread _t;
-    std::mutex _key_mutex;
-
 public:
+    void execute();
     void pushed(const char);
     void released(const char);
     void clear();
 
 private:
-    void start(const char);
-    void stop();
-    void run(const char);
+    bool isReady() const;
 };
 
 #endif // MOVEMENTCONTROLLER_H

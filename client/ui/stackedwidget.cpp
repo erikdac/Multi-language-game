@@ -20,3 +20,7 @@ void StackedWidget::setIndex(unsigned int index) {
         this->setCurrentIndex(_index);
     }
 }
+
+GameState * StackedWidget::currentState() {
+    return _gameStates[_index];
+}

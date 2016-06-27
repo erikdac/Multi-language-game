@@ -1,7 +1,10 @@
 #ifndef SCREENWIDGET_H
 #define SCREENWIDGET_H
 
+#include "handlers/mousehandler.h"
+
 #include <QOpenGLWidget>
+#include <QMouseEvent>
 
 namespace Ui {
     class ScreenWidget;
@@ -11,9 +14,13 @@ class ScreenWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
+    MouseHandler * _mouseHandler;
+
 public:
-    explicit ScreenWidget(QWidget *parent = 0);
+    ScreenWidget(QWidget *);
     ~ScreenWidget();
+
+    void setMouseHandler(MouseHandler *);
 
 protected:
     void intitializeGL();

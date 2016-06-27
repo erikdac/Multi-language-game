@@ -19,6 +19,7 @@ public:
 
     void resume() override;
     void pause() override;
+    void process() override;
 
 private:
     void checkResult();

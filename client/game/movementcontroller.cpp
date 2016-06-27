@@ -2,68 +2,80 @@
 #include "game/map.h"
 #include "objects/self.h"
 
-#include <unistd.h>
-
-static constexpr int SLEEP_TIME = 250 * 1000;
-
-typedef void (Self::*function)();
-
-void MovementController::run(const char key) {
-
-    function fp;
-    switch (key) {
-        case 'w': fp = &Self::moveUp; break;
-        case 'a': fp = &Self::moveLeft; break;
-        case 's': fp = &Self::moveDown; break;
-        case 'd': fp = &Self::moveRight; break;
-        default: return;
-    }
-
-    while (_isRunning) {
-        (_self->*fp)();
-        usleep(SLEEP_TIME);
-    }
-}
-
-void MovementController::stop() {
-    _isRunning = false;
-    _activeKey = 0;
-    if(_t.joinable()) {
-        _t.join();
-    }
-}
-
-void MovementController::start(const char key) {
-    _previousKey = _activeKey;
-    stop();
-    _activeKey = key;
-    _isRunning = true;
-    _t = std::thread(&MovementController::run, this, key);
-}
+#include <chrono>
+#include <cmath>
 
 void MovementController::pushed(const char key) {
-    _key_mutex.lock();
-    start(key);
-    _key_mutex.unlock();
+    _previousKey = _activeKey;
+    _activeKey = key;
 }
 
 void MovementController::released(const char key) {
-    _key_mutex.lock();
     if (key == _activeKey && _previousKey != 0) {
-        start(_previousKey);
+        _activeKey = _previousKey;
         _previousKey = 0;
     }
     else if (key == _activeKey) {
-        stop();
+        _activeKey = 0;
     }
     else if (key == _previousKey) {
         _previousKey = 0;
     }
-    _key_mutex.unlock();
 }
 
 void MovementController::clear() {
-    stop();
     _activeKey = 0;
     _previousKey = 0;
+}
+
+auto last = std::chrono::high_resolution_clock::now();
+bool expensiveLast = false;
+
+bool MovementController::isReady() const {
+    auto now = std::chrono::high_resolution_clock::now();
+    int diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+    if ((!expensiveLast && diff >= 250) || (expensiveLast && diff >= 250 * std::sqrt(2))) {
+        last = now;
+        return true;
+    }
+    return false;
+}
+
+void MovementController::execute() {
+    if (!isReady()) {
+        return;
+    }
+
+    if ((_activeKey == 'w' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 'w')) {
+        _self->moveUpLeft();
+        expensiveLast = true;
+    }
+    else if ((_activeKey == 'w' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 'w')) {
+        _self->moveUpRight();
+        expensiveLast = true;
+    }
+    else if ((_activeKey == 's' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 's')) {
+        _self->moveDownLeft();
+        expensiveLast = true;
+    }
+    else if ((_activeKey == 's' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 's')) {
+        _self->moveDownRight();
+        expensiveLast = true;
+    }
+    else if (_activeKey == 'w') {
+        _self->moveUp();
+        expensiveLast = false;
+    }
+    else if (_activeKey == 'a') {
+        _self->moveLeft();
+        expensiveLast = false;
+    }
+    else if (_activeKey == 's') {
+        _self->moveDown();
+        expensiveLast = false;
+    }
+    else if (_activeKey == 'd') {
+        _self->moveRight();
+        expensiveLast = false;
+    }
 }

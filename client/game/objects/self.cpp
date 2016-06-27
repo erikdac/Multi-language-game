@@ -43,6 +43,38 @@ void Self::moveRight() {
     }
 }
 
+void Self::moveUpRight() {
+    if (map::walkable(_x + 1, _y - 1)) {
+        ++_x;
+        --_y;
+        sendMovement();
+    }
+}
+
+void Self::moveUpLeft() {
+    if (map::walkable(_x - 1, _y - 1)) {
+        --_x;
+        --_y;
+        sendMovement();
+    }
+}
+
+void Self::moveDownRight() {
+    if (map::walkable(_x + 1, _y + 1)) {
+        ++_x;
+        ++_y;
+        sendMovement();
+    }
+}
+
+void Self::moveDownLeft() {
+    if (map::walkable(_x - 1, _y + 1)) {
+        --_x;
+        ++_y;
+        sendMovement();
+    }
+}
+
 void Self::update_health(const int health) {
     _health = health;
 }
