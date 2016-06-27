@@ -154,13 +154,15 @@ void OnlineWidget::logout() {
 
 void OnlineWidget::keyPressEvent(QKeyEvent * event) {
     if (!event->isAutoRepeat()) {
-        _keyboardHandler.addEvent(*event, true);
+        std::pair<QKeyEvent, bool> p(*event, true);
+        _keyboardHandler.addEvent(p);
     }
 }
 
 void OnlineWidget::keyReleaseEvent(QKeyEvent * event) {
     if (!event->isAutoRepeat()) {
-        _keyboardHandler.addEvent(*event, false);
+        std::pair<QKeyEvent, bool> p(*event, false);
+        _keyboardHandler.addEvent(p);
     }
 }
 

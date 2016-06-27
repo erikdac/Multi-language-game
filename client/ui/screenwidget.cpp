@@ -30,7 +30,7 @@ ScreenWidget::~ScreenWidget() {
     delete ui;
 }
 
-void ScreenWidget::setMouseHandler(MouseHandler * mouseHandler) {
+void ScreenWidget::setMouseHandler(EventHandler<QMouseEvent *> * mouseHandler) {
     _mouseHandler = mouseHandler;
 }
 

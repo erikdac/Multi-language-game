@@ -103,8 +103,6 @@ void map::remove_player(const Json data, TargetWidget * targetWidget) {
     }
 
     if(player == targetWidget->target()) {
-        targetWidget->update_target(player);
-    } else {
         targetWidget->unselect_target();
     }
 }

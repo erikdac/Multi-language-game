@@ -7,10 +7,12 @@
 #include "game/movementcontroller.h"
 #include "ui/targetwidget.h"
 #include "ui/screenwidget.h"
-#include "handlers/mousehandler.h"
-#include "handlers/keyboardhandler.h"
+#include "game/eventhandler.h"
 
 #include <QWidget>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <utility>
 
 namespace Ui {
     class OnlineWidget;
@@ -23,8 +25,10 @@ class OnlineWidget : public GameState {
     Ui::OnlineWidget * ui;
 
     ScreenWidget * _screenWidget;
-    MouseHandler _mouseHandler;
-    KeyboardHandler _keyboardHandler;
+
+    EventHandler<QMouseEvent *> _mouseHandler;
+    EventHandler<std::pair<QKeyEvent, bool>> _keyboardHandler;
+
     MovementController * _movementController;
 
     bool _isRunning;

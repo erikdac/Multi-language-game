@@ -28,9 +28,7 @@ SOURCES += main.cpp\
     ui/targetwidget.cpp \
     ui/screenwidget.cpp \
     ui/stackedwidget.cpp \
-    ui/window.cpp \
-    handlers/mousehandler.cpp \
-    handlers/keyboardhandler.cpp
+    ui/window.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -52,8 +50,7 @@ HEADERS  += mainwindow.h \
     ui/gamestate.h \
     ui/stackedwidget.h \
     ui/window.h \
-    handlers/mousehandler.h \
-    handlers/keyboardhandler.h
+    game/eventhandler.h
 
 FORMS    += \
     ui/loginwidget.ui \
