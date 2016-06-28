@@ -15,8 +15,6 @@
 #include <chrono>
 #include "unistd.h"
 
-static const unsigned int MAX_FPS = 30;
-
 ScreenWidget::ScreenWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , ui(new Ui::ScreenWidget)

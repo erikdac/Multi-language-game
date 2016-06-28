@@ -20,8 +20,6 @@
 
 using namespace json11;
 
-static const unsigned int MAX_FPS = 40;
-
 OnlineWidget::OnlineWidget(QWidget * parent) : ui(new Ui::OnlineWidget) {
     this->setParent(parent);
     ui->setupUi(this);
@@ -56,7 +54,7 @@ void OnlineWidget::process() {
 }
 
 void OnlineWidget::processNetwork() {
-    std::string packet = connection::readPacket(5);
+    std::string packet = connection::readPacket(1);
     if (packet.empty()) {
         return;
     }

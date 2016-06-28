@@ -41,6 +41,7 @@ void Window::gameLoop() {
             _nextIndex = -1;
         }
         currentState()->process();
+        QCoreApplication::processEvents();
         auto end = std::chrono::high_resolution_clock::now();
         int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
         usleep(((1000/MAX_FPS) - diff) * 1000);

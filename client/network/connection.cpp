@@ -97,10 +97,10 @@ std::string connection::readPacket(const unsigned int timeout_ms) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
 
-    for (unsigned int i = 0; i < timeout_ms; ++i) {
+    for (unsigned int i = 0; i < 2*timeout_ms; ++i) {
         FD_ZERO(&readfds);
         FD_SET(s0, &readfds);
-        struct timeval tv = {0, 1000};
+        struct timeval tv = {0, 500};
 
         int res = select(s0 + 1, &readfds, NULL, NULL, &tv);
 
