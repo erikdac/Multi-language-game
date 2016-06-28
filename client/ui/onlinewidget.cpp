@@ -141,7 +141,7 @@ void OnlineWidget::processKeyboard() {
                 _movementController->released('d');
             }
         }
-        else if (e.first.key() == Qt::Key_Escape) {
+        else if (e.first.key() == Qt::Key_Escape && e.second) {
             openMenu();
         }
     }
