@@ -4,13 +4,23 @@
 
 #include <chrono>
 #include <cmath>
+#include <vector>
+
+bool newly_pushed = false;
+std::vector<char> saved_releases;
 
 void MovementController::pushed(const char key) {
     _previousKey = _activeKey;
     _activeKey = key;
+    newly_pushed = true;
 }
 
 void MovementController::released(const char key) {
+    if (newly_pushed && ((key == _activeKey && _previousKey) == 0 || (key == _previousKey))) {
+        saved_releases.push_back(key);
+        return;
+    }
+
     if (key == _activeKey && _previousKey != 0) {
         _activeKey = _previousKey;
         _previousKey = 0;
@@ -42,7 +52,7 @@ bool MovementController::isReady() const {
 }
 
 void MovementController::execute() {
-    if (!isReady()) {
+    if (!isReady() || _activeKey == 0) {
         return;
     }
 
@@ -77,5 +87,13 @@ void MovementController::execute() {
     else if (_activeKey == 'd') {
         _self->moveRight();
         expensiveLast = false;
+    }
+
+    if (newly_pushed) {
+        newly_pushed = false;
+        for (const char & c : saved_releases) {
+            released(c);
+        }
+        saved_releases.clear();
     }
 }
