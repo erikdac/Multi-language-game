@@ -5,9 +5,9 @@
 
 #include <iostream>
 #include <chrono>
-#include "unistd.h"
+#include <thread>
 
-static const unsigned int MAX_FPS = 30;
+static const int MAX_FPS = 50;
 
 Window::Window(QWidget * parent)
     : StackedWidget(parent)
@@ -40,11 +40,12 @@ void Window::gameLoop() {
             emit setIndex(_nextIndex);
             _nextIndex = -1;
         }
-        currentState()->process();
         QCoreApplication::processEvents();
+        currentState()->process();
         auto end = std::chrono::high_resolution_clock::now();
         int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        usleep(((1000/MAX_FPS) - diff) * 1000);
+        int delay = (1000/MAX_FPS) - diff;
+        std::this_thread::sleep_for (std::chrono::milliseconds(delay));
     }
 }
 
