@@ -31,9 +31,6 @@ class OnlineWidget : public GameState {
 
     MovementController * _movementController;
 
-    bool _isRunning;
-    bool _isFinished;
-
 public:
     OnlineWidget(QWidget *);
     ~OnlineWidget();
