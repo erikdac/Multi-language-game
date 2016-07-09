@@ -31,10 +31,7 @@ func createClient(netection net.Conn) *Client {
  */
 func (client *Client) handleRequest() {
 	if client.login() == true {
-		playerToClient[client.player.Name] = client
-		AddPlayer(&client.player)
-		client.player.sendLocalMap()
-		go client.reader()
+		newClients <- client
 	} else {
 		client.net.Disconnect()
 	}

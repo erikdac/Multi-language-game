@@ -1,6 +1,3 @@
-// Written by Erik Dackander.
-// Last updated 2015-01-20.
-
 package main
 
 import (
@@ -20,9 +17,6 @@ const (
 	CONNECTION_TYPE = "tcp"
 )
 
-// Binds the player names to their clients.
-var playerToClient map[string]*Client
-
 func main() {
 
 	err := InitiateGameStructure()
@@ -30,8 +24,6 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	playerToClient = make(map[string]*Client)
 
 	// Sets up the server.
 	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)
@@ -46,6 +38,7 @@ func main() {
 	fmt.Println("Listening on " + CONNECTION_HOST + ":" + CONNECTION_PORT)
 
 	go serverMenu()
+	go gameLoop()
 
 	// Listens for the incoming connections.
 	for {
@@ -66,25 +59,20 @@ func main() {
  * to an integer.
  */
 func serverMenu() {
+	printMenu()
 	for {
-		fmt.Println()
-		fmt.Println("(1) Online clients, (2) Kick player, (3) Exit")
-		choice, _ := strconv.Atoi(readKeyboard())
-
-		switch choice {
-		case 1:
-			onlineList()
-			break
-		case 2:
-			kickPlayer()
-			break
-		case 3:
-			shutdown()
-			break
-		default:
-			fmt.Println("Invalid input!")
+		choice, err := strconv.Atoi(readKeyboard())
+		if err != nil {
+			fmt.Println("Invalid format!")
+		} else {
+			adminCommand <- choice
 		}
 	}
+}
+
+func printMenu() {
+	fmt.Println()
+	fmt.Println("(1) Online clients, (2) Kick player, (3) Exit")
 }
 
 /**

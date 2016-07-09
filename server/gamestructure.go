@@ -7,6 +7,9 @@ import (
 
 var playerList map[string]*Player
 
+// Binds the player names to their clients.
+var playerToClient = make(map[string]*Client)
+
 func InitiateGameStructure() (error) {
 
 	err := resetDatabaseOnlineList()
