@@ -119,14 +119,8 @@ func kickPlayer() {
 
 func shutdown() {
 	fmt.Println("SHUTTING DOWN!")
-	var wg sync.WaitGroup
 	for _, c := range playerToClient {
-		wg.Add(1)
-		go func (client *Client)() {
-			client.disconnect()
-			wg.Done()
-		}(c)
+		client.disconnect()
 	}
-	wg.Wait()
 	os.Exit(0)
 }

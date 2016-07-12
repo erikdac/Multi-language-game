@@ -78,7 +78,7 @@ func (client *Client) reader() {
 		data, err := client.net.ReadPacket()
 		if err != nil {
 			if _, ok := playerToClient[client.player.Name]; ok {
-				client.disconnect()
+				disconnects <- client
 			}
 			break
 		}
@@ -111,9 +111,9 @@ func (client *Client) handleInput(input []byte) {
 // with the client, removes it from the Hashmaps and also change its 
 // online status in the database to 'false'.
 func (client *Client) disconnect() {
+	RemovePlayer(&client.player)
 	delete(playerToClient, client.player.Name)
 	client.net.Disconnect()
-	RemovePlayer(&client.player)
 	client.player.logOut()
 }
 

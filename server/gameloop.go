@@ -11,11 +11,13 @@ const (
 
 var adminCommand = make(chan int)
 var newClients = make(chan *Client, 8)
+var disconnects = make(chan *Client, 8)
 
 func gameLoop() {
 	for {
 		processAdminCommand()
 		processNewClients()
+		processDisconnects()
 	    time.Sleep((1000 / MAX_TICK_RATE) * time.Millisecond)
 	}
 }
@@ -54,4 +56,12 @@ func addClient(client *Client) {
 	AddPlayer(&client.player)
 	client.player.sendLocalMap()
 	go client.reader()
+}
+
+func processDisconnects() {
+	lim := len(disconnects)
+	for i := 0; i < lim; i++ {
+		client := <- disconnects
+		client.disconnect()
+	}
 }
