@@ -15,14 +15,15 @@ var disconnects = make(chan *Client, 8)
 
 func gameLoop() {
 	for {
-		processAdminCommand()
+		processAdmin()
 		processNewClients()
+		processInput()
 		processDisconnects()
 	    time.Sleep((1000 / MAX_TICK_RATE) * time.Millisecond)
 	}
 }
 
-func processAdminCommand() {
+func processAdmin() {
 	select {
 	case choice := <- adminCommand:
 		switch choice {
@@ -56,6 +57,27 @@ func addClient(client *Client) {
 	AddPlayer(&client.player)
 	client.player.sendLocalMap()
 	go client.reader()
+}
+
+func processInput() {
+	for _, c := range playerToClient {
+		lim := len(c.input)
+		for i := 0; i < lim; i++ {
+			data := <- c.input
+			c.handleInput(data)
+		}
+	}
+}
+
+// Function used to handle whatever data the server has recieved from the user.
+func (client *Client) handleInput(data map[string]string) {
+	if data["Type"] == "Movement" {
+		client.player.Movement(data)
+	} else if data["Type"] == "Attack" {
+		client.player.target <- data
+	} else {
+		fmt.Println("FAILED PACKAGE: ", data)
+	}
 }
 
 func processDisconnects() {

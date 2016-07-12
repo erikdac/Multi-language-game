@@ -3,13 +3,13 @@ package main
 import (
 	"net"
 	"encoding/json"
-	"fmt"
 	"./nethandler"
 )
 
 type Client struct {
 	net			nethandler.Nethandler
 	player     	Player
+	input		(chan map[string]string)
 }
 
 /**
@@ -19,6 +19,7 @@ type Client struct {
 func createClient(netection net.Conn) *Client {
 	client := new(Client)
 	client.net = nethandler.New(netection)
+	client.input = make(chan map[string]string, 16)
 	return client
 }
 
@@ -83,27 +84,12 @@ func (client *Client) reader() {
 			break
 		}
 
-		go client.handleInput(data)
-	}
-}
-
-/**
- * Function used to handle whatever data the server has recieved from the user.
- */
-func (client *Client) handleInput(input []byte) {
-
-	data, errorResponse := parseJson(input)
-	if errorResponse != nil {
-		client.net.Write(errorResponse)
-		return;
-	}
-
-	if data["Type"] == "Movement" {
-		client.player.Movement(data)
-	} else if data["Type"] == "Attack" {
-		client.player.target <- data
-	} else {
-		fmt.Println("FAILED PACKAGE: ", data)
+		json, errorResponse := parseJson(data)
+		if errorResponse != nil {
+			client.net.Write(errorResponse)
+		} else {
+			client.input <- json
+		}
 	}
 }
 

@@ -30,12 +30,8 @@ func InitiateGameStructure() (error) {
 func AddPlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
-	map_mutex.Lock()
-	player.mutex.Lock()
 	section[player.Name] = player
 	playerList[player.Name] = player
-	player.mutex.Unlock()
-	map_mutex.Unlock()
 	go player.Auto_attack()
 	sendPlayerUpdate(player, false);
 }
@@ -43,13 +39,9 @@ func AddPlayer(player *Player) {
 func RemovePlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
-	player.mutex.Lock()
 	player.target <- map[string]string {"Condition": "Shutdown"}
-	map_mutex.Lock()
 	delete(section, player.Name)
 	delete(playerList, player.Name)
-	player.mutex.Unlock()
-	map_mutex.Unlock()
 	sendPlayerUpdate(player, true)
 }
 
@@ -60,12 +52,10 @@ func sendPlayerUpdate(player *Player, removed bool) {
 	} else {
 		temp = "Player_removed"
 	}
-	player.mutex.Lock()
 	packet := player_update_packet {
 		Type: temp,
 		Player: *player,
 	}
-	player.mutex.Unlock()
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range player.LocalPlayerMap() {
@@ -74,7 +64,6 @@ func sendPlayerUpdate(player *Player, removed bool) {
 }
 
 func playerAttacked(victim *Player, attacker string, damage int) {
-	victim.mutex.Lock()
 	victim.Health -= damage
 	packet := player_attacked_packet {
 		Type: "Attacked",
@@ -83,7 +72,6 @@ func playerAttacked(victim *Player, attacker string, damage int) {
 	}
 	data, _ := json.Marshal(packet)
 	playerToClient[victim.Name].sendPacket(data)
-	victim.mutex.Unlock()
 
 	sendPlayerUpdate(victim, false)
 }

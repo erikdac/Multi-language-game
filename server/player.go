@@ -43,7 +43,6 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 
 	var list []Player
 
-	map_mutex.Lock()
 	for i := fromX; i <= toX; i++ {
 		for j := fromY; j <= toY; j++ {
 			for _, p := range map_players[i][j] {
@@ -55,7 +54,6 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 			}
 		}
 	}
-	map_mutex.Unlock()
 
 	return list
 }
@@ -100,23 +98,15 @@ func (player *Player) Movement(movement map[string]string) {
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
 		oldSection := map_players[oldSectionX][oldSectionY]
 		newSection := map_players[newSectionX][newSectionY]
-		map_mutex.Lock()
 		delete(oldSection, player.Name)
-		map_mutex.Unlock()
 		sendPlayerUpdate(player, true)
-		player.mutex.Lock()
 		player.X = newX
 		player.Y = newY
-		player.mutex.Unlock()
-		map_mutex.Lock()
 		newSection[player.Name] = player
-		map_mutex.Unlock()
 		player.sendLocalMap()
 	} else {
-		player.mutex.Lock()
 		player.X = newX
 		player.Y = newY
-		player.mutex.Unlock()
 	}
 
 	sendPlayerUpdate(player, false);
@@ -170,10 +160,6 @@ func (player *Player) Auto_attack() {
 }
 
 func (player *Player) distanceToPlayer(p *Player) (int) {
-	player.mutex.Lock()
-	p.mutex.Lock()
 	distance := math.Hypot(float64(player.X - p.X), float64(player.Y - p.Y))
-	p.mutex.Unlock()
-	player.mutex.Unlock()
 	return int(distance)
 }

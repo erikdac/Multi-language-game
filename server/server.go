@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 // The connection settings.
@@ -110,7 +109,7 @@ func kickPlayer() {
 	name := readKeyboard()
 	client, exists := playerToClient[name]
 	if exists == true {
-		client.disconnect()
+		client.kick()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")
@@ -120,7 +119,7 @@ func kickPlayer() {
 func shutdown() {
 	fmt.Println("SHUTTING DOWN!")
 	for _, c := range playerToClient {
-		client.disconnect()
+		c.kick()
 	}
 	os.Exit(0)
 }
