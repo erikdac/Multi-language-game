@@ -14,12 +14,15 @@ var newClients = make(chan *Client, 8)
 var disconnects = make(chan *Client, 8)
 
 func gameLoop() {
+	runtime := int64((time.Second / time.Nanosecond) / MAX_TICK_RATE)
 	for {
+		start := time.Now()
 		processAdmin()
-		processNewClients()
-		processInput()
-		processDisconnects()
-	    time.Sleep((1000 / MAX_TICK_RATE) * time.Millisecond)
+		processClients()
+		processAi()
+		elapsed := time.Since(start).Nanoseconds()
+		delay := time.Duration(runtime - elapsed)
+	    time.Sleep(delay)
 	}
 }
 
@@ -42,6 +45,17 @@ func processAdmin() {
 		printMenu()
 	default:
 	}
+}
+
+func processClients() {
+	processNewClients()
+	processInput()
+	processAutoAttack()
+	processDisconnects()
+}
+
+func processAi() {
+
 }
 
 func processNewClients() {
@@ -74,9 +88,19 @@ func (client *Client) handleInput(data map[string]string) {
 	if data["Type"] == "Movement" {
 		client.player.Movement(data)
 	} else if data["Type"] == "Attack" {
-		client.player.target <- data
+		if data["Condition"] == "Start" {
+				client.player.target = data["Victim"]
+		} else if data["Condition"] == "Stop" {
+			client.player.target = ""
+		}
 	} else {
 		fmt.Println("FAILED PACKAGE: ", data)
+	}
+}
+
+func processAutoAttack() {
+	for _, p := range playerList {
+		p.Auto_attack()
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
+	"time"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
@@ -73,8 +74,8 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	player.max_health = 100  + (player.Level - 1) * 5
 	player.Mana = 12
 	player.max_mana = 20 + (player.Level - 1) * 2 
-	player.target = make(chan map[string]string)
-
+	player.target = ""
+	player.last_attack = time.Now()
 
 	return player, err		
 }

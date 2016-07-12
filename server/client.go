@@ -12,10 +12,6 @@ type Client struct {
 	input		(chan map[string]string)
 }
 
-/**
- * Creates the client with its netection and channel.
- * Returns a pointer to the client.
- */
 func createClient(netection net.Conn) *Client {
 	client := new(Client)
 	client.net = nethandler.New(netection)
@@ -23,13 +19,6 @@ func createClient(netection net.Conn) *Client {
 	return client
 }
 
-/**
- * This function is called everytime a new client has netected.
- * It calls the function 'accountManager()' so that the client can login.
- * If the login is successful it will set up a reader-function so the client
- * can talk to the server. It also adds it to the clientList with its remote
- * adress as a "key".
- */
 func (client *Client) handleRequest() {
 	if client.login() == true {
 		newClients <- client
@@ -93,16 +82,6 @@ func (client *Client) reader() {
 	}
 }
 
-// This method is called when a client has dinetected. It closes the netection 
-// with the client, removes it from the Hashmaps and also change its 
-// online status in the database to 'false'.
-func (client *Client) disconnect() {
-	RemovePlayer(&client.player)
-	delete(playerToClient, client.player.Name)
-	client.net.Disconnect()
-	client.player.logOut()
-}
-
 func parseJson(input []byte) (map[string]string, []byte) {
 	var data map[string]string
 	err := json.Unmarshal(input, &data)
@@ -113,6 +92,13 @@ func parseJson(input []byte) (map[string]string, []byte) {
 	} else {
 		return data, nil
 	}
+}
+
+func (client *Client) disconnect() {
+	RemovePlayer(&client.player)
+	delete(playerToClient, client.player.Name)
+	client.net.Disconnect()
+	client.player.logOut()
 }
 
 func (client *Client) kick() {

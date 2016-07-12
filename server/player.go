@@ -4,21 +4,20 @@ import (
 	"encoding/json"
 	"strconv"
 	"math"
-	"sync"
 	"time"
 )
 
 type Player struct {
-	Name 		string
-	X   		int
-	Y 			int
-	Level		int
-	Health 		int
-	max_health 	int
-	Mana		int
-	max_mana	int
-	target		(chan map[string]string)
-	mutex 		sync.Mutex
+	Name 			string
+	X   			int
+	Y 				int
+	Level			int
+	Health 			int
+	max_health 		int
+	Mana			int
+	max_mana		int
+	target			string
+	last_attack		time.Time
 }
 
 func (player *Player) sendLocalMap() {
@@ -47,9 +46,7 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 		for j := fromY; j <= toY; j++ {
 			for _, p := range map_players[i][j] {
 				if p.Name != player.Name {
-					p.mutex.Lock()
 					list = append(list, *p)
-					p.mutex.Unlock()
 				}
 			}
 		}
@@ -97,11 +94,11 @@ func (player *Player) Movement(movement map[string]string) {
 	oldSectionX, oldSectionY := SliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
 		oldSection := map_players[oldSectionX][oldSectionY]
-		newSection := map_players[newSectionX][newSectionY]
 		delete(oldSection, player.Name)
 		sendPlayerUpdate(player, true)
 		player.X = newX
 		player.Y = newY
+		newSection := map_players[newSectionX][newSectionY]
 		newSection[player.Name] = player
 		player.sendLocalMap()
 	} else {
@@ -114,49 +111,25 @@ func (player *Player) Movement(movement map[string]string) {
 
 // TODO: Clean up this function!
 func (player *Player) Auto_attack() {
-	var target_mutex = &sync.Mutex{}
-	var target string
-    blocking := &sync.Cond{L: &sync.Mutex{}}
-	blocking.L.Lock()
-	running := true
-	paused := false
-	go func() {
-		for running == true {
-			data := <- player.target
-			if data["Condition"] == "Start" {
-				target_mutex.Lock()
-				target = data["Victim"]
-				target_mutex.Unlock()
-				paused = false
-				blocking.Signal()
-			} else if data["Condition"] == "Stop" {
-				paused = true
-			} else if data["Condition"] == "Shutdown" {
-				running = false
-				paused = false
-				blocking.Signal()
-			}
+	if victim, ok := playerList[player.target]; ok {
+		if time.Since(player.last_attack).Seconds() > 2 {
+			player.attack(victim, 5) // TODO: Make some calculation for the damage.
+			player.last_attack = time.Now()
 		}
-	}()
-
-	blocking.Wait()
-	for running == true {
-	    target_mutex.Lock()
-	    victim := playerList[target];
-	    target_mutex.Unlock()
-	    if victim == nil {
-			running = false
-			paused = false
-		} else if player.distanceToPlayer(victim) <= 1 {
-	    	go playerAttacked(victim, player.Name, 5)	// TODO: Make some calculation for the damage.
-	    	time.Sleep(2000 * time.Millisecond)
-	    } else {
-	    	time.Sleep(100 * time.Millisecond)
-	    }
-	    if paused {
-			blocking.Wait()
-	    }
 	}
+}
+
+func (attacker *Player) attack(victim *Player, damage int) {
+	victim.Health -= damage
+	packet := player_attacked_packet {
+		Type: "Attacked",
+		Health: victim.Health,
+		Attacker: attacker.Name,
+	}
+	data, _ := json.Marshal(packet)
+	playerToClient[victim.Name].sendPacket(data)
+
+	sendPlayerUpdate(victim, false)
 }
 
 func (player *Player) distanceToPlayer(p *Player) (int) {
