@@ -76,18 +76,20 @@ func (player *Player) localEnvironmentMap() ([]Environment) {
 }
 
 func (player *Player) Movement(movement map[string]string) {
-	newX, _ := strconv.Atoi(movement["ToX"])
-	newY, _ := strconv.Atoi(movement["ToY"])
+	newX, err := strconv.Atoi(movement["ToX"])
+	if err != nil || newX < 0 || newX >= MAP_X * MAP_SLICE {
+		player.moveCorrection()
+		return
+	}
+	newY, err := strconv.Atoi(movement["ToY"])
+	if err != nil || newY < 0 || newY >= MAP_Y * MAP_SLICE {
+		player.moveCorrection()
+		return
+	}
 
-	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1 || !environment_map[newX][newY].isWalkable {
-		packet := player_moved_packet {
-			Type: "Moved",
-			NewX: player.X,
-			NewY: player.Y,
-		}
-		data,  _ := json.Marshal(packet)
-		playerToClient[player.Name].sendPacket(data)
-		return;
+	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1  || !environment_map[newX][newY].isWalkable {
+		player.moveCorrection()
+		return
 	}
 
 	newSectionX, newSectionY := SliceMap(newX, newY)
@@ -107,6 +109,16 @@ func (player *Player) Movement(movement map[string]string) {
 	}
 
 	sendPlayerUpdate(player, false);
+}
+
+func (player *Player) moveCorrection() {
+	packet := player_moved_packet {
+		Type: "Moved",
+		NewX: player.X,
+		NewY: player.Y,
+	}
+	data,  _ := json.Marshal(packet)
+	playerToClient[player.Name].sendPacket(data)
 }
 
 // TODO: Clean up this function!
