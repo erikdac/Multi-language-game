@@ -29,16 +29,20 @@ bool Environment::operator!=(const Environment & other) const {
 
 std::string Environment::to_string() const {
 	std::string str = "";
+	char isWalkable;
 	switch(_type) {
 		case Environment::GRASS:
 			str = "GRASS";
+			isWalkable = 'T';
 			break;
 		case Environment::STONE:
 			str = "STONE";
+			isWalkable = 'F';
 			break;
 		case Environment::WATER:
 			str = "WATER";
+			isWalkable = 'F';
 			break;
 	}
-	return str + " " + std::to_string(_x) + " " + std::to_string(_y);
+	return str + " " + std::to_string(_x) + " " + std::to_string(_y) + " " + isWalkable;
 }

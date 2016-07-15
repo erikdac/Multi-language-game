@@ -4,6 +4,9 @@ import (
 	"os"
 	"errors"
 	"encoding/json"
+	"bufio"
+	"strings"
+	"strconv"
 )
 
 const (
@@ -26,7 +29,7 @@ var playerList = make(map[string]*Player)
 var playerToClient = make(map[string]*Client)
 
 var map_players [MAP_X][MAP_Y] (map[string]*Player)
-var map_environment [MAP_X][MAP_Y] ([]Environment)
+var environment_map [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
 
 func InitiateGame() (error) {
 
@@ -54,19 +57,19 @@ func loadMap() (error) {
 	if err != nil {
 		return err
 	}
-	defer file.Close() 
+	defer file.Close()
 
-	scanner := NewMapScanner(file)
-	for i := 0; i < MAP_X; i++ {
-		for j := 0; j < MAP_Y; j++ {
-			section, err := scanner.NextSection()
-			if err != nil {
-				return err
-			}
-			map_environment[i][j] = section
-		}
-	}
-	
+	scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+    	line := scanner.Text()
+    	v := strings.Split(line, " ")
+    	env := v[0]
+		x, _ := strconv.Atoi(v[1])
+		y, _ := strconv.Atoi(v[2])
+		isWalkable := (v[3] == "T")
+		e := Environment{env, x, y, isWalkable}
+    	environment_map[e.X][e.Y] = e
+    }
 	return nil
 }
 

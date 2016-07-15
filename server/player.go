@@ -58,17 +58,17 @@ func (player *Player) LocalPlayerMap() ([]Player) {
 func (player *Player) localEnvironmentMap() ([]Environment) {
 	x, y := SliceMap(player.X, player.Y)
 
-	fromX := int(math.Max(float64(x-1), 0.0))
-	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
+	fromX := int(math.Max(float64(x-1), 0.0)) * MAP_SLICE
+	toX := int(math.Min(float64(x+2), float64(MAP_X))) * MAP_SLICE
 
-	fromY := int(math.Max(float64(y-1), 0.0))
-	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
+	fromY := int(math.Max(float64(y-1), 0.0)) * MAP_SLICE
+	toY := int(math.Min(float64(y+2), float64(MAP_Y))) * MAP_SLICE
 
 	var list []Environment
 
-	for i := fromX; i <= toX; i++ {
-		for j := fromY; j <= toY; j++ {
-			list = append(list, map_environment[i][j]...)
+	for i := fromX; i < toX; i++ {
+		for j := fromY; j < toY; j++ {
+			list = append(list, environment_map[i][j])
 		}
 	}
 
@@ -79,7 +79,7 @@ func (player *Player) Movement(movement map[string]string) {
 	newX, _ := strconv.Atoi(movement["ToX"])
 	newY, _ := strconv.Atoi(movement["ToY"])
 
-	if (math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1) {
+	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1 || !environment_map[newX][newY].isWalkable {
 		packet := player_moved_packet {
 			Type: "Moved",
 			NewX: player.X,
@@ -112,7 +112,7 @@ func (player *Player) Movement(movement map[string]string) {
 // TODO: Clean up this function!
 func (player *Player) Auto_attack() {
 	if victim, ok := playerList[player.target]; ok {
-		if time.Since(player.last_attack).Seconds() > 2 {
+		if time.Since(player.last_attack).Seconds() > 2 && player.distanceToPlayer(victim) <= 1 {
 			player.attack(victim, 5) // TODO: Make some calculation for the damage.
 			player.last_attack = time.Now()
 		}
