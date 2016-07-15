@@ -121,9 +121,9 @@ func (player *Player) moveCorrection() {
 	playerToClient[player.Name].sendPacket(data)
 }
 
-// TODO: Clean up this function!
 func (player *Player) Auto_attack() {
-	if victim, ok := playerList[player.target]; ok {
+	if c, ok := playerToClient[player.target]; ok {
+		victim := &c.player
 		if time.Since(player.last_attack).Seconds() > 2 && player.distanceToPlayer(victim) <= 1 {
 			player.attack(victim, 5) // TODO: Make some calculation for the damage.
 			player.last_attack = time.Now()

@@ -99,8 +99,8 @@ func (client *Client) handleInput(data map[string]string) {
 }
 
 func processAutoAttack() {
-	for _, p := range playerList {
-		p.Auto_attack()
+	for _, c := range playerToClient {
+		c.player.Auto_attack()
 	}
 }
 

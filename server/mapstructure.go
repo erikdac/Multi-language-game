@@ -23,8 +23,6 @@ type Environment struct {
 	isWalkable	bool
 }
 
-var playerList = make(map[string]*Player)
-
 // Binds the player names to their clients.
 var playerToClient = make(map[string]*Client)
 
@@ -94,7 +92,6 @@ func AddPlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	section[player.Name] = player
-	playerList[player.Name] = player
 	sendPlayerUpdate(player, false);
 }
 
@@ -102,7 +99,6 @@ func RemovePlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	delete(section, player.Name)
-	delete(playerList, player.Name)
 	sendPlayerUpdate(player, true)
 }
 
