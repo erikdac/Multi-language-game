@@ -25,6 +25,7 @@ func (player *Player) sendLocalMap() {
 		Type: "Map",
 		Players: player.LocalPlayerMap(),
 		Environment: player.localEnvironmentMap(),
+		Creatures: player.localCreatureMap(),
 	}
 	data,  _ := json.Marshal(packet)
 	playerToClient[player.Name].sendPacket(data)
@@ -69,6 +70,29 @@ func (player *Player) localEnvironmentMap() ([]Environment) {
 	for i := fromX; i < toX; i++ {
 		for j := fromY; j < toY; j++ {
 			list = append(list, environment_map[i][j])
+		}
+	}
+
+	return list
+}
+
+func (player *Player) localCreatureMap() ([]Creature) {
+
+	x, y := SliceMap(player.X, player.Y)
+
+	fromX := int(math.Max(float64(x-1), 0.0))
+	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
+
+	fromY := int(math.Max(float64(y-1), 0.0))
+	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
+
+	var list []Creature
+
+	for i := fromX; i <= toX; i++ {
+		for j := fromY; j <= toY; j++ {
+			for _, c := range creature_map[i][j] {
+				list = append(list, *c)
+			}
 		}
 	}
 
@@ -124,7 +148,7 @@ func (player *Player) moveCorrection() {
 func (player *Player) Auto_attack() {
 	if c, ok := playerToClient[player.target]; ok {
 		victim := &c.player
-		if time.Since(player.last_attack).Seconds() > 2 && player.distanceToPlayer(victim) <= 1 {
+		if time.Since(player.last_attack).Seconds() > 2 && player.distanceTo(victim) <= 1 {
 			player.attack(victim, 5) // TODO: Make some calculation for the damage.
 			player.last_attack = time.Now()
 		}
@@ -144,7 +168,7 @@ func (attacker *Player) attack(victim *Player, damage int) {
 	sendPlayerUpdate(victim, false)
 }
 
-func (player *Player) distanceToPlayer(p *Player) (int) {
+func (player *Player) distanceTo(p *Player) (int) {
 	distance := math.Hypot(float64(player.X - p.X), float64(player.Y - p.Y))
 	return int(distance)
 }

@@ -4,45 +4,22 @@ Environment::Environment(const Environment::Type type, const int x, const int y)
 
 }
 
-int Environment::x() const {
-	return _x;
-}
-
-int Environment::y() const {
-	return _y;
-}
-
-Environment::Type Environment::type() const {
-	return _type;
-}
-
-bool Environment::operator<(const Environment & other) const {
-	if(_x == other.x()) {
-		return _y < other.y();			
-	}
-	return _x < other.x();
-}
-
-bool Environment::operator!=(const Environment & other) const {
-	return (_x != other.x() || _y != other.y());
-}
-
 std::string Environment::to_string() const {
 	std::string str = "";
 	char isWalkable;
 	switch(_type) {
-		case Environment::GRASS:
-			str = "GRASS";
-			isWalkable = 'T';
-			break;
-		case Environment::STONE:
-			str = "STONE";
-			isWalkable = 'F';
-			break;
-		case Environment::WATER:
-			str = "WATER";
-			isWalkable = 'F';
-			break;
+	case Environment::GRASS:
+		str = "GRASS";
+		isWalkable = 'T';
+		break;
+	case Environment::STONE:
+		str = "STONE";
+		isWalkable = 'F';
+		break;
+	case Environment::WATER:
+		str = "WATER";
+		isWalkable = 'F';
+		break;
 	}
 	return str + " " + std::to_string(_x) + " " + std::to_string(_y) + " " + isWalkable;
 }

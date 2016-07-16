@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "environment.hpp"
+#include "creature.hpp"
 
 static const int MAP_X = 50;
 static const int MAP_Y = 50;
@@ -27,6 +28,7 @@ void writeToFile(std::ofstream & file, std::vector<Environment> & vec) {
 
 int main() {
 	std::vector<Environment> environment_map;
+	std::vector<Creature> creature_map;
 	srand(std::time(NULL));	// For random generating the environment.
 
 	// Generate left water line
@@ -46,6 +48,10 @@ int main() {
 		for (int y = MAP_SLICE; y < MAP_Y * MAP_SLICE - MAP_SLICE; ++y) {
 			Environment env = generateEnvironment(x, y);
 			environment_map.push_back(env);
+			if (std::rand() % 1000 == 0) {
+				Creature cr(Creature::TROLL, x, y);
+				creature_map.push_back(cr);
+			}
 		}
 
 		for(int y =  MAP_Y * MAP_SLICE - MAP_SLICE; y < MAP_Y * MAP_SLICE; ++y) {
@@ -64,6 +70,14 @@ int main() {
 
 	std::ofstream file;
 	file.open("map.mf");
-	writeToFile(file, environment_map);
+	for (const Environment & e : environment_map) {
+		file << e.to_string() << std::endl;
+	} 
+	file.close();
+
+	file.open("spawns.mf");
+	for (const Creature & c : creature_map) {
+		file << c.to_string() << std::endl;
+	} 
 	file.close();
 }

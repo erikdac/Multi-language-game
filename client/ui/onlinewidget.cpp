@@ -58,6 +58,7 @@ void OnlineWidget::processNetwork() {
     if (packet.empty()) {
         return;
     }
+    std::cout << packet << std::endl;
 
     std::string error;
     Json data = Json::parse(packet, error);

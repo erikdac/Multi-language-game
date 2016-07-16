@@ -13,7 +13,8 @@ const (
 	MAP_X = 50
 	MAP_Y = 50
 	MAP_SLICE = 14
-	MAP_FILE = "map.mf"
+	ENVIRONMENT_FILE = "map.mf"
+	SPAWN_FILE = "spawns.mf"
 )
 
 type Environment struct {
@@ -26,7 +27,8 @@ type Environment struct {
 // Binds the player names to their clients.
 var playerToClient = make(map[string]*Client)
 
-var map_players [MAP_X][MAP_Y] (map[string]*Player)
+var map_players [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
+var creature_map [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
 var environment_map [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
 
 func InitiateGame() (error) {
@@ -39,6 +41,7 @@ func InitiateGame() (error) {
 	for i := 0; i < MAP_X; i++ {
 		for j := 0; j < MAP_Y; j++ {
 			map_players[i][j] = map[string]*Player{}
+			creature_map[i][j] = map[string]*Creature{}
 		}
 	}
 
@@ -51,7 +54,20 @@ func InitiateGame() (error) {
 }
 
 func loadMap() (error) {
-	file, err := os.Open(MAP_FILE)
+	err := loadEnvironment()
+	if err != nil {
+		return err
+	}
+	err = loadSpawns()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loadEnvironment() (error) {
+	file, err := os.Open(ENVIRONMENT_FILE)
 	if err != nil {
 		return err
 	}
@@ -67,6 +83,28 @@ func loadMap() (error) {
 		isWalkable := (v[3] == "T")
 		e := Environment{env, x, y, isWalkable}
     	environment_map[e.X][e.Y] = e
+    }
+	return nil
+}
+
+func loadSpawns() (error) {
+	file, err := os.Open(SPAWN_FILE)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+    	line := scanner.Text()
+    	v := strings.Split(line, " ")
+    	cre := v[0]
+    	name := v[1]
+		x, _ := strconv.Atoi(v[2])
+		y, _ := strconv.Atoi(v[3])
+		c := Creature{cre, name, x, y, x, y, 10}
+		secX, secY := SliceMap(x, y)
+    	creature_map[secX][secY][c.Name] = &c
     }
 	return nil
 }
@@ -116,6 +154,24 @@ func sendPlayerUpdate(player *Player, removed bool) {
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range player.LocalPlayerMap() {
+		playerToClient[p.Name].sendPacket(data)
+	}
+}
+
+func sendCreatureUpdate(creature *Creature, removed bool) {
+	var temp string
+	if(!removed) {
+		temp = "Creature_update"
+	} else {
+		temp = "Creature_removed"
+	}
+	packet := creature_update_packet {
+		Type: temp,
+		Creature: *creature,
+	}
+	data,  _ := json.Marshal(packet)
+
+	for _, p := range creature.LocalPlayerMap() {
 		playerToClient[p.Name].sendPacket(data)
 	}
 }

@@ -117,12 +117,10 @@ Player * map::player_at_position(const unsigned int x, const unsigned int y) {
 }
 
 bool map::walkable(const int x, const int y) {
-    bool isWalkable = true;
     for (Environment * e : _environment) {
         if (e->x() == x && e->y() == y && e->isWalkable() == false) {
-            isWalkable = false;
-            break;
+            return false;
         }
     }
-    return isWalkable;
+    return true;
 }

@@ -10,8 +10,7 @@ type map_packet struct {
 	Type 		string
 	Players 	[]Player
 	Environment []Environment
-
-	// TODO: Add creature-array
+	Creatures	[]Creature
 }
 
 type player_update_packet struct {
@@ -29,4 +28,9 @@ type player_moved_packet struct {
 	Type 		string
 	NewX		int
 	NewY		int
+}
+
+type creature_update_packet struct {
+	Type 		string
+	Creature 	Creature
 }
