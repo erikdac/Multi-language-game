@@ -17,11 +17,18 @@
 
 Self * _self;
 
-std::vector<Player> _other_players;
+std::vector<Player *> _other_players;
 
 std::vector<Environment *> _environment;
 
 using namespace json11;
+
+void clearPlayers() {
+    for(const Player * p : _other_players) {
+        delete p;
+    }
+    _other_players.clear();
+}
 
 void clearEnvironment() {
     for(const Environment * e : _environment) {
@@ -32,18 +39,18 @@ void clearEnvironment() {
 
 void map::cleanMap() {
     delete _self;
-    _other_players.clear();
+    clearPlayers();
     clearEnvironment();
 }
 
-Player map::parse_player(const Json player) {
+Player * map::parse_player(const Json player) {
     std::string name = player["Name"].string_value();
     int x = player["X"].number_value();
     int y = player["Y"].number_value();
     int level = player["Level"].number_value();
     int health = player["Health"].number_value();
     int mana = player["Mana"].number_value();
-    return Player(name, x, y, level, health, mana);
+    return new Player(name, x, y, level, health, mana);
 }
 
 Environment * parse_environment(const Json & environment) {
@@ -78,39 +85,41 @@ void map::parse_map(const Json data) {
 }
 
 void map::update_player(const Json data, TargetWidget * targetWidget) {
-    Player player = map::parse_player(data["Player"]);
+    Player * player = map::parse_player(data["Player"]);
 
-    auto it = std::find (_other_players.begin(), _other_players.end(), player);
+    auto it = std::find_if(_other_players.begin(), _other_players.end(), [&player](const Player * p) {return *p == *player;});
     if(it != _other_players.end()) {
+        delete *it;
         *it = player;
     }
     else {
         _other_players.push_back(player);
     }
 
-    if(player == targetWidget->target()) {
-        targetWidget->update_target(player);
+    if (*player == targetWidget->target()) {
+        targetWidget->update_target(*player);
     }
 }
 
 void map::remove_player(const Json data, TargetWidget * targetWidget) {
-    Player player = map::parse_player(data["Player"]);
+    Player * player = map::parse_player(data["Player"]);
 
-    auto it = std::find (_other_players.begin(), _other_players.end(), player);
+    auto it = std::find_if(_other_players.begin(), _other_players.end(), [&player](const Player * p) {return *p == *player;});
     if (it != _other_players.end()) {
+        delete *it;
         *it = _other_players[_other_players.size()-1];
         _other_players.erase(_other_players.begin() + _other_players.size()-1);
     }
 
-    if(player == targetWidget->target()) {
+    if (*player == targetWidget->target()) {
         targetWidget->unselect_target();
     }
 }
 
-Player * map::player_at_position(const unsigned int x, const unsigned int y) {
-    for (Player & p : _other_players) {
-        if( p.x() == x && p.y() == y) {
-            return &p;
+Player * map::player_at_position(const int x, const int y) {
+    for (Player * p : _other_players) {
+        if( p->x() == x && p->y() == y) {
+            return p;
         }
     }
     return 0;

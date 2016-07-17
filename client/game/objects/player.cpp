@@ -11,7 +11,7 @@ Player::Player() : _name("") {
 
 }
 
-Player::Player(std::string name, unsigned int x, unsigned int y, unsigned int level, unsigned int health, unsigned int mana)
+Player::Player(std::string name, int x, int y, int level, int health, int mana)
     : _name(name), _x(x), _y(y), _level(level), _health(health), _mana(mana) {
 
 }
@@ -28,31 +28,31 @@ std::string Player::name() const {
     return _name;
 }
 
-unsigned int Player::x() const {
+int Player::x() const {
     return _x;
 }
 
-unsigned int Player::y() const {
+int Player::y() const {
     return _y;
 }
 
-unsigned int Player::level() const {
+int Player::level() const {
     return _level;
 }
 
-unsigned int Player::health() const {
+int Player::health() const {
     return _health;
 }
 
-unsigned int Player::max_health() const {
+int Player::max_health() const {
     return 100 + (_level - 1)*5;
 }
 
-unsigned int Player::mana() const {
+int Player::mana() const {
     return _mana;
 }
 
-unsigned int Player::max_mana() const {
+int Player::max_mana() const {
     return 20 + (_level - 1) * 2;
 }
 

@@ -17,10 +17,10 @@ const Player & TargetWidget::target() const {
     return _target;
 }
 
-void TargetWidget::check_target(const std::vector<Player> & vec) {
-    auto it = std::find(vec.begin(), vec.end(), _target);
+void TargetWidget::check_target(const std::vector<Player *> & vec) {
+    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * p) {return *p == _target;});
     if(it != vec.end()) {
-        update_target(*it);
+        update_target(**it);
     } else {
         unselect_target();
     }
@@ -30,13 +30,11 @@ void TargetWidget::select_target(const Player & p, bool combat) {
     update_target(p);
 
     if(combat) {
-        attack_mutex.lock();
         const Json data = Json::object {
             {"Type", "Attack"},
             {"Condition", "Start"},
             {"Victim", p.name()}
         };
-        attack_mutex.unlock();
         connection::output(data);
     } else {
         stop_attack();
@@ -51,9 +49,7 @@ void TargetWidget::unselect_target() {
 }
 
 void TargetWidget::update_target(const Player & p) {
-    attack_mutex.lock();
     _target = p;
-    attack_mutex.unlock();
     this->update();
 }
 

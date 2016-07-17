@@ -9,27 +9,27 @@ class Player : public Graphics {
 
 protected:
     std::string _name;
-    unsigned int _x;
-    unsigned int _y;
-    unsigned int _level;
-    unsigned int _health;
-    unsigned int _mana;
+    int _x;
+    int _y;
+    int _level;
+    int _health;
+    int _mana;
 
 public:
     Player();
-    Player(std::string, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+    Player(std::string, int, int, int, int, int);
     virtual ~Player();
 
-    std::string name() const;
-    unsigned int x() const;
-    unsigned int y() const;
-    unsigned int level() const;
-    unsigned int health() const;
-    unsigned int max_health() const;
-    unsigned int mana() const;
-    unsigned int max_mana() const;
-
     bool operator==(const Player &) const;
+
+    std::string name() const;
+    int x() const;
+    int y() const;
+    int level() const;
+    int health() const;
+    int max_health() const;
+    int mana() const;
+    int max_mana() const;
 
     unsigned int distance_to_player(const Player &) const;
 
