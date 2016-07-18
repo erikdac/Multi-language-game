@@ -17,17 +17,17 @@
 
 Self * _self;
 
-std::vector<Player *> _other_players;
+std::vector<Player *> _actors;
 
 std::vector<Environment *> _environment;
 
 using namespace json11;
 
-void clearPlayers() {
-    for(const Player * p : _other_players) {
+void clearActors() {
+    for(const Player * p : _actors) {
         delete p;
     }
-    _other_players.clear();
+    _actors.clear();
 }
 
 void clearEnvironment() {
@@ -39,7 +39,7 @@ void clearEnvironment() {
 
 void map::cleanMap() {
     delete _self;
-    clearPlayers();
+    clearActors();
     clearEnvironment();
 }
 
@@ -72,9 +72,9 @@ Environment * parse_environment(const Json & environment) {
 
 void map::parse_map(const Json data) {
     const Json::array players = data["Players"].array_items();
-    _other_players.clear();
+    _actors.clear();
     for (const Json & p : players) {
-        _other_players.push_back(map::parse_player(p));
+        _actors.push_back(map::parse_player(p));
     }
 
     const Json::array environments = data["Environment"].array_items();
@@ -87,37 +87,35 @@ void map::parse_map(const Json data) {
 void map::update_player(const Json data, TargetWidget * targetWidget) {
     Player * player = map::parse_player(data["Player"]);
 
-    auto it = std::find_if(_other_players.begin(), _other_players.end(), [&player](const Player * p) {return *p == *player;});
-    if(it != _other_players.end()) {
+    auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
+    if(it != _actors.end()) {
+        if (player->name() == targetWidget->target()) {
+            targetWidget->update_target(player);
+        }
         delete *it;
         *it = player;
     }
     else {
-        _other_players.push_back(player);
-    }
-
-    if (*player == targetWidget->target()) {
-        targetWidget->update_target(*player);
+        _actors.push_back(player);
     }
 }
 
 void map::remove_player(const Json data, TargetWidget * targetWidget) {
     Player * player = map::parse_player(data["Player"]);
 
-    auto it = std::find_if(_other_players.begin(), _other_players.end(), [&player](const Player * p) {return *p == *player;});
-    if (it != _other_players.end()) {
+    auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
+    if (it != _actors.end()) {
+        if (player->name() == targetWidget->target()) {
+            targetWidget->update_target(player);
+        }
         delete *it;
-        *it = _other_players[_other_players.size()-1];
-        _other_players.erase(_other_players.begin() + _other_players.size()-1);
-    }
-
-    if (*player == targetWidget->target()) {
-        targetWidget->unselect_target();
+        *it = _actors[_actors.size()-1];
+        _actors.erase(_actors.begin() + _actors.size()-1);
     }
 }
 
 Player * map::player_at_position(const int x, const int y) {
-    for (Player * p : _other_players) {
+    for (Player * p : _actors) {
         if( p->x() == x && p->y() == y) {
             return p;
         }

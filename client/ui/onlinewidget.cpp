@@ -69,7 +69,7 @@ void OnlineWidget::processNetwork() {
     }
     else if (type == "Map") {
         map::parse_map(data);
-        target_widget()->check_target(_other_players);
+        target_widget()->check_target(_actors);
     }
     else if (type == "Player_update") {
         map::update_player(data, target_widget());
@@ -97,7 +97,7 @@ void OnlineWidget::processMouse() {
         unsigned int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
         Player * player = map::player_at_position(x, y);
         if(player) {
-            target_widget()->select_target(*player, true);
+            target_widget()->select_target(player, true);
         }
         else {
             target_widget()->unselect_target();

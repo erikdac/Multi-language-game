@@ -25,7 +25,7 @@ protected:
     Ui::PlayerWidget *ui;
 
     virtual void paintEvent(QPaintEvent *);
-    void paint(QPaintEvent *, const Player & p);
+    void paint(QPaintEvent *, const Player * p);
 };
 
 #endif // PLAYERWIDGET_H

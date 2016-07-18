@@ -13,27 +13,31 @@ TargetWidget::TargetWidget(QWidget *parent) : PlayerWidget(parent) {
     this->setSizePolicy(sp_retain);
 }
 
-const Player & TargetWidget::target() const {
-    return _target;
+std::string TargetWidget::target() const {
+    if (_target) {
+        return _target->name();
+    } else {
+        return "";
+    }
 }
 
 void TargetWidget::check_target(const std::vector<Player *> & vec) {
-    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * p) {return *p == _target;});
+    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * p) {return p->name() == target();});
     if(it != vec.end()) {
-        update_target(**it);
+        update_target(*it);
     } else {
         unselect_target();
     }
 }
 
-void TargetWidget::select_target(const Player & p, bool combat) {
+void TargetWidget::select_target(Player * p, bool combat) {
     update_target(p);
 
     if(combat) {
         const Json data = Json::object {
             {"Type", "Attack"},
             {"Condition", "Start"},
-            {"Victim", p.name()}
+            {"Victim", p->name()}
         };
         connection::output(data);
     } else {
@@ -48,12 +52,13 @@ void TargetWidget::unselect_target() {
     stop_attack();
 }
 
-void TargetWidget::update_target(const Player & p) {
+void TargetWidget::update_target(Player * p) {
     _target = p;
     this->update();
 }
 
 void TargetWidget::stop_attack() {
+    _target = 0;
     const Json data = Json::object {
         {"Type", "Attack"},
         {"Condition", "Stop"}

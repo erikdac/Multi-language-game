@@ -13,7 +13,7 @@
 #include <mutex>
 
 extern Self * _self;
-extern std::vector<Player *> _other_players;
+extern std::vector<Player *> _actors;
 extern std::vector<Environment *> _environment;
 
 namespace map {

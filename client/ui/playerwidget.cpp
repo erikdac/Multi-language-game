@@ -24,10 +24,10 @@ void PlayerWidget::setPlayer(const Self * self) {
 }
 
 void PlayerWidget::paintEvent(QPaintEvent * event) {
-    paint(event, *_player);
+    paint(event, _player);
 }
 
-void PlayerWidget::paint(QPaintEvent * event, const Player & p) {
+void PlayerWidget::paint(QPaintEvent * event, const Player * p) {
     QRect rect = event->rect();
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -36,13 +36,13 @@ void PlayerWidget::paint(QPaintEvent * event, const Player & p) {
     font.setPointSize(14);
     font.setBold(true);
     painter.setFont(font);
-    painter.drawText(rect.width() * 0.08, 14, QString::fromStdString("(" + std::to_string(p.level()) + ") " + p.name()));
+    painter.drawText(rect.width() * 0.08, 14, QString::fromStdString("(" + std::to_string(p->level()) + ") " + p->name()));
 
-    int health_progress = (rect.width() * 0.9) * ((double)p.health() / p.max_health());
+    int health_progress = (rect.width() * 0.9) * ((double)p->health() / p->max_health());
     painter.fillRect(rect.width() * 0.05, 23, health_progress, 12, Qt::red);
     painter.drawRect(rect.width() * 0.05, 23, (rect.width() * 0.9), 12);
 
-    int mana_progress = (rect.width() * 0.9) * ((double)p.mana() / p.max_mana());
+    int mana_progress = (rect.width() * 0.9) * ((double)p->mana() / p->max_mana());
     painter.fillRect(rect.width() * 0.05, 43, mana_progress, 12, Qt::blue);
     painter.drawRect(rect.width() * 0.05, 43, (rect.width() * 0.9), 12);
 }
