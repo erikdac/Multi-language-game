@@ -93,8 +93,8 @@ void OnlineWidget::processMouse() {
     std::vector<QMouseEvent *> mouseEvents = _mouseHandler.events();
 
     for (const QMouseEvent * e : mouseEvents) {
-        unsigned int x = _self->x() - VIEW_WIDTH + e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2 + 1));
-        unsigned int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
+        int x = _self->x() - VIEW_WIDTH + e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2 + 1));
+        int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
         Player * player = map::player_at_position(x, y);
         if(player) {
             target_widget()->select_target(player, true);

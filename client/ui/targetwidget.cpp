@@ -3,6 +3,7 @@
 #include "network/connection.h"
 #include "json11/json11.hpp"
 
+#include <iostream>
 #include <QWidget>
 
 using namespace json11;
@@ -50,6 +51,7 @@ void TargetWidget::select_target(Player * p, bool combat) {
 void TargetWidget::unselect_target() {
     this->setVisible(false);
     stop_attack();
+    _target = 0;
 }
 
 void TargetWidget::update_target(Player * p) {
@@ -58,7 +60,6 @@ void TargetWidget::update_target(Player * p) {
 }
 
 void TargetWidget::stop_attack() {
-    _target = 0;
     const Json data = Json::object {
         {"Type", "Attack"},
         {"Condition", "Stop"}

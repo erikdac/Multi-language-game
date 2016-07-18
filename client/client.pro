@@ -50,7 +50,8 @@ HEADERS  += mainwindow.h \
     ui/gamestate.h \
     ui/stackedwidget.h \
     ui/window.h \
-    game/eventhandler.h
+    game/eventhandler.h \
+    game/objects/actor.h
 
 FORMS    += \
     ui/loginwidget.ui \

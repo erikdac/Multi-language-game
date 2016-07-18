@@ -1,35 +1,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "graphics.h"
+#include "actor.h"
 
 #include <string>
 
-class Player : public Graphics {
-
-protected:
-    std::string _name;
-    int _x;
-    int _y;
-    int _level;
-    int _health;
-    int _mana;
+class Player : public Actor {
 
 public:
-    Player();
     Player(std::string, int, int, int, int, int);
     virtual ~Player();
 
     bool operator==(const Player &) const;
 
-    std::string name() const;
-    int x() const;
-    int y() const;
-    int level() const;
-    int health() const;
-    int max_health() const;
-    int mana() const;
-    int max_mana() const;
+    virtual int max_health() const override;
+    virtual int max_mana() const override;
 
     unsigned int distance_to_player(const Player &) const;
 

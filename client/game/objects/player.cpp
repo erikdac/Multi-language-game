@@ -7,12 +7,13 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-Player::Player() : _name("") {
-
-}
-
-Player::Player(std::string name, int x, int y, int level, int health, int mana)
-    : _name(name), _x(x), _y(y), _level(level), _health(health), _mana(mana) {
+Player::Player(std::string name, int x, int y, int level, int health, int mana) {
+    _name = name;
+    _x = x;
+    _y = y;
+    _level = level;
+    _health = health;
+    _mana = mana;
 
 }
 
@@ -24,32 +25,8 @@ bool Player::operator==(const Player & other) const {
     return _name == other.name();
 }
 
-std::string Player::name() const {
-    return _name;
-}
-
-int Player::x() const {
-    return _x;
-}
-
-int Player::y() const {
-    return _y;
-}
-
-int Player::level() const {
-    return _level;
-}
-
-int Player::health() const {
-    return _health;
-}
-
 int Player::max_health() const {
     return 100 + (_level - 1)*5;
-}
-
-int Player::mana() const {
-    return _mana;
 }
 
 int Player::max_mana() const {

@@ -84,15 +84,14 @@ void map::parse_map(const Json data) {
     }
 }
 
+// TODO: Old player never deleted!
 void map::update_player(const Json data, TargetWidget * targetWidget) {
     Player * player = map::parse_player(data["Player"]);
-
     auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
     if(it != _actors.end()) {
         if (player->name() == targetWidget->target()) {
             targetWidget->update_target(player);
         }
-        delete *it;
         *it = player;
     }
     else {
@@ -100,15 +99,15 @@ void map::update_player(const Json data, TargetWidget * targetWidget) {
     }
 }
 
+// TODO: Old player never deleted!
 void map::remove_player(const Json data, TargetWidget * targetWidget) {
     Player * player = map::parse_player(data["Player"]);
 
     auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
     if (it != _actors.end()) {
         if (player->name() == targetWidget->target()) {
-            targetWidget->update_target(player);
+            targetWidget->unselect_target();
         }
-        delete *it;
         *it = _actors[_actors.size()-1];
         _actors.erase(_actors.begin() + _actors.size()-1);
     }
