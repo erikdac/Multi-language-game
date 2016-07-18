@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	MAX_TICK_RATE = 100
+	MAX_TICK_RATE = 10000
 )
 
 var adminCommand = make(chan int)
@@ -55,7 +55,9 @@ func processClients() {
 }
 
 func processAi() {
-
+	for _, creature := range creatureList {
+		creature.Process()
+	}
 }
 
 func processNewClients() {

@@ -27,6 +27,8 @@ type Environment struct {
 // Binds the player names to their clients.
 var playerToClient = make(map[string]*Client)
 
+var creatureList []*Creature
+
 var map_players [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
 var creature_map [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
 var environment_map [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
@@ -102,9 +104,10 @@ func loadSpawns() (error) {
     	name := v[1]
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
-		c := Creature{cre, name, x, y, x, y, 10}
+		c := Creature{Actor{name, x, y}, cre, x, y, 10}
 		secX, secY := SliceMap(x, y)
     	creature_map[secX][secY][c.Name] = &c
+    	creatureList = append(creatureList, &c)
     }
 	return nil
 }

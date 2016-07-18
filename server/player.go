@@ -8,9 +8,8 @@ import (
 )
 
 type Player struct {
-	Name 			string
-	X   			int
-	Y 				int
+	Actor
+
 	Level			int
 	Health 			int
 	max_health 		int
@@ -29,31 +28,6 @@ func (player *Player) sendLocalMap() {
 	}
 	data,  _ := json.Marshal(packet)
 	playerToClient[player.Name].sendPacket(data)
-}
-
-func (player *Player) LocalPlayerMap() ([]Player) {
-
-	x, y := SliceMap(player.X, player.Y)
-
-	fromX := int(math.Max(float64(x-1), 0.0))
-	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
-
-	fromY := int(math.Max(float64(y-1), 0.0))
-	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
-
-	var list []Player
-
-	for i := fromX; i <= toX; i++ {
-		for j := fromY; j <= toY; j++ {
-			for _, p := range map_players[i][j] {
-				if p.Name != player.Name {
-					list = append(list, *p)
-				}
-			}
-		}
-	}
-
-	return list
 }
 
 func (player *Player) localEnvironmentMap() ([]Environment) {
@@ -148,7 +122,7 @@ func (player *Player) moveCorrection() {
 func (player *Player) Auto_attack() {
 	if c, ok := playerToClient[player.target]; ok {
 		victim := &c.player
-		if time.Since(player.last_attack).Seconds() > 2 && player.distanceTo(victim) <= 1 {
+		if time.Since(player.last_attack).Seconds() > 2 && player.distanceTo(victim.X, victim.Y) <= 1 {
 			player.attack(victim, 5) // TODO: Make some calculation for the damage.
 			player.last_attack = time.Now()
 		}
@@ -166,9 +140,4 @@ func (attacker *Player) attack(victim *Player, damage int) {
 	playerToClient[victim.Name].sendPacket(data)
 
 	sendPlayerUpdate(victim, false)
-}
-
-func (player *Player) distanceTo(p *Player) (int) {
-	distance := math.Hypot(float64(player.X - p.X), float64(player.Y - p.Y))
-	return int(distance)
 }
