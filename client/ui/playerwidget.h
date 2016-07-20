@@ -2,6 +2,7 @@
 #define PLAYERWIDGET_H
 
 #include "game/objects/self.h"
+#include "game/objects/actor.h"
 
 #include <QWidget>
 
@@ -25,7 +26,7 @@ protected:
     Ui::PlayerWidget *ui;
 
     virtual void paintEvent(QPaintEvent *);
-    void paint(QPaintEvent *, const Player * p);
+    void paint(QPaintEvent *, const Actor *);
 };
 
 #endif // PLAYERWIDGET_H

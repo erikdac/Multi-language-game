@@ -1,6 +1,7 @@
 #ifndef TARGETWIDGET_H
 #define TARGETWIDGET_H
 
+#include "game/objects/actor.h"
 #include "game/objects/player.h"
 #include "ui/playerwidget.h"
 
@@ -10,16 +11,16 @@ class TargetWidget : public PlayerWidget {
 
     Q_OBJECT
 
-    Player * _target = 0;
+    Actor * _target = 0;
 
 public:
     TargetWidget(QWidget *parent);
 
     std::string target() const;
     void check_target(const std::vector<Player *> &);
-    void select_target(Player *, bool);
+    void select_target(Actor *, bool);
     void unselect_target();
-    void update_target(Player *);
+    void update_target(Actor *);
 
     void stop_attack();
 

@@ -23,7 +23,7 @@ std::string TargetWidget::target() const {
 }
 
 void TargetWidget::check_target(const std::vector<Player *> & vec) {
-    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * p) {return p->name() == target();});
+    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * a) {return a->name() == target();});
     if(it != vec.end()) {
         update_target(*it);
     } else {
@@ -31,14 +31,14 @@ void TargetWidget::check_target(const std::vector<Player *> & vec) {
     }
 }
 
-void TargetWidget::select_target(Player * p, bool combat) {
-    update_target(p);
+void TargetWidget::select_target(Actor * a, bool combat) {
+    update_target(a);
 
     if(combat) {
         const Json data = Json::object {
             {"Type", "Attack"},
             {"Condition", "Start"},
-            {"Victim", p->name()}
+            {"Victim", a->name()}
         };
         connection::output(data);
     } else {
@@ -54,8 +54,8 @@ void TargetWidget::unselect_target() {
     _target = 0;
 }
 
-void TargetWidget::update_target(Player * p) {
-    _target = p;
+void TargetWidget::update_target(Actor * a) {
+    _target = a;
     this->update();
 }
 
