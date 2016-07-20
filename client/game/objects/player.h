@@ -11,8 +11,6 @@ public:
     Player(std::string, int, int, int, int, int);
     virtual ~Player();
 
-    bool operator==(const Player &) const;
-
     virtual int max_health() const override;
     virtual int max_mana() const override;
 

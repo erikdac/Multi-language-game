@@ -22,8 +22,8 @@ std::string TargetWidget::target() const {
     }
 }
 
-void TargetWidget::check_target(const std::vector<Player *> & vec) {
-    auto it = std::find_if(vec.begin(), vec.end(), [=](const Player * a) {return a->name() == target();});
+void TargetWidget::check_target(const std::vector<Actor *> & vec) {
+    auto it = std::find_if(vec.begin(), vec.end(), [=](const Actor * a) {return a->name() == target();});
     if(it != vec.end()) {
         update_target(*it);
     } else {

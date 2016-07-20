@@ -13,7 +13,7 @@
 #include <mutex>
 
 extern Self * _self;
-extern std::vector<Player *> _actors;
+extern std::vector<Actor *> _actors;
 extern std::vector<Environment *> _environment;
 
 namespace map {
@@ -22,7 +22,7 @@ namespace map {
     void update_player(const json11::Json data, TargetWidget *);
     void remove_player(const json11::Json data, TargetWidget *);
     Player * parse_player(const json11::Json);
-    Player * player_at_position(const int x, const int y);
+    Actor * actor_at_position(const int x, const int y);
     bool walkable(const int x, const int y);
 }
 #endif // MAP_H

@@ -21,10 +21,6 @@ Player::~Player() {
 
 }
 
-bool Player::operator==(const Player & other) const {
-    return _name == other.name();
-}
-
 int Player::max_health() const {
     return 100 + (_level - 1)*5;
 }

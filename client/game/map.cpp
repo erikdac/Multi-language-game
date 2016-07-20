@@ -17,15 +17,15 @@
 
 Self * _self;
 
-std::vector<Player *> _actors;
+std::vector<Actor *> _actors;
 
 std::vector<Environment *> _environment;
 
 using namespace json11;
 
 void clearActors() {
-    for(const Player * p : _actors) {
-        delete p;
+    for(const Actor * a : _actors) {
+        delete a;
     }
     _actors.clear();
 }
@@ -86,37 +86,38 @@ void map::parse_map(const Json data) {
 
 // TODO: Old player never deleted!
 void map::update_player(const Json data, TargetWidget * targetWidget) {
-    Player * player = map::parse_player(data["Player"]);
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
+    Actor * actor = map::parse_player(data["Player"]);
+
+    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
     if(it != _actors.end()) {
-        if (player->name() == targetWidget->target()) {
-            targetWidget->update_target(player);
+        if (actor->name() == targetWidget->target()) {
+            targetWidget->update_target(actor);
         }
-        *it = player;
+        *it = actor;
     }
     else {
-        _actors.push_back(player);
+        _actors.push_back(actor);
     }
 }
 
-// TODO: Old player never deleted!
 void map::remove_player(const Json data, TargetWidget * targetWidget) {
-    Player * player = map::parse_player(data["Player"]);
+    Actor * actor = map::parse_player(data["Player"]);
 
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&player](const Player * p) {return *p == *player;});
+    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
     if (it != _actors.end()) {
-        if (player->name() == targetWidget->target()) {
+        if (actor->name() == targetWidget->target()) {
             targetWidget->unselect_target();
         }
         *it = _actors[_actors.size()-1];
+        delete _actors[_actors.size()-1];
         _actors.erase(_actors.begin() + _actors.size()-1);
     }
 }
 
-Player * map::player_at_position(const int x, const int y) {
-    for (Player * p : _actors) {
-        if( p->x() == x && p->y() == y) {
-            return p;
+Actor * map::actor_at_position(const int x, const int y) {
+    for (Actor * a : _actors) {
+        if (a->x() == x && a->y() == y) {
+            return a;
         }
     }
     return 0;

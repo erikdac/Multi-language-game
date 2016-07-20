@@ -49,8 +49,8 @@ void ScreenWidget::paintGL() {
         e->load_graphics();
     }
 
-    for (const Player * p : _actors) {
-        p->load_graphics();
+    for (const Actor * a : _actors) {
+        a->load_graphics();
     }
 
     _self->load_graphics();

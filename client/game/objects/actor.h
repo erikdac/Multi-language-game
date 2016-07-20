@@ -15,9 +15,9 @@ protected:
     int _health;
     int _mana;
 
+public:
     virtual ~Actor() {}
 
-public:
     std::string name() const {
         return _name;
     }

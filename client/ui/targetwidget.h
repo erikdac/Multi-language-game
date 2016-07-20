@@ -17,7 +17,7 @@ public:
     TargetWidget(QWidget *parent);
 
     std::string target() const;
-    void check_target(const std::vector<Player *> &);
+    void check_target(const std::vector<Actor *> &);
     void select_target(Actor *, bool);
     void unselect_target();
     void update_target(Actor *);

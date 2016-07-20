@@ -95,9 +95,9 @@ void OnlineWidget::processMouse() {
     for (const QMouseEvent * e : mouseEvents) {
         int x = _self->x() - VIEW_WIDTH + e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2 + 1));
         int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
-        Player * player = map::player_at_position(x, y);
-        if(player) {
-            target_widget()->select_target(player, true);
+        Actor * actor = map::actor_at_position(x, y);
+        if(actor) {
+            target_widget()->select_target(actor, true);
         }
         else {
             target_widget()->unselect_target();
