@@ -1,5 +1,5 @@
-#include "onlinewidget.h"
-#include "ui_onlinewidget.h"
+#include "gamewidget.h"
+#include "ui_gamewidget.h"
 #include "screenwidget.h"
 #include "targetwidget.h"
 #include "network/connection.h"
@@ -20,7 +20,7 @@
 
 using namespace json11;
 
-OnlineWidget::OnlineWidget(QWidget * parent) : ui(new Ui::OnlineWidget) {
+GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
     this->setParent(parent);
     ui->setupUi(this);
 
@@ -29,23 +29,23 @@ OnlineWidget::OnlineWidget(QWidget * parent) : ui(new Ui::OnlineWidget) {
     _movementController = new MovementController();
 }
 
-OnlineWidget::~OnlineWidget() {
+GameWidget::~GameWidget() {
     map::cleanMap();
     delete _movementController;
     delete ui;
 }
 
-void OnlineWidget::resume() {
+void GameWidget::resume() {
     findChild<PlayerWidget *>("playerwidget")->setPlayer(_self);
     target_widget()->setVisible(false);
     setFocus();
 }
 
-void OnlineWidget::pause() {
+void GameWidget::pause() {
     _movementController->clear();
 }
 
-void OnlineWidget::process() {
+void GameWidget::process() {
     processMouse();
     processKeyboard();
     _movementController->execute();
@@ -53,7 +53,7 @@ void OnlineWidget::process() {
     _screenWidget->repaint();
 }
 
-void OnlineWidget::processNetwork() {
+void GameWidget::processNetwork() {
     std::string packet = connection::readPacket(1);
     if (packet.empty()) {
         return;
@@ -95,7 +95,7 @@ void OnlineWidget::processNetwork() {
     }
 }
 
-void OnlineWidget::processMouse() {
+void GameWidget::processMouse() {
     std::vector<QMouseEvent *> mouseEvents = _mouseHandler.events();
 
     for (const QMouseEvent * e : mouseEvents) {
@@ -113,7 +113,7 @@ void OnlineWidget::processMouse() {
 
 typedef std::pair<QKeyEvent, bool> key_pair;
 
-void OnlineWidget::processKeyboard() {
+void GameWidget::processKeyboard() {
     std::vector<key_pair> keyEvents = _keyboardHandler.events();
 
     for (const key_pair & e : keyEvents) {
@@ -152,19 +152,19 @@ void OnlineWidget::processKeyboard() {
     }
 }
 
-void OnlineWidget::logout() {
+void GameWidget::logout() {
     connection::disconnect();
     dynamic_cast<Window *> (this->parentWidget())->setLoginUi();
 }
 
-void OnlineWidget::keyPressEvent(QKeyEvent * event) {
+void GameWidget::keyPressEvent(QKeyEvent * event) {
     if (!event->isAutoRepeat()) {
         std::pair<QKeyEvent, bool> p(*event, true);
         _keyboardHandler.addEvent(p);
     }
 }
 
-void OnlineWidget::keyReleaseEvent(QKeyEvent * event) {
+void GameWidget::keyReleaseEvent(QKeyEvent * event) {
     if (!event->isAutoRepeat()) {
         std::pair<QKeyEvent, bool> p(*event, false);
         _keyboardHandler.addEvent(p);
@@ -172,10 +172,10 @@ void OnlineWidget::keyReleaseEvent(QKeyEvent * event) {
 }
 
 // TODO: Implement a game menu instead of just logging out.
-void OnlineWidget::openMenu() {
+void GameWidget::openMenu() {
     logout();
 }
 
-TargetWidget * OnlineWidget::target_widget() const {
+TargetWidget * GameWidget::target_widget() const {
     return findChild<TargetWidget *>("targetwidget");
 }

@@ -1,6 +1,6 @@
 #include "map.h"
 #include "json11/json11.hpp"
-#include "ui/onlinewidget.h"
+#include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
 #include "game/objects/water.h"
 #include "game/objects/grass.h"

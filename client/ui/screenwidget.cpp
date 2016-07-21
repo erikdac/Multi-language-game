@@ -1,7 +1,7 @@
 #include "ui_screenwidget.h"
 #include "screenwidget.h"
 #include "window.h"
-#include "onlinewidget.h"
+#include "gamewidget.h"
 #include "network/connection.h"
 #include "game/objects/player.h"
 #include "game/map.h"

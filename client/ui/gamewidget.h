@@ -1,5 +1,5 @@
-#ifndef ONLINEWIDGET_H
-#define ONLINEWIDGET_H
+#ifndef GAMEWIDGET_H
+#define GAMEWIDGET_H
 
 #include "gamestate.h"
 #include "game/objects/player.h"
@@ -15,14 +15,14 @@
 #include <utility>
 
 namespace Ui {
-    class OnlineWidget;
+    class GameWidget;
 }
 
-class OnlineWidget : public GameState {
+class GameWidget : public GameState {
 
     Q_OBJECT
 
-    Ui::OnlineWidget * ui;
+    Ui::GameWidget * ui;
 
     ScreenWidget * _screenWidget;
 
@@ -32,8 +32,8 @@ class OnlineWidget : public GameState {
     MovementController * _movementController;
 
 public:
-    OnlineWidget(QWidget *);
-    ~OnlineWidget();
+    GameWidget(QWidget *);
+    ~GameWidget();
 
     void resume() override;
     void pause() override;
@@ -53,4 +53,4 @@ private:
     TargetWidget * target_widget() const;
 };
 
-#endif // ONLINEWIDGET_H
+#endif // GAMEWIDGET_H

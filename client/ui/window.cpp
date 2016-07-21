@@ -1,7 +1,7 @@
 #include "ui_window.h"
 #include "window.h"
 #include "loginwidget.h"
-#include "onlinewidget.h"
+#include "gamewidget.h"
 
 #include <iostream>
 #include <chrono>
@@ -16,7 +16,7 @@ Window::Window(QWidget * parent)
     ui->setupUi(this);
 
     addState(new LoginWidget(this));
-    addState(new OnlineWidget(this));
+    addState(new GameWidget(this));
 
     QObject::connect(
                 this, SIGNAL(setIndex(unsigned int)),
