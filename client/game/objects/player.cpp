@@ -1,6 +1,4 @@
 #include "player.h"
-#include "json11/json11.hpp"
-#include "network/connection.h"
 #include "game/map.h"
 
 #include <QPainter>

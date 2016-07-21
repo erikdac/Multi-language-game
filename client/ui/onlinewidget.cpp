@@ -77,6 +77,12 @@ void OnlineWidget::processNetwork() {
     else if (type == "Player_removed") {
         map::remove_player(data, target_widget());
     }
+    else if (type == "Creature_update") {
+        map::update_troll(data, target_widget());
+    }
+    else if (type == "Creature_removed") {
+        map::remove_troll(data, target_widget());
+    }
 
     // SELF
 

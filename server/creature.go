@@ -70,29 +70,48 @@ func (creature *Creature) regnerate() {
 }
 
 func (creature *Creature) walk() {
-	if creature.cooldownMS("MOVEMENT") > 5000 {
-		switch(rand.Intn(4)) {
+	if creature.cooldownMS("MOVEMENT") > 100 {
+		switch(rand.Intn(8)) {
 		case 0:
 			if environment_map[creature.X][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX, creature.spawnY + 1) <= 10 {
 				creature.move(creature.X, creature.Y - 1)
 				break
 			}
 		case 1:
+			if environment_map[creature.X + 1][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY + 1) <= 10 {
+				creature.move(creature.X + 1, creature.Y - 1)
+				break
+			}
+		case 2:
 			if environment_map[creature.X + 1][creature.Y].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY) <= 10 {
 				creature.move(creature.X + 1, creature.Y)
 				break
 			}
-		case 2:
+		case 3:
+			if environment_map[creature.X + 1][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY - 1) <= 10 {
+				creature.move(creature.X + 1, creature.Y + 1)
+				break
+			}
+		case 4:
 			if environment_map[creature.X][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX, creature.spawnY - 1) <= 10 {
 				creature.move(creature.X, creature.Y + 1)
 				break
 			}
-		case 3:
+		case 5:
+			if environment_map[creature.X - 1][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY + 1) <= 10 {
+				creature.move(creature.X - 1, creature.Y - 1)
+				break
+			}
+		case 6:
 			if environment_map[creature.X - 1][creature.Y].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY) <= 10 {
 				creature.move(creature.X - 1, creature.Y)
 				break
 			}
-		default:
+		case 7:
+			if environment_map[creature.X - 1][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY - 1) <= 10 {
+				creature.move(creature.X -1, creature.Y + 1)
+				break
+			}
 		}
 
 		delay := time.Millisecond * time.Duration(rand.Intn(1000))

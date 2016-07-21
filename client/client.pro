@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     ui/targetwidget.cpp \
     ui/screenwidget.cpp \
     ui/stackedwidget.cpp \
-    ui/window.cpp
+    ui/window.cpp \
+    game/objects/troll.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     ui/stackedwidget.h \
     ui/window.h \
     game/eventhandler.h \
-    game/objects/actor.h
+    game/objects/actor.h \
+    game/objects/troll.h
 
 FORMS    += \
     ui/loginwidget.ui \
