@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	MAX_TICK_RATE = 10000
+	MAX_TICK_RATE = 100
 )
 
 var adminCommand = make(chan int)

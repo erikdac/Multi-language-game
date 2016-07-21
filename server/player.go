@@ -16,7 +16,7 @@ type Player struct {
 	Mana			int
 	max_mana		int
 	target			string
-	last_attack		time.Time
+	cooldowns		map[string]time.Time
 }
 
 func (player *Player) sendLocalMap() {
@@ -122,9 +122,9 @@ func (player *Player) moveCorrection() {
 func (player *Player) Auto_attack() {
 	if c, ok := playerToClient[player.target]; ok {
 		victim := &c.player
-		if time.Since(player.last_attack).Seconds() > 2 && player.distanceTo(victim.X, victim.Y) <= 1 {
+		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
 			player.attack(victim, 5) // TODO: Make some calculation for the damage.
-			player.last_attack = time.Now()
+			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
 		}
 	}
 }

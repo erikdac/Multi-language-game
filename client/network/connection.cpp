@@ -60,11 +60,11 @@ bool connectToServer() {
 
 bool brokenConnection() {
     if(!_online) {
-        if(connectToServer() == false) {
-            return true;
+        if(connectToServer()) {
+            _online = true;
         }
         else {
-            _online = true;
+            return true;
         }
     }
     return false;
@@ -130,9 +130,7 @@ std::string connection::readPacket(const unsigned int timeout_ms) {
 }
 
 void connection::disconnect() {
-    if (_online) {
-        _online = false;
-        shutdown(s0, 2);
-        close(s0);
-    }
+    _online = false;
+    shutdown(s0, 2);
+    close(s0);
 }

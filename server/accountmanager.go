@@ -75,7 +75,7 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	player.Mana = 12
 	player.max_mana = 20 + (player.Level - 1) * 2 
 	player.target = ""
-	player.last_attack = time.Now()
+	player.Actor.cooldowns = map[string]time.Time{}
 
 	return player, err		
 }

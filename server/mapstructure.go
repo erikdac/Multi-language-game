@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"time"
 )
 
 const (
@@ -104,7 +105,16 @@ func loadSpawns() (error) {
     	name := v[1]
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
-		c := Creature{Actor{name, x, y}, cre, x, y, 10}
+		c := Creature{
+			Actor{name, 
+				x, y,
+				map[string]time.Time{},
+			}, 
+			cre, 
+			x, y, 
+			10, 10,
+			"", 
+		}
 		secX, secY := SliceMap(x, y)
     	creature_map[secX][secY][c.Name] = &c
     	creatureList = append(creatureList, &c)
