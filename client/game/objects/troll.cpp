@@ -19,11 +19,11 @@ Troll::~Troll() {
 }
 
 int Troll::max_health() const {
-    return 50;
+    return 10;
 }
 
 int Troll::max_mana() const {
-    return 50;
+    return 10;
 }
 
 void Troll::load_graphics() const {

@@ -68,20 +68,16 @@ void GameWidget::processNetwork() {
         logout();
     }
     else if (type == "Map") {
-        map::parse_map(data);
-        target_widget()->check_target(_actors);
+        map::parse_map(data, target_widget());
     }
     else if (type == "Player_update") {
         map::update_player(data, target_widget());
     }
-    else if (type == "Player_removed") {
-        map::remove_player(data, target_widget());
-    }
     else if (type == "Creature_update") {
         map::update_troll(data, target_widget());
     }
-    else if (type == "Creature_removed") {
-        map::remove_troll(data, target_widget());
+    else if (type == "Actor_removed") {
+        map::remove_actor(data, target_widget());
     }
 
     // SELF
@@ -103,7 +99,7 @@ void GameWidget::processMouse() {
         int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
         Actor * actor = map::actor_at_position(x, y);
         if(actor) {
-            target_widget()->select_target(actor, true);
+            target_widget()->select_target(actor);
         }
         else {
             target_widget()->unselect_target();

@@ -81,27 +81,34 @@ Troll * parse_troll(const Json player) {
     return new Troll(name, x, y, health, mana);
 }
 
-void map::parse_map(const Json data) {
-    clearEnvironment();
-    clearActors();
+void map::parse_map(const Json data, TargetWidget * targetWidget) {
 
+    clearEnvironment();
     const Json::array environments = data["Environment"].array_items();
     for (const Json & e : environments) {
         _environment.push_back(parse_environment(e));
     }
 
+    const std::string target = targetWidget->target();
+    clearActors();
+
     const Json::array players = data["Players"].array_items();
     for (const Json & p : players) {
         _actors.push_back(map::parse_player(p));
+        if (_actors.back()->name() == target) {
+            targetWidget->update_target(_actors.back());
+        }
     }
 
     const Json::array creatures = data["Creatures"].array_items();
     for (const Json & c : creatures) {
         _actors.push_back(parse_troll(c));
+        if (_actors.back()->name() == target) {
+            targetWidget->update_target(_actors.back());
+        }
     }
 }
 
-// TODO: Old player never deleted!
 void map::update_player(const Json data, TargetWidget * targetWidget) {
     Actor * actor = map::parse_player(data["Player"]);
 
@@ -110,6 +117,7 @@ void map::update_player(const Json data, TargetWidget * targetWidget) {
         if (actor->name() == targetWidget->target()) {
             targetWidget->update_target(actor);
         }
+        delete *it;
         *it = actor;
     }
     else {
@@ -117,7 +125,6 @@ void map::update_player(const Json data, TargetWidget * targetWidget) {
     }
 }
 
-// TODO: Old Troll never deleted!
 // TODO: Should be named update_creature() in the future, or be combined with update_player() instead.
 void map::update_troll(const Json data, TargetWidget * targetWidget) {
     Actor * actor = parse_troll(data["Creature"]);
@@ -127,6 +134,7 @@ void map::update_troll(const Json data, TargetWidget * targetWidget) {
         if (actor->name() == targetWidget->target()) {
             targetWidget->update_target(actor);
         }
+        delete *it;
         *it = actor;
     }
     else {
@@ -134,32 +142,17 @@ void map::update_troll(const Json data, TargetWidget * targetWidget) {
     }
 }
 
-void map::remove_player(const Json data, TargetWidget * targetWidget) {
-    Actor * actor = map::parse_player(data["Player"]);
+void map::remove_actor(const Json data, TargetWidget * targetWidget) {
+    const std::string name = data["Name"].string_value();
 
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
+    auto it = std::find_if(_actors.begin(), _actors.end(), [&name](const Actor * a) {return a->name() == name;});
     if (it != _actors.end()) {
-        if (actor->name() == targetWidget->target()) {
+        if (name == targetWidget->target()) {
             targetWidget->unselect_target();
         }
-        *it = _actors[_actors.size()-1];
-        delete _actors[_actors.size()-1];
-        _actors.erase(_actors.begin() + _actors.size()-1);
-    }
-}
-
-// TODO: Old Troll never deleted!
-// TODO: Should be named remove_creature() in the future, or be combined with remove_player() instead.
-void map::remove_troll(const Json data, TargetWidget * targetWidget) {
-    Actor * actor = parse_troll(data["Creature"]);
-
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
-    if (it != _actors.end()) {
-        if (actor->name() == targetWidget->target()) {
-            targetWidget->unselect_target();
-        }
-        *it = _actors[_actors.size()-1];
-        _actors.erase(_actors.begin() + _actors.size()-1);
+        delete *it;
+        *it = _actors.back();
+        _actors.pop_back();
     }
 }
 
@@ -173,7 +166,7 @@ Actor * map::actor_at_position(const int x, const int y) {
 }
 
 bool map::walkable(const int x, const int y) {
-    for (Environment * e : _environment) {
+    for (const Environment * e : _environment) {
         if (e->x() == x && e->y() == y && e->isWalkable() == false) {
             return false;
         }

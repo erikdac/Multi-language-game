@@ -86,7 +86,7 @@ func processInput() {
 }
 
 // Function used to handle whatever data the server has recieved from the user.
-func (client *Client) handleInput(data map[string]string) {
+func (client * Client) handleInput(data map[string]string) {
 	if data["Type"] == "Movement" {
 		client.player.Movement(data)
 	} else if data["Type"] == "Attack" {

@@ -2,13 +2,11 @@ package nethandler
 
 import (
 	"net"
-	"sync"
 	"bufio"
 )
 
 type Nethandler struct {
 	connection 		net.Conn
-	output_mutex 	sync.Mutex
 }
 
 func New(connection net.Conn) (Nethandler) {
@@ -42,9 +40,7 @@ func (handler *Nethandler) ReadPacket() ([]byte, error) {
  */
 func (handler *Nethandler) Write(data []byte) {
 	data = append(data, 0)
-	handler.output_mutex.Lock()
 	handler.connection.Write(data)
-	handler.output_mutex.Unlock()
 }
 
 func (handler *Nethandler) Disconnect() {

@@ -61,8 +61,6 @@ func (client *Client) sendPacket(data []byte) {
 	client.net.Write(data);
 }
 
-// This method will read the data from the client and call the method
-// handleInput() to deal with whatever kind of input it recieves.
 func (client *Client) reader() {
 	for {
 		data, err := client.net.ReadPacket()

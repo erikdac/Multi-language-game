@@ -6,14 +6,14 @@ import (
 )
 
 type Actor struct {
-	Name	string
-	X   	int
-	Y 		int
+	Name		string
+	X   		int
+	Y 			int
 
 	cooldowns	map[string]time.Time
 }
 
-func (actor *Actor) LocalPlayerMap() ([]Player) {
+func (actor Actor) LocalPlayerMap() ([]Player) {
 
 	x, y := SliceMap(actor.X, actor.Y)
 
@@ -38,12 +38,12 @@ func (actor *Actor) LocalPlayerMap() ([]Player) {
 	return list
 }
 
-func (actor *Actor) distanceTo(x int, y int) (int) {
+func (actor Actor) distanceTo(x int, y int) (int) {
 	distance := math.Hypot(float64(actor.X - x), float64(actor.Y - y))
 	return int(distance)
 }
 
-func (actor * Actor) cooldownMS(name string) (int64) {
+func (actor Actor) cooldownMS(name string) (int64) {
 	if cd, ok := actor.cooldowns[name]; ok {
 		return time.Since(cd).Nanoseconds() / int64(time.Millisecond)
 	} else {

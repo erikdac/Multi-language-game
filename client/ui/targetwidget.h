@@ -17,15 +17,16 @@ public:
     TargetWidget(QWidget *parent);
 
     std::string target() const;
-    void check_target(const std::vector<Actor *> &);
-    void select_target(Actor *, bool);
+    void select_target(Actor *);
     void unselect_target();
     void update_target(Actor *);
 
-    void stop_attack();
 
 protected:
     virtual void paintEvent(QPaintEvent *) override;
+
+private:
+    void stop_attack();
 };
 
 #endif // TARGETWIDGET_H

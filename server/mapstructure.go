@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
-	"time"
 )
 
 const (
@@ -28,7 +27,7 @@ type Environment struct {
 // Binds the player names to their clients.
 var playerToClient = make(map[string]*Client)
 
-var creatureList []*Creature
+var creatureList = make(map[string]*Creature)
 
 var map_players [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
 var creature_map [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
@@ -101,23 +100,14 @@ func loadSpawns() (error) {
     for scanner.Scan() {
     	line := scanner.Text()
     	v := strings.Split(line, " ")
-    	cre := v[0]
+    	creatureType := v[0]
     	name := v[1]
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
-		c := Creature{
-			Actor{name, 
-				x, y,
-				map[string]time.Time{},
-			}, 
-			cre, 
-			x, y, 
-			10, 10,
-			"", 
-		}
+		c := NewCreature(creatureType, name, x, y, 10)
 		secX, secY := SliceMap(x, y)
-    	creature_map[secX][secY][c.Name] = &c
-    	creatureList = append(creatureList, &c)
+    	creature_map[secX][secY][c.Name] = c
+    	creatureList[c.Name] = c
     }
 	return nil
 }
@@ -143,25 +133,19 @@ func AddPlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	section[player.Name] = player
-	sendPlayerUpdate(player, false);
+	sendPlayerUpdate(player);
 }
 
 func RemovePlayer(player *Player) {
 	x, y := SliceMap(player.X, player.Y)
 	section := map_players[x][y]
 	delete(section, player.Name)
-	sendPlayerUpdate(player, true)
+	sendActorRemoved(player.Actor)
 }
 
-func sendPlayerUpdate(player *Player, removed bool) {
-	var temp string
-	if(!removed) {
-		temp = "Player_update"
-	} else {
-		temp = "Player_removed"
-	}
+func sendPlayerUpdate(player *Player) {
 	packet := player_update_packet {
-		Type: temp,
+		Type: "Player_update",
 		Player: *player,
 	}
 	data,  _ := json.Marshal(packet)
@@ -171,20 +155,25 @@ func sendPlayerUpdate(player *Player, removed bool) {
 	}
 }
 
-func sendCreatureUpdate(creature *Creature, removed bool) {
-	var temp string
-	if(!removed) {
-		temp = "Creature_update"
-	} else {
-		temp = "Creature_removed"
-	}
+func sendCreatureUpdate(creature *Creature) {
 	packet := creature_update_packet {
-		Type: temp,
+		Type: "Creature_update",
 		Creature: *creature,
 	}
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range creature.LocalPlayerMap() {
+		playerToClient[p.Name].sendPacket(data)
+	}
+}
+
+func sendActorRemoved(actor Actor) {
+	packet := actor_removed_packet {
+		Type: "Actor_removed",
+		Name: actor.Name,
+	}
+	data,  _ := json.Marshal(packet)
+	for _, p := range actor.LocalPlayerMap() {
 		playerToClient[p.Name].sendPacket(data)
 	}
 }

@@ -34,3 +34,8 @@ type creature_update_packet struct {
 	Type 		string
 	Creature 	Creature
 }
+
+type actor_removed_packet struct {
+	Type 		string
+	Name 		string
+}

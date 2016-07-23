@@ -19,7 +19,7 @@ type Player struct {
 	cooldowns		map[string]time.Time
 }
 
-func (player *Player) sendLocalMap() {
+func (player Player) sendLocalMap() {
 	packet := map_packet {
 		Type: "Map",
 		Players: player.LocalPlayerMap(),
@@ -30,7 +30,7 @@ func (player *Player) sendLocalMap() {
 	playerToClient[player.Name].sendPacket(data)
 }
 
-func (player *Player) localEnvironmentMap() ([]Environment) {
+func (player Player) localEnvironmentMap() ([]Environment) {
 	x, y := SliceMap(player.X, player.Y)
 
 	fromX := int(math.Max(float64(x-1), 0.0)) * MAP_SLICE
@@ -50,7 +50,7 @@ func (player *Player) localEnvironmentMap() ([]Environment) {
 	return list
 }
 
-func (player *Player) localCreatureMap() ([]Creature) {
+func (player Player) localCreatureMap() ([]Creature) {
 
 	x, y := SliceMap(player.X, player.Y)
 
@@ -73,7 +73,7 @@ func (player *Player) localCreatureMap() ([]Creature) {
 	return list
 }
 
-func (player *Player) Movement(movement map[string]string) {
+func (player * Player) Movement(movement map[string]string) {
 	newX, err := strconv.Atoi(movement["ToX"])
 	if err != nil || newX < 0 || newX >= MAP_X * MAP_SLICE {
 		player.moveCorrection()
@@ -95,7 +95,7 @@ func (player *Player) Movement(movement map[string]string) {
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
 		oldSection := map_players[oldSectionX][oldSectionY]
 		delete(oldSection, player.Name)
-		sendPlayerUpdate(player, true)
+		sendActorRemoved(player.Actor)
 		player.X = newX
 		player.Y = newY
 		newSection := map_players[newSectionX][newSectionY]
@@ -106,10 +106,10 @@ func (player *Player) Movement(movement map[string]string) {
 		player.Y = newY
 	}
 
-	sendPlayerUpdate(player, false);
+	sendPlayerUpdate(player);
 }
 
-func (player *Player) moveCorrection() {
+func (player Player) moveCorrection() {
 	packet := player_moved_packet {
 		Type: "Moved",
 		NewX: player.X,
@@ -119,25 +119,30 @@ func (player *Player) moveCorrection() {
 	playerToClient[player.Name].sendPacket(data)
 }
 
-func (player *Player) Auto_attack() {
+func (player * Player) Auto_attack() {
 	if c, ok := playerToClient[player.target]; ok {
 		victim := &c.player
 		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
-			player.attack(victim, 5) // TODO: Make some calculation for the damage.
+			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
+			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
+		}
+	} else if victim, ok := creatureList[player.target]; ok {
+		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
+			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
 			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
 		}
 	}
 }
 
-func (attacker *Player) attack(victim *Player, damage int) {
+func (victim * Player) attacked(attacker string, damage int) {
 	victim.Health -= damage
 	packet := player_attacked_packet {
 		Type: "Attacked",
 		Health: victim.Health,
-		Attacker: attacker.Name,
+		Attacker: attacker,
 	}
 	data, _ := json.Marshal(packet)
 	playerToClient[victim.Name].sendPacket(data)
 
-	sendPlayerUpdate(victim, false)
+	sendPlayerUpdate(victim)
 }

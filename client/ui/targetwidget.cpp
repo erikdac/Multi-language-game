@@ -22,29 +22,14 @@ std::string TargetWidget::target() const {
     }
 }
 
-void TargetWidget::check_target(const std::vector<Actor *> & vec) {
-    auto it = std::find_if(vec.begin(), vec.end(), [=](const Actor * a) {return a->name() == target();});
-    if(it != vec.end()) {
-        update_target(*it);
-    } else {
-        unselect_target();
-    }
-}
-
-void TargetWidget::select_target(Actor * a, bool combat) {
+void TargetWidget::select_target(Actor * a) {
     update_target(a);
-
-    if(combat) {
-        const Json data = Json::object {
-            {"Type", "Attack"},
-            {"Condition", "Start"},
-            {"Victim", a->name()}
-        };
-        connection::output(data);
-    } else {
-        stop_attack();
-    }
-
+    const Json data = Json::object {
+        {"Type", "Attack"},
+        {"Condition", "Start"},
+        {"Victim", a->name()}
+    };
+    connection::output(data);
     this->setVisible(true);
 }
 
