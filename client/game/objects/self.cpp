@@ -17,21 +17,21 @@ Self::~Self() {
 
 void Self::moveUp() {
     if (map::walkable(_x, _y - 1)) {
-        --_y;
+        set_position(_x, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveDown() {
     if (map::walkable(_x, _y + 1)) {
-        ++_y;
+        set_position(_x, _y + 1);
         sendMovement();
     }
 }
 
 void Self::moveLeft() {
     if (map::walkable(_x - 1, _y)) {
-        --_x;
+        set_position(_x - 1, _y);
         sendMovement();
     }
 }
@@ -45,41 +45,37 @@ void Self::moveRight() {
 
 void Self::moveUpRight() {
     if (map::walkable(_x + 1, _y - 1)) {
-        ++_x;
-        --_y;
+        set_position(_x + 1, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveUpLeft() {
     if (map::walkable(_x - 1, _y - 1)) {
-        --_x;
-        --_y;
+        set_position(_x - 1, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveDownRight() {
     if (map::walkable(_x + 1, _y + 1)) {
-        ++_x;
-        ++_y;
+        set_position(_x + 1, _y + 1);
         sendMovement();
     }
 }
 
 void Self::moveDownLeft() {
     if (map::walkable(_x - 1, _y + 1)) {
-        --_x;
-        ++_y;
+        set_position(_x - 1, _y + 1);
         sendMovement();
     }
 }
 
-void Self::update_health(const int health) {
+void Self::set_health(const int health) {
     _health = health;
 }
 
-void Self::update_position(const int x, const int y) {
+void Self::set_position(const int x, const int y) {
     _x = x;
     _y = y;
 }

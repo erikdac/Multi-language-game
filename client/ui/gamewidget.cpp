@@ -83,10 +83,10 @@ void GameWidget::processNetwork() {
     // SELF
 
     else if (type == "Moved") {
-        _self->update_position(data["NewX"].number_value(), data["NewY"].number_value());
+        _self->set_position(data["NewX"].number_value(), data["NewY"].number_value());
     }
     else if (type == "Attacked") {
-        _self->update_health(data["Health"].number_value());
+        _self->set_health(data["Health"].number_value());
         findChild<PlayerWidget *>("playerwidget")->update();
     }
 }

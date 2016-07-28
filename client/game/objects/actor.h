@@ -11,6 +11,7 @@ protected:
     std::string _name;
     int _x;
     int _y;
+    double _direction;
     int _level;
     int _health;
     int _mana;
@@ -28,6 +29,10 @@ public:
 
     int y() const {
         return _y;
+    }
+
+    double direction() const {
+        return _direction;
     }
 
     int level() const {

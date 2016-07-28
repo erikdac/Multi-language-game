@@ -9,6 +9,7 @@ Player::Player(std::string name, int x, int y, int level, int health, int mana) 
     _name = name;
     _x = x;
     _y = y;
+    _direction = 0;
     _level = level;
     _health = health;
     _mana = mana;

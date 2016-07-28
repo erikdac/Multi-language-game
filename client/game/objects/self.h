@@ -18,8 +18,8 @@ public:
     void moveDownRight();
     void moveDownLeft();
 
-    void update_health(const int);
-    void update_position(const int, const int);
+    void set_health(const int);
+    void set_position(const int, const int);
 
     virtual void load_graphics() const override;
 
