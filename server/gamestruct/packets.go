@@ -1,4 +1,4 @@
-package main
+package gamestruct
 
 type login_packet struct {
 	Type 		string

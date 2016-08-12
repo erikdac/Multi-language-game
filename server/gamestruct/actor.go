@@ -1,4 +1,4 @@
-package main
+package gamestruct
 
 import (
 	"math"
@@ -13,9 +13,9 @@ type Actor struct {
 	cooldowns	map[string]time.Time
 }
 
-func (actor Actor) LocalPlayerMap() ([]Player) {
+func (actor Actor) localPlayerMap() ([]Player) {
 
-	x, y := SliceMap(actor.X, actor.Y)
+	x, y := sliceMap(actor.X, actor.Y)
 
 	fromX := int(math.Max(float64(x-1), 0.0))
 	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
@@ -27,7 +27,7 @@ func (actor Actor) LocalPlayerMap() ([]Player) {
 
 	for i := fromX; i <= toX; i++ {
 		for j := fromY; j <= toY; j++ {
-			for _, p := range map_players[i][j] {
+			for _, p := range playerMap[i][j] {
 				if p.Name != actor.Name {
 					list = append(list, *p)
 				}

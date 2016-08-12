@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 	"fmt"
+	"./gamestruct"
 )
 
 const (
@@ -10,8 +11,8 @@ const (
 )
 
 var adminCommand = make(chan int)
-var newClients = make(chan *Client, 8)
-var disconnects = make(chan *Client, 8)
+var newClients = make(chan *gamestruct.Client, 8)
+var disconnects = make(chan *gamestruct.Client, 8)
 
 func gameLoop() {
 	runtime := int64((time.Second / time.Nanosecond) / MAX_TICK_RATE)
@@ -55,7 +56,7 @@ func processClients() {
 }
 
 func processAi() {
-	for _, creature := range creatureList {
+	for _, creature := range gamestruct.CreatureList {
 		creature.Process()
 	}
 }
@@ -64,45 +65,33 @@ func processNewClients() {
 	lim := len(newClients)
 	for i := 0; i < lim; i++ {
 		client := <- newClients
-		addClient(client)
-	}
-}
+		gamestruct.AddClient(client)
+		go func() {
+			err := client.Reader()
+			if err != nil {
+				disconnects <- client
+			}
 
-func addClient(client *Client) {
-	playerToClient[client.player.Name] = client
-	AddPlayer(&client.player)
-	client.player.sendLocalMap()
-	go client.reader()
+		}();
+	}
 }
 
 func processInput() {
-	for _, c := range playerToClient {
-		lim := len(c.input)
+	for _, c := range gamestruct.PlayerToClient {
+		lim := len(c.Input)
 		for i := 0; i < lim; i++ {
-			data := <- c.input
-			c.handleInput(data)
+			data := <- c.Input
+			err := c.HandleInput(data)
+			if err != nil {
+				fmt.Println("FAILED PACKAGE: ", data)
+			}
 		}
-	}
-}
-
-// Function used to handle whatever data the server has recieved from the user.
-func (client * Client) handleInput(data map[string]string) {
-	if data["Type"] == "Movement" {
-		client.player.Movement(data)
-	} else if data["Type"] == "Attack" {
-		if data["Condition"] == "Start" {
-				client.player.target = data["Victim"]
-		} else if data["Condition"] == "Stop" {
-			client.player.target = ""
-		}
-	} else {
-		fmt.Println("FAILED PACKAGE: ", data)
 	}
 }
 
 func processAutoAttack() {
-	for _, c := range playerToClient {
-		c.player.Auto_attack()
+	for _, c := range gamestruct.PlayerToClient {
+		c.Player.Auto_attack()
 	}
 }
 
@@ -110,6 +99,6 @@ func processDisconnects() {
 	lim := len(disconnects)
 	for i := 0; i < lim; i++ {
 		client := <- disconnects
-		client.disconnect()
+		client.Disconnect()
 	}
 }

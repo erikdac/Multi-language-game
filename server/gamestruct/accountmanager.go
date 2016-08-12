@@ -1,4 +1,4 @@
-package main
+package gamestruct
 
 import (
 	"database/sql"
@@ -17,12 +17,12 @@ func checkLogin(request map[string]string) (Player, error) {
 	}
 	defer db.Close()
 
-	player_name, err := queryAccount(request, db)
+	playerName, err := queryAccount(request, db)
 	if err != nil {
 		return Player{}, errors.New("Login fail!")
 	}
 
-	player, err := queryPlayer(db, player_name)
+	player, err := queryPlayer(db, playerName)
 	if err != nil {
 		return Player{}, errors.New("Database fail!")
 	}
@@ -42,9 +42,9 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 	password := request["Password"]
 
 	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND active=false"
-	var player_name string
-	err := db.QueryRow(query, username, password).Scan(&player_name)
-	return player_name, err
+	var playerName string
+	err := db.QueryRow(query, username, password).Scan(&playerName)
+	return playerName, err
 }
 
 // Queries the database table 'player' with the username defined as "name". 
@@ -71,9 +71,9 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	// TODO: Put into SQL-database
 	player.Level = 1
 	player.Health = 88
-	player.max_health = 100  + (player.Level - 1) * 5
+	player.maxHealth = 100  + (player.Level - 1) * 5
 	player.Mana = 12
-	player.max_mana = 20 + (player.Level - 1) * 2 
+	player.maxMana = 20 + (player.Level - 1) * 2 
 	player.target = ""
 	player.Actor.cooldowns = map[string]time.Time{}
 
@@ -102,7 +102,7 @@ func (player *Player) logOut() (error) {
 }
 
 // Resets the online indexes in the 'account' table to false for all players.
-func resetDatabaseOnlineList() (error) {
+func resetDBOnlineList() (error) {
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		return err

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"./gamestruct"
 )
 
 // The connection settings.
@@ -17,8 +18,7 @@ const (
 )
 
 func main() {
-
-	err := InitiateGame()
+	err := gamestruct.InitiateGame()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -47,13 +47,20 @@ func main() {
 			os.Exit(1)
 		}
 
-		client := createClient(connection)
-		go client.handleRequest()
+		go newConnection(connection);
 	}
 }
 
+func newConnection(connection net.Conn) {
+	client := gamestruct.NewClient(connection)
+	if client.Login() == true {
+		newClients <- client
+	} else {
+		client.Net.Disconnect()
+	}
+}
 /**
- * The menu that the server-user sees. It is used to manage the server during runtime.
+ * The menu that the server-user see. It is used to manage the server during runtime.
  * It uses the readKeyboard()-method to read from the keyboard and converts the choice
  * to an integer.
  */
@@ -95,21 +102,21 @@ func readKeyboard() string {
 
 /**
  * Method for getting a list of all online clients. It goes through the 
- * playerToClient map and prints out the connections remote-adresses.
+ * gamestruct.PlayerToClient map and prints out the connections remote-adresses.
  */
 func onlineList() {
 	fmt.Println("IP-address: ", "\t\t", "Player name:")
-	for _, c := range playerToClient {
-		fmt.Println(c.net.Ip(), "\t\t", c.player.Name)
+	for _, c := range gamestruct.PlayerToClient {
+		fmt.Println(c.Net.Ip(), "\t\t", c.Player.Name)
 	}
 }
 
 func kickPlayer() {
 	fmt.Print("Player name: ")
 	name := readKeyboard()
-	client, exists := playerToClient[name]
+	client, exists := gamestruct.PlayerToClient[name]
 	if exists == true {
-		client.kick()
+		client.Kick()
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")
@@ -118,8 +125,8 @@ func kickPlayer() {
 
 func shutdown() {
 	fmt.Println("SHUTTING DOWN!")
-	for _, c := range playerToClient {
-		c.kick()
+	for _, c := range gamestruct.PlayerToClient {
+		c.Kick()
 	}
 	os.Exit(0)
 }

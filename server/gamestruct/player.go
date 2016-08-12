@@ -1,4 +1,4 @@
-package main
+package gamestruct
 
 import (
 	"encoding/json"
@@ -10,28 +10,28 @@ import (
 type Player struct {
 	Actor
 
-	Level			int
-	Health 			int
-	max_health 		int
-	Mana			int
-	max_mana		int
-	target			string
-	cooldowns		map[string]time.Time
+	Level		int
+	Health 		int
+	maxHealth	int
+	Mana		int
+	maxMana		int
+	target		string
+	cooldowns	map[string]time.Time
 }
 
 func (player Player) sendLocalMap() {
 	packet := map_packet {
 		Type: "Map",
-		Players: player.LocalPlayerMap(),
+		Players: player.localPlayerMap(),
 		Environment: player.localEnvironmentMap(),
 		Creatures: player.localCreatureMap(),
 	}
 	data,  _ := json.Marshal(packet)
-	playerToClient[player.Name].sendPacket(data)
+	PlayerToClient[player.Name].sendPacket(data)
 }
 
 func (player Player) localEnvironmentMap() ([]Environment) {
-	x, y := SliceMap(player.X, player.Y)
+	x, y := sliceMap(player.X, player.Y)
 
 	fromX := int(math.Max(float64(x-1), 0.0)) * MAP_SLICE
 	toX := int(math.Min(float64(x+2), float64(MAP_X))) * MAP_SLICE
@@ -43,7 +43,7 @@ func (player Player) localEnvironmentMap() ([]Environment) {
 
 	for i := fromX; i < toX; i++ {
 		for j := fromY; j < toY; j++ {
-			list = append(list, environment_map[i][j])
+			list = append(list, environmentMap[i][j])
 		}
 	}
 
@@ -52,7 +52,7 @@ func (player Player) localEnvironmentMap() ([]Environment) {
 
 func (player Player) localCreatureMap() ([]Creature) {
 
-	x, y := SliceMap(player.X, player.Y)
+	x, y := sliceMap(player.X, player.Y)
 
 	fromX := int(math.Max(float64(x-1), 0.0))
 	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
@@ -64,7 +64,7 @@ func (player Player) localCreatureMap() ([]Creature) {
 
 	for i := fromX; i <= toX; i++ {
 		for j := fromY; j <= toY; j++ {
-			for _, c := range creature_map[i][j] {
+			for _, c := range creatureMap[i][j] {
 				list = append(list, *c)
 			}
 		}
@@ -73,7 +73,7 @@ func (player Player) localCreatureMap() ([]Creature) {
 	return list
 }
 
-func (player * Player) Movement(movement map[string]string) {
+func (player * Player) movement(movement map[string]string) {
 	newX, err := strconv.Atoi(movement["ToX"])
 	if err != nil || newX < 0 || newX >= MAP_X * MAP_SLICE {
 		player.moveCorrection()
@@ -85,20 +85,20 @@ func (player * Player) Movement(movement map[string]string) {
 		return
 	}
 
-	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1  || !environment_map[newX][newY].isWalkable {
+	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1  || !environmentMap[newX][newY].isWalkable {
 		player.moveCorrection()
 		return
 	}
 
-	newSectionX, newSectionY := SliceMap(newX, newY)
-	oldSectionX, oldSectionY := SliceMap(player.X, player.Y)
+	newSectionX, newSectionY := sliceMap(newX, newY)
+	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
-		oldSection := map_players[oldSectionX][oldSectionY]
+		oldSection := playerMap[oldSectionX][oldSectionY]
 		delete(oldSection, player.Name)
 		sendActorRemoved(player.Actor)
 		player.X = newX
 		player.Y = newY
-		newSection := map_players[newSectionX][newSectionY]
+		newSection := playerMap[newSectionX][newSectionY]
 		newSection[player.Name] = player
 		player.sendLocalMap()
 	} else {
@@ -116,17 +116,17 @@ func (player Player) moveCorrection() {
 		NewY: player.Y,
 	}
 	data,  _ := json.Marshal(packet)
-	playerToClient[player.Name].sendPacket(data)
+	PlayerToClient[player.Name].sendPacket(data)
 }
 
 func (player * Player) Auto_attack() {
-	if c, ok := playerToClient[player.target]; ok {
-		victim := &c.player
+	if c, ok := PlayerToClient[player.target]; ok {
+		victim := &c.Player
 		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
 			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
 			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
 		}
-	} else if victim, ok := creatureList[player.target]; ok {
+	} else if victim, ok := CreatureList[player.target]; ok {
 		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
 			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
 			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
@@ -142,7 +142,7 @@ func (victim * Player) attacked(attacker string, damage int) {
 		Attacker: attacker,
 	}
 	data, _ := json.Marshal(packet)
-	playerToClient[victim.Name].sendPacket(data)
+	PlayerToClient[victim.Name].sendPacket(data)
 
 	sendPlayerUpdate(victim)
 }

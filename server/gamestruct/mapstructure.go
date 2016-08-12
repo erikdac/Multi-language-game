@@ -1,4 +1,4 @@
-package main
+package gamestruct
 
 import (
 	"os"
@@ -13,8 +13,8 @@ const (
 	MAP_X = 50
 	MAP_Y = 50
 	MAP_SLICE = 14
-	ENVIRONMENT_FILE = "map.mf"
-	SPAWN_FILE = "spawns.mf"
+	ENVIRONMENT_FILE = "gamestruct/resources/map.mf"
+	SPAWN_FILE = "gamestruct/resources/spawns.mf"
 )
 
 type Environment struct {
@@ -25,31 +25,30 @@ type Environment struct {
 }
 
 // Binds the player names to their clients.
-var playerToClient = make(map[string]*Client)
+var PlayerToClient = make(map[string]*Client)
 
-var creatureList = make(map[string]*Creature)
+var CreatureList = make(map[string]*Creature)
 
-var map_players [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
-var creature_map [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
-var environment_map [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
+var playerMap [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
+var creatureMap [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
+var environmentMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
 
 func InitiateGame() (error) {
-
-	err := resetDatabaseOnlineList()
+	err := resetDBOnlineList()
 	if err != nil {
 		return errors.New("Error clearing the database online list!")
 	}	
 	
 	for i := 0; i < MAP_X; i++ {
 		for j := 0; j < MAP_Y; j++ {
-			map_players[i][j] = map[string]*Player{}
-			creature_map[i][j] = map[string]*Creature{}
+			playerMap[i][j] = map[string]*Player{}
+			creatureMap[i][j] = map[string]*Creature{}
 		}
 	}
 
 	err = loadMap()
 	if err != nil {
-		return errors.New("Map could not be loaded!")
+		return err
 	}
 
 	return nil
@@ -71,7 +70,7 @@ func loadMap() (error) {
 func loadEnvironment() (error) {
 	file, err := os.Open(ENVIRONMENT_FILE)
 	if err != nil {
-		return err
+		return errors.New("Environment map could not be loaded!")
 	}
 	defer file.Close()
 
@@ -84,7 +83,7 @@ func loadEnvironment() (error) {
 		y, _ := strconv.Atoi(v[2])
 		isWalkable := (v[3] == "T")
 		e := Environment{env, x, y, isWalkable}
-    	environment_map[e.X][e.Y] = e
+    	environmentMap[e.X][e.Y] = e
     }
 	return nil
 }
@@ -92,7 +91,7 @@ func loadEnvironment() (error) {
 func loadSpawns() (error) {
 	file, err := os.Open(SPAWN_FILE)
 	if err != nil {
-		return err
+		return errors.New("Creature map could not be loaded!")
 	}
 	defer file.Close()
 
@@ -105,14 +104,14 @@ func loadSpawns() (error) {
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
 		c := NewCreature(creatureType, name, x, y, 10)
-		secX, secY := SliceMap(x, y)
-    	creature_map[secX][secY][c.Name] = c
-    	creatureList[c.Name] = c
+		secX, secY := sliceMap(x, y)
+    	creatureMap[secX][secY][c.Name] = c
+    	CreatureList[c.Name] = c
     }
 	return nil
 }
 
-func SliceMap(x int, y int) (int, int) {
+func sliceMap(x int, y int) (int, int) {
 	var row, column int
 	if x == 0 {
 		column = 0
@@ -129,16 +128,20 @@ func SliceMap(x int, y int) (int, int) {
 	return column, row
 }
 
-func AddPlayer(player *Player) {
-	x, y := SliceMap(player.X, player.Y)
-	section := map_players[x][y]
+func AddClient(client *Client) {
+	player := &client.Player
+
+	PlayerToClient[player.Name] = client
+	player.sendLocalMap()
+	x, y := sliceMap(player.X, player.Y)
+	section := playerMap[x][y]
 	section[player.Name] = player
 	sendPlayerUpdate(player);
 }
 
 func RemovePlayer(player *Player) {
-	x, y := SliceMap(player.X, player.Y)
-	section := map_players[x][y]
+	x, y := sliceMap(player.X, player.Y)
+	section := playerMap[x][y]
 	delete(section, player.Name)
 	sendActorRemoved(player.Actor)
 }
@@ -150,8 +153,8 @@ func sendPlayerUpdate(player *Player) {
 	}
 	data,  _ := json.Marshal(packet)
 
-	for _, p := range player.LocalPlayerMap() {
-		playerToClient[p.Name].sendPacket(data)
+	for _, p := range player.localPlayerMap() {
+		PlayerToClient[p.Name].sendPacket(data)
 	}
 }
 
@@ -162,8 +165,8 @@ func sendCreatureUpdate(creature *Creature) {
 	}
 	data,  _ := json.Marshal(packet)
 
-	for _, p := range creature.LocalPlayerMap() {
-		playerToClient[p.Name].sendPacket(data)
+	for _, p := range creature.localPlayerMap() {
+		PlayerToClient[p.Name].sendPacket(data)
 	}
 }
 
@@ -173,7 +176,7 @@ func sendActorRemoved(actor Actor) {
 		Name: actor.Name,
 	}
 	data,  _ := json.Marshal(packet)
-	for _, p := range actor.LocalPlayerMap() {
-		playerToClient[p.Name].sendPacket(data)
+	for _, p := range actor.localPlayerMap() {
+		PlayerToClient[p.Name].sendPacket(data)
 	}
 }
