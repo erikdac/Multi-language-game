@@ -106,7 +106,7 @@ func (client *Client) Disconnect() {
 	RemovePlayer(&client.Player)
 	delete(PlayerToClient, client.Player.Name)
 	client.Net.Disconnect()
-	client.Player.logOut()
+	logOut(client.Player)
 }
 
 func (client *Client) Kick() {

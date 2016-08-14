@@ -49,6 +49,7 @@ public:
 
     virtual int max_health() const = 0;
     virtual int max_mana() const = 0;
+    virtual void load_graphics() const = 0;
 };
 
 #endif // ACTOR

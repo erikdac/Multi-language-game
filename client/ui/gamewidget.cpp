@@ -48,8 +48,8 @@ void GameWidget::pause() {
 void GameWidget::process() {
     processMouse();
     processKeyboard();
-    _movementController->execute();
     processNetwork();
+    _movementController->execute();
     _screenWidget->repaint();
 }
 
@@ -74,7 +74,7 @@ void GameWidget::processNetwork() {
         map::update_player(data, target_widget());
     }
     else if (type == "Creature_update") {
-        map::update_troll(data, target_widget());
+        map::update_creature(data, target_widget());
     }
     else if (type == "Actor_removed") {
         map::remove_actor(data, target_widget());

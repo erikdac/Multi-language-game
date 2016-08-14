@@ -2,9 +2,9 @@
 #include "json11/json11.hpp"
 #include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
-#include "game/objects/water.h"
-#include "game/objects/grass.h"
-#include "game/objects/stone.h"
+#include "objects/water.h"
+#include "objects/grass.h"
+#include "objects/stone.h"
 #include "objects/troll.h"
 
 #include <iostream>
@@ -14,7 +14,6 @@
 #include <mutex>
 #include <cmath>
 #include <QWidget>
-#include <QLabel>
 
 Self * _self;
 
@@ -72,17 +71,16 @@ Player * map::parse_player(const Json player) {
 }
 
 // Should be parse_creature() in the future.
-Troll * parse_troll(const Json player) {
-    std::string name = player["Name"].string_value();
-    int x = player["X"].number_value();
-    int y = player["Y"].number_value();
-    int health = player["Health"].number_value();
-    int mana = player["Mana"].number_value();
+Troll * parse_troll(const Json creature) {
+    std::string name = creature["Name"].string_value();
+    int x = creature["X"].number_value();
+    int y = creature["Y"].number_value();
+    int health = creature["Health"].number_value();
+    int mana = creature["Mana"].number_value();
     return new Troll(name, x, y, health, mana);
 }
 
 void map::parse_map(const Json data, TargetWidget * targetWidget) {
-
     clearEnvironment();
     const Json::array environments = data["Environment"].array_items();
     for (const Json & e : environments) {
@@ -109,37 +107,30 @@ void map::parse_map(const Json data, TargetWidget * targetWidget) {
     }
 }
 
-void map::update_player(const Json data, TargetWidget * targetWidget) {
-    Actor * actor = map::parse_player(data["Player"]);
-
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
-    if(it != _actors.end()) {
-        if (actor->name() == targetWidget->target()) {
-            targetWidget->update_target(actor);
+void update_actor(Actor * actor, TargetWidget * targetWidget) {
+    if (actor != 0) {
+        auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
+        if (it != _actors.end()) {
+            if (actor->name() == targetWidget->target()) {
+                targetWidget->update_target(actor);
+            }
+            delete *it;
+            *it = actor;
         }
-        delete *it;
-        *it = actor;
-    }
-    else {
-        _actors.push_back(actor);
+        else {
+            _actors.push_back(actor);
+        }
     }
 }
 
-// TODO: Should be named update_creature() in the future, or be combined with update_player() instead.
-void map::update_troll(const Json data, TargetWidget * targetWidget) {
-    Actor * actor = parse_troll(data["Creature"]);
+void map::update_player(const Json data, TargetWidget * targetWidget) {
+    Actor * actor = map::parse_player(data["Player"]);
+    update_actor(actor, targetWidget);
+}
 
-    auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
-    if(it != _actors.end()) {
-        if (actor->name() == targetWidget->target()) {
-            targetWidget->update_target(actor);
-        }
-        delete *it;
-        *it = actor;
-    }
-    else {
-        _actors.push_back(actor);
-    }
+void map::update_creature(const Json data, TargetWidget * targetWidget) {
+    Actor * actor = parse_troll(data["Creature"]);
+    update_actor(actor, targetWidget);
 }
 
 void map::remove_actor(const Json data, TargetWidget * targetWidget) {
@@ -167,8 +158,8 @@ Actor * map::actor_at_position(const int x, const int y) {
 
 bool map::walkable(const int x, const int y) {
     for (const Environment * e : _environment) {
-        if (e->x() == x && e->y() == y && e->isWalkable() == false) {
-            return false;
+        if (e->x() == x && e->y() == y) {
+            return e->isWalkable();
         }
     }
     return true;

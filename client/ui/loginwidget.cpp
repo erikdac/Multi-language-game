@@ -11,6 +11,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QGlobalStatic>
+#include <memory>
 
 using namespace json11;
 

@@ -8,7 +8,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <mutex>
 
 using namespace json11;
 
@@ -70,17 +69,13 @@ bool brokenConnection() {
     return false;
 }
 
-static std::mutex output_mutex;
-
 bool connection::output(const Json object) {
     if(brokenConnection()) {
         return false;
     }
 
     const std::string data = object.dump();
-    output_mutex.lock();
     int res = write(s0, data.c_str(), data.size() + 1);
-    output_mutex.unlock();
 
     return res > 0;
 }

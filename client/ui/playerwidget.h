@@ -5,6 +5,7 @@
 #include "game/objects/actor.h"
 
 #include <QWidget>
+#include <memory>
 
 namespace Ui {
     class PlayerWidget;

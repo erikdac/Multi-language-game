@@ -27,7 +27,7 @@ func checkLogin(request map[string]string) (Player, error) {
 		return Player{}, errors.New("Database fail!")
 	}
 
-	err = setOnlineStatus(db, player.Name)
+	err = setOnlineStatus(db, player.Name, true)
 	if err != nil {
 		return Player{}, errors.New("Player is already online!")
 	}
@@ -80,24 +80,22 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	return player, err		
 }
 
-// Sets the 'account' table attribute "online" to true.
-func setOnlineStatus(db *sql.DB, username string) (error) {
-	query := "UPDATE accounts SET active = true WHERE username = ?"
-	_, err := db.Exec(query, username)
-	return err
-}
-
-func (player *Player) logOut() (error) {
+func logOut(player Player) (error) {
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	query1 := "UPDATE players SET x = ?, y = ? WHERE name = ?"
-	query2 := "UPDATE accounts SET active=false WHERE username = ?"
-	_, err = db.Exec(query1, player.X, player.Y, player.Name)
-	_, err = db.Exec(query2, player.Name)
+	query := "UPDATE players SET x = ?, y = ? WHERE name = ?"
+	_, err = db.Exec(query, player.X, player.Y, player.Name)
+	err = setOnlineStatus(db, player.Name, false)
+	return err
+}
+
+func setOnlineStatus(db *sql.DB, username string, isOnline bool) (error) {
+	query := "UPDATE accounts SET active = ? WHERE username = ?"
+	_, err := db.Exec(query, isOnline, username)
 	return err
 }
 
