@@ -147,9 +147,9 @@ void map::remove_actor(const Json data, TargetWidget * targetWidget) {
     }
 }
 
-Actor * map::actor_at_position(const int x, const int y) {
+Actor * map::actor_at_position(const double x, const double y) {
     for (Actor * a : _actors) {
-        if (a->x() == x && a->y() == y) {
+        if (a->x() <= x && a->x() + 1 > x && a->y() <= y && a->y() + 1 > y) {
             return a;
         }
     }

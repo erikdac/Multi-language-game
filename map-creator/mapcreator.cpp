@@ -20,6 +20,10 @@ Environment generateEnvironment(const int x, const int y) {
     }
 }
 
+Creature generateCreature(const int x, const int y) {
+	return Creature(Creature::TROLL, x, y);
+}
+
 void writeToFile(std::ofstream & file, std::vector<Environment> & vec) {
 	for (const Environment & e : vec) {
 		file << e.to_string() << std::endl;
@@ -48,8 +52,8 @@ int main() {
 		for (int y = MAP_SLICE; y < MAP_Y * MAP_SLICE - MAP_SLICE; ++y) {
 			Environment env = generateEnvironment(x, y);
 			environment_map.push_back(env);
-			if (std::rand() % 1000 == 0) {
-				Creature cr(Creature::TROLL, x, y);
+			if (std::rand() % 500 == 0) {
+				Creature cr = generateCreature(x, y);
 				creature_map.push_back(cr);
 			}
 		}

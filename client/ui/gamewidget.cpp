@@ -53,50 +53,12 @@ void GameWidget::process() {
     _screenWidget->repaint();
 }
 
-void GameWidget::processNetwork() {
-    std::string packet = connection::readPacket(1);
-    if (packet.empty()) {
-        return;
-    }
-    std::cout << packet << std::endl;
-
-    std::string error;
-    Json data = Json::parse(packet, error);
-
-    const std::string type = data["Type"].string_value();
-    if (type == "Disconnect") {
-        logout();
-    }
-    else if (type == "Map") {
-        map::parse_map(data, target_widget());
-    }
-    else if (type == "Player_update") {
-        map::update_player(data, target_widget());
-    }
-    else if (type == "Creature_update") {
-        map::update_creature(data, target_widget());
-    }
-    else if (type == "Actor_removed") {
-        map::remove_actor(data, target_widget());
-    }
-
-    // SELF
-
-    else if (type == "Moved") {
-        _self->set_position(data["NewX"].number_value(), data["NewY"].number_value());
-    }
-    else if (type == "Attacked") {
-        _self->set_health(data["Health"].number_value());
-        findChild<PlayerWidget *>("playerwidget")->update();
-    }
-}
-
 void GameWidget::processMouse() {
     std::vector<QMouseEvent *> mouseEvents = _mouseHandler.events();
 
     for (const QMouseEvent * e : mouseEvents) {
-        int x = _self->x() - VIEW_WIDTH + e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2 + 1));
-        int y = _self->y() - VIEW_HEIGHT + e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2 + 1));
+        const double x = _self->x() - (VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2)));
+        const double y = _self->y() - (VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2)));
         Actor * actor = map::actor_at_position(x, y);
         if(actor) {
             target_widget()->select_target(actor);
@@ -145,6 +107,44 @@ void GameWidget::processKeyboard() {
         else if (e.first.key() == Qt::Key_Escape && e.second) {
             openMenu();
         }
+    }
+}
+
+void GameWidget::processNetwork() {
+    std::string packet = connection::readPacket(1);
+    if (packet.empty()) {
+        return;
+    }
+    std::cout << packet << std::endl;
+
+    std::string error;
+    Json data = Json::parse(packet, error);
+
+    const std::string type = data["Type"].string_value();
+    if (type == "Disconnect") {
+        logout();
+    }
+    else if (type == "Map") {
+        map::parse_map(data, target_widget());
+    }
+    else if (type == "Player_update") {
+        map::update_player(data, target_widget());
+    }
+    else if (type == "Creature_update") {
+        map::update_creature(data, target_widget());
+    }
+    else if (type == "Actor_removed") {
+        map::remove_actor(data, target_widget());
+    }
+
+    // SELF
+
+    else if (type == "Moved") {
+        _self->set_position(data["NewX"].number_value(), data["NewY"].number_value());
+    }
+    else if (type == "Attacked") {
+        _self->set_health(data["Health"].number_value());
+        findChild<PlayerWidget *>("playerwidget")->update();
     }
 }
 

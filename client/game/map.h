@@ -20,7 +20,7 @@ namespace map {
     void update_creature(const json11::Json data, TargetWidget *);
     void remove_actor(const json11::Json data, TargetWidget *);
     Player * parse_player(const json11::Json);
-    Actor * actor_at_position(const int x, const int y);
+    Actor * actor_at_position(const double x, const double y);
     bool walkable(const int x, const int y);
 }
 #endif // MAP_H
