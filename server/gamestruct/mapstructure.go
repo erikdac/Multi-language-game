@@ -25,7 +25,7 @@ type Environment struct {
 }
 
 // Binds the player names to their clients.
-var PlayerToClient = make(map[string]*Client)
+var NameToClient = make(map[string]*Client)
 
 var CreatureList = make(map[string]*Creature)
 
@@ -131,7 +131,7 @@ func sliceMap(x int, y int) (int, int) {
 func AddClient(client *Client) {
 	player := &client.Player
 
-	PlayerToClient[player.Name] = client
+	NameToClient[player.Name] = client
 	player.sendLocalMap()
 	x, y := sliceMap(player.X, player.Y)
 	section := playerMap[x][y]
@@ -142,8 +142,11 @@ func AddClient(client *Client) {
 func RemovePlayer(player *Player) {
 	x, y := sliceMap(player.X, player.Y)
 	section := playerMap[x][y]
-	delete(section, player.Name)
-	sendActorRemoved(player.Actor)
+	if _, ok := section[player.Name]; ok {
+		delete(NameToClient, player.Name)
+		delete(section, player.Name)
+		sendActorRemoved(player.Actor)
+	}
 }
 
 func sendPlayerUpdate(player *Player) {
@@ -154,7 +157,7 @@ func sendPlayerUpdate(player *Player) {
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range player.localPlayerMap() {
-		PlayerToClient[p.Name].sendPacket(data)
+		NameToClient[p.Name].sendPacket(data)
 	}
 }
 
@@ -166,7 +169,7 @@ func sendCreatureUpdate(creature *Creature) {
 	data,  _ := json.Marshal(packet)
 
 	for _, p := range creature.localPlayerMap() {
-		PlayerToClient[p.Name].sendPacket(data)
+		NameToClient[p.Name].sendPacket(data)
 	}
 }
 
@@ -177,6 +180,6 @@ func sendActorRemoved(actor Actor) {
 	}
 	data,  _ := json.Marshal(packet)
 	for _, p := range actor.localPlayerMap() {
-		PlayerToClient[p.Name].sendPacket(data)
+		NameToClient[p.Name].sendPacket(data)
 	}
 }

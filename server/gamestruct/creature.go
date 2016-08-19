@@ -58,11 +58,11 @@ func (creature *Creature) dead() {
 }
 
 func (creature *Creature) checkTarget() {
-	if _, ok := PlayerToClient[creature.target]; !ok {
+	if _, ok := NameToClient[creature.target]; !ok {
 		creature.target = ""
 		creature.findTarget()
 	} else {
-		target := PlayerToClient[creature.target].Player
+		target := NameToClient[creature.target].Player
 		if creature.distanceTo(target.X, target.Y) > 5 {
 			creature.target = ""
 			creature.findTarget()

@@ -27,7 +27,7 @@ func (player Player) sendLocalMap() {
 		Creatures: player.localCreatureMap(),
 	}
 	data,  _ := json.Marshal(packet)
-	PlayerToClient[player.Name].sendPacket(data)
+	NameToClient[player.Name].sendPacket(data)
 }
 
 func (player Player) localEnvironmentMap() ([]Environment) {
@@ -73,7 +73,7 @@ func (player Player) localCreatureMap() ([]Creature) {
 	return list
 }
 
-func (player * Player) movement(movement map[string]string) {
+func (player *Player) movement(movement map[string]string) {
 	newX, err := strconv.Atoi(movement["ToX"])
 	if err != nil || newX < 0 || newX >= MAP_X * MAP_SLICE {
 		player.moveCorrection()
@@ -116,11 +116,11 @@ func (player Player) moveCorrection() {
 		NewY: player.Y,
 	}
 	data,  _ := json.Marshal(packet)
-	PlayerToClient[player.Name].sendPacket(data)
+	NameToClient[player.Name].sendPacket(data)
 }
 
-func (player * Player) Auto_attack() {
-	if c, ok := PlayerToClient[player.target]; ok {
+func (player *Player) Auto_attack() {
+	if c, ok := NameToClient[player.target]; ok {
 		victim := &c.Player
 		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
 			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
@@ -134,7 +134,7 @@ func (player * Player) Auto_attack() {
 	}
 }
 
-func (victim * Player) attacked(attacker string, damage int) {
+func (victim *Player) attacked(attacker string, damage int) {
 	victim.Health -= damage
 	packet := player_attacked_packet {
 		Type: "Attacked",
@@ -142,7 +142,7 @@ func (victim * Player) attacked(attacker string, damage int) {
 		Attacker: attacker,
 	}
 	data, _ := json.Marshal(packet)
-	PlayerToClient[victim.Name].sendPacket(data)
+	NameToClient[victim.Name].sendPacket(data)
 
 	sendPlayerUpdate(victim)
 }

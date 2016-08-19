@@ -8,41 +8,41 @@ import (
 )
 
 type Client struct {
-	Net			nethandler.Nethandler
+	net			nethandler.Nethandler
 	Player     	Player
 	Input		(chan map[string]string)
 }
 
 func NewClient(connection net.Conn) *Client {
 	client := new(Client)
-	client.Net = nethandler.New(connection)
+	client.net = nethandler.New(connection)
 	client.Input = make(chan map[string]string, 16)
 	return client
 }
 
 func (client *Client) Login() bool {
 	for {
-		input, err := client.Net.ReadPacket()
+		input, err := client.net.ReadPacket()
 		if err != nil {
 			return false
 		}
 
 		data, errorResponse := parseJson(input)
 		if errorResponse != nil {
-			client.Net.Write(errorResponse)
+			client.net.Write(errorResponse)
 		} else {
 			player, err := checkLogin(data)
 			packet := &login_packet {Type: "Login_Success"}
 			if err != nil {
 				packet.Success = false
 				data,  _ := json.Marshal(packet)
-				client.Net.Write(data)
+				client.net.Write(data)
 			} else {
 				client.Player = player
 				packet.Success = true
 				packet.Player = player
 			    data, _ := json.Marshal(packet)
-				client.Net.Write(data)
+				client.net.Write(data)
 				return true;
 			}
 		}
@@ -51,14 +51,14 @@ func (client *Client) Login() bool {
 }
 
 func (client *Client) sendPacket(data []byte) {
-	client.Net.Write(data);
+	client.net.Write(data);
 }
 
-func (client *Client) Reader() (error) {
+func (client * Client) Reader() (error) {
 	for {
-		data, err := client.Net.ReadPacket()
+		data, err := client.net.ReadPacket()
 		if err != nil {
-			if _, ok := PlayerToClient[client.Player.Name]; ok {
+			if _, ok := NameToClient[client.Player.Name]; ok {
 				return err
 			}
 			break
@@ -66,7 +66,7 @@ func (client *Client) Reader() (error) {
 
 		json, errorResponse := parseJson(data)
 		if errorResponse != nil {
-			client.Net.Write(errorResponse)
+			client.net.Write(errorResponse)
 		} else {
 			client.Input <- json
 		}
@@ -75,7 +75,7 @@ func (client *Client) Reader() (error) {
 }
 
 // Function used to handle whatever data the server has recieved from the user.
-func (client * Client) HandleInput(data map[string]string) (error) {
+func (client *Client) HandleInput(data map[string]string) (error) {
 	if data["Type"] == "Movement" {
 		client.Player.movement(data)
 	} else if data["Type"] == "Attack" {
@@ -102,11 +102,16 @@ func parseJson(input []byte) (map[string]string, []byte) {
 	}
 }
 
+func (client *Client) Info() (string) {
+	return client.net.Ip() + "\t\t" + client.Player.Name
+}
+
 func (client *Client) Disconnect() {
-	RemovePlayer(&client.Player)
-	delete(PlayerToClient, client.Player.Name)
-	client.Net.Disconnect()
-	logOut(client.Player)
+	client.net.Disconnect()
+	if &client.Player != nil {
+		RemovePlayer(&client.Player)
+		logOut(client.Player)
+	}
 }
 
 func (client *Client) Kick() {

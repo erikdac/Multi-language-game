@@ -77,7 +77,7 @@ func processNewClients() {
 }
 
 func processInput() {
-	for _, c := range gamestruct.PlayerToClient {
+	for _, c := range gamestruct.NameToClient {
 		lim := len(c.Input)
 		for i := 0; i < lim; i++ {
 			data := <- c.Input
@@ -90,7 +90,7 @@ func processInput() {
 }
 
 func processAutoAttack() {
-	for _, c := range gamestruct.PlayerToClient {
+	for _, c := range gamestruct.NameToClient {
 		c.Player.Auto_attack()
 	}
 }
