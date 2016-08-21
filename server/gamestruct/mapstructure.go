@@ -139,13 +139,16 @@ func AddClient(client *Client) {
 	sendPlayerUpdate(player);
 }
 
-func RemovePlayer(player *Player) {
+func RemovePlayer(player *Player) (error) {
 	x, y := sliceMap(player.X, player.Y)
 	section := playerMap[x][y]
 	if _, ok := section[player.Name]; ok {
 		delete(NameToClient, player.Name)
 		delete(section, player.Name)
 		sendActorRemoved(player.Actor)
+		return nil
+	} else {
+		return errors.New("Player '" + player.Name + "' could not be found on the map. ")
 	}
 }
 

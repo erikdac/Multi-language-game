@@ -19,8 +19,8 @@ Window::Window(QWidget * parent)
     addState(new GameWidget(this));
 
     QObject::connect(
-                this, SIGNAL(setIndex(unsigned int)),
-                this, SLOT(setIndex(unsigned int))
+        this, SIGNAL(setIndex(unsigned int)),
+        this, SLOT(setIndex(unsigned int))
     );
 
     setLoginUi();

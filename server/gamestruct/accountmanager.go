@@ -89,6 +89,10 @@ func logOut(player Player) (error) {
 
 	query := "UPDATE players SET x = ?, y = ? WHERE name = ?"
 	_, err = db.Exec(query, player.X, player.Y, player.Name)
+	if err != nil {
+		return err
+	}
+
 	err = setOnlineStatus(db, player.Name, false)
 	return err
 }

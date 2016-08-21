@@ -20,15 +20,13 @@ const (
 func main() {
 	err := gamestruct.InitiateGame()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	// Sets up the server.
 	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)
 	if err != nil {
-		fmt.Println("Error setting up the server!")
-		os.Exit(1)
+		panic("Error setting up the server!")
 	}
 
 	// Close the listener when the application closes.
@@ -44,7 +42,6 @@ func main() {
 		connection, err := socket.Accept()
 		if err != nil {
 			fmt.Println("Error accepting: ", err.Error())
-			os.Exit(1)
 		}
 
 		go newConnection(connection);

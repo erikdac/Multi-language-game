@@ -56,10 +56,14 @@ Environment * parse_environment(const Json & environment) {
     }
     else if(type == "WATER") {
         return new Water(x, y);
+    } else {
+        std::string error = "No environment type specified in JSON!";
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << " Error: " << error << std::endl;
+        return 0;
     }
-    return 0;
 }
 
+// TODO: Should check that the values exists.
 Player * map::parse_player(const Json player) {
     std::string name = player["Name"].string_value();
     int x = player["X"].number_value();
@@ -70,7 +74,8 @@ Player * map::parse_player(const Json player) {
     return new Player(name, x, y, level, health, mana);
 }
 
-// Should be parse_creature() in the future.
+// TODO: Should check that the values exists.
+// TODO: Should be parse_creature() in the future.
 Troll * parse_troll(const Json creature) {
     std::string name = creature["Name"].string_value();
     int x = creature["X"].number_value();
@@ -116,10 +121,12 @@ void update_actor(Actor * actor, TargetWidget * targetWidget) {
             }
             delete *it;
             *it = actor;
-        }
-        else {
+        } else {
             _actors.push_back(actor);
         }
+    } else {
+        std::string error = "NULL Actor recieved!";
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << " Error: " << error << std::endl;
     }
 }
 

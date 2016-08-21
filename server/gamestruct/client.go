@@ -97,9 +97,9 @@ func parseJson(input []byte) (map[string]string, []byte) {
 		error := map[string]string {"Type:": "Error"}
 		errorResponse,  _ := json.Marshal(error)
 		return nil, errorResponse
-	} else {
-		return data, nil
 	}
+
+	return data, nil
 }
 
 func (client *Client) Info() (string) {
