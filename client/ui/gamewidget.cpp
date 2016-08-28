@@ -56,7 +56,11 @@ void GameWidget::process() {
         assert(_isRunning);
         processMouse();
         processKeyboard();
-        processNetwork();
+
+        if (_isRunning) {
+            assert(_isRunning);
+            processNetwork();
+        }
         if (_isRunning) {
             assert(_isRunning);
             _movementController->execute();
