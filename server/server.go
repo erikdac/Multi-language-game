@@ -12,7 +12,6 @@ import (
 
 // The connection settings.
 const (
-	CONNECTION_HOST = "localhost"
 	CONNECTION_PORT = "1337"
 	CONNECTION_TYPE = "tcp"
 )
@@ -32,7 +31,7 @@ func main() {
 	// Close the listener when the application closes.
 	defer socket.Close()
 
-	fmt.Println("Listening on " + CONNECTION_HOST + ":" + CONNECTION_PORT)
+	fmt.Println("Listening on " + "localhost" + ":" + CONNECTION_PORT)
 
 	go serverMenu()
 	go gameLoop()

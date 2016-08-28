@@ -14,6 +14,7 @@
 #include <mutex>
 #include <cmath>
 #include <QWidget>
+#include <cassert>
 
 Self * _self;
 
@@ -41,6 +42,9 @@ void map::cleanMap() {
     delete _self;
     clearActors();
     clearEnvironment();
+
+    assert(_actors.size() == 0);
+    assert(_environment.size() == 0);
 }
 
 Environment * parse_environment(const Json & environment) {
@@ -58,7 +62,8 @@ Environment * parse_environment(const Json & environment) {
         return new Water(x, y);
     } else {
         std::string error = "No environment type specified in JSON!";
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << " Error: " << error << std::endl;
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
+        std::cerr << "\tError: " << error << std::endl;
         return 0;
     }
 }
@@ -112,32 +117,33 @@ void map::parse_map(const Json data, TargetWidget * targetWidget) {
     }
 }
 
-void update_actor(Actor * actor, TargetWidget * targetWidget) {
+void update_actor(Actor * actor, std::vector<Actor *> & vec, TargetWidget * targetWidget) {
     if (actor != 0) {
-        auto it = std::find_if(_actors.begin(), _actors.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
-        if (it != _actors.end()) {
+        auto it = std::find_if(vec.begin(), vec.end(), [&actor](const Actor * a) {return a->name() == actor->name();});
+        if (it != vec.end()) {
             if (actor->name() == targetWidget->target()) {
                 targetWidget->update_target(actor);
             }
             delete *it;
             *it = actor;
         } else {
-            _actors.push_back(actor);
+            vec.push_back(actor);
         }
     } else {
         std::string error = "NULL Actor recieved!";
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << " Error: " << error << std::endl;
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
+        std::cerr << "\tError: " << error << std::endl;
     }
 }
 
 void map::update_player(const Json data, TargetWidget * targetWidget) {
     Actor * actor = map::parse_player(data["Player"]);
-    update_actor(actor, targetWidget);
+    update_actor(actor, _actors, targetWidget);
 }
 
 void map::update_creature(const Json data, TargetWidget * targetWidget) {
     Actor * actor = parse_troll(data["Creature"]);
-    update_actor(actor, targetWidget);
+    update_actor(actor, _actors, targetWidget);
 }
 
 void map::remove_actor(const Json data, TargetWidget * targetWidget) {

@@ -2,17 +2,16 @@
 #define GAMEWIDGET_H
 
 #include "gamestate.h"
-#include "game/objects/player.h"
 #include "playerwidget.h"
+#include "targetwidget.h"
+#include "screenwidget.h"
+#include "game/objects/player.h"
 #include "game/movementcontroller.h"
-#include "ui/targetwidget.h"
-#include "ui/screenwidget.h"
 #include "game/eventhandler.h"
 
 #include <QWidget>
 #include <QMouseEvent>
 #include <QKeyEvent>
-#include <utility>
 
 namespace Ui {
     class GameWidget;
@@ -25,6 +24,8 @@ class GameWidget : public GameState {
     Ui::GameWidget * ui;
 
     ScreenWidget * _screenWidget;
+
+    bool _isRunning;
 
     EventHandler<QMouseEvent *> _mouseHandler;
     EventHandler<std::pair<QKeyEvent, bool>> _keyboardHandler;
@@ -50,6 +51,7 @@ private:
     void openMenu();
     void logout();
 
+    PlayerWidget * player_widget() const;
     TargetWidget * target_widget() const;
 };
 

@@ -64,8 +64,11 @@ void LoginWidget::checkResult() {
     std::string input = connection::readPacket(5000);
     std::string error;
     Json data = Json::parse(input, error);
-
-    std::cout << "LOGINWIDGET: " << data.dump() << std::endl;
+    if (!error.empty()) {
+        std::string error = "Error in JSON recieved: " + input;
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
+        std::cerr << "\tError: " << error << std::endl;
+    }
 
     if(data["Type"].string_value() == "Login_Success") {
         if(data["Success"].bool_value() == true) {

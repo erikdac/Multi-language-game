@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <QMouseEvent>
 #include <utility>
+#include <cassert>
 
 using namespace json11;
 
@@ -27,36 +28,45 @@ GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
     _screenWidget = findChild<ScreenWidget *>("screenwidget");
     _screenWidget->setMouseHandler(&_mouseHandler);
     _movementController = new MovementController();
+
+    _isRunning = true;
 }
 
 GameWidget::~GameWidget() {
+    _isRunning = false;
     map::cleanMap();
     delete _movementController;
     delete ui;
 }
 
 void GameWidget::resume() {
-    findChild<PlayerWidget *>("playerwidget")->setPlayer(_self);
+    player_widget()->setPlayer(_self);
     target_widget()->setVisible(false);
     setFocus();
+    _isRunning = true;
 }
 
 void GameWidget::pause() {
+    _isRunning = false;
     _movementController->clear();
 }
 
 void GameWidget::process() {
-    processMouse();
-    processKeyboard();
-    processNetwork();
-    _movementController->execute();
-    _screenWidget->repaint();
+    if (_isRunning) {
+        assert(_isRunning);
+        processMouse();
+        processKeyboard();
+        processNetwork();
+        if (_isRunning) {
+            assert(_isRunning);
+            _movementController->execute();
+            _screenWidget->repaint();
+        }
+    }
 }
 
 void GameWidget::processMouse() {
-    std::vector<QMouseEvent *> mouseEvents = _mouseHandler.events();
-
-    for (const QMouseEvent * e : mouseEvents) {
+    for (const QMouseEvent * e : _mouseHandler.events()) {
         const double x = _self->x() - (VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2)));
         const double y = _self->y() - (VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2)));
         Actor * actor = map::actor_at_position(x, y);
@@ -72,9 +82,7 @@ void GameWidget::processMouse() {
 typedef std::pair<QKeyEvent, bool> key_pair;
 
 void GameWidget::processKeyboard() {
-    std::vector<key_pair> keyEvents = _keyboardHandler.events();
-
-    for (const key_pair & e : keyEvents) {
+    for (const key_pair & e : _keyboardHandler.events()) {
 
         if (e.first.key() == Qt::Key_W) {
             if (e.second) {
@@ -115,10 +123,14 @@ void GameWidget::processNetwork() {
     if (packet.empty()) {
         return;
     }
-    std::cout << packet << std::endl;
 
     std::string error;
     Json data = Json::parse(packet, error);
+    if (!error.empty()) {
+        std::string error = "Error in JSON recieved: " + packet;
+        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
+        std::cerr << "\tError: " << error << std::endl;
+    }
 
     const std::string type = data["Type"].string_value();
     if (type == "Disconnect") {
@@ -144,13 +156,15 @@ void GameWidget::processNetwork() {
     }
     else if (type == "Attacked") {
         _self->set_health(data["Health"].number_value());
-        findChild<PlayerWidget *>("playerwidget")->update();
+        player_widget()->update();
     }
 }
 
 void GameWidget::logout() {
+    _isRunning = false;
     connection::disconnect();
     dynamic_cast<Window *> (this->parentWidget())->setLoginUi();
+    assert(!_isRunning);
 }
 
 void GameWidget::keyPressEvent(QKeyEvent * event) {
@@ -172,6 +186,14 @@ void GameWidget::openMenu() {
     logout();
 }
 
+PlayerWidget * GameWidget::player_widget() const {
+    auto playerWidget = findChild<PlayerWidget *>("playerwidget");
+    assert(playerWidget != 0);
+    return playerWidget;
+}
+
 TargetWidget * GameWidget::target_widget() const {
-    return findChild<TargetWidget *>("targetwidget");
+    auto targetWidget = findChild<TargetWidget *>("targetwidget");
+    assert(targetWidget != 0);
+    return targetWidget;
 }

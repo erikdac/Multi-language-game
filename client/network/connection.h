@@ -7,7 +7,7 @@ using namespace json11;
 
 namespace connection {
     bool output(const Json);
-    std::string readPacket(const unsigned int);
+    std::string readPacket(const int);
     void disconnect();
 }
 

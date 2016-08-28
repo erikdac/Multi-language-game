@@ -62,7 +62,7 @@ FORMS    += \
     ui/window.ui \
     ui/gamewidget.ui
 
-QMAKE_CXXFLAGS += -std=c++0x -pthread
+QMAKE_CXXFLAGS += -std=c++0x -pthread -Wall
 
 LIBS += -lglut
 
