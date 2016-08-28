@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     ui/stackedwidget.cpp \
     ui/window.cpp \
     game/objects/troll.cpp \
-    ui/gamewidget.cpp
+    ui/gamewidget.cpp \
+    ui/loadingwidget.cpp
 
 HEADERS  += mainwindow.h \
     json11/json11.hpp \
@@ -53,14 +54,16 @@ HEADERS  += mainwindow.h \
     game/eventhandler.h \
     game/objects/actor.h \
     game/objects/troll.h \
-    ui/gamewidget.h
+    ui/gamewidget.h \
+    ui/loadingwidget.h
 
 FORMS    += \
     ui/loginwidget.ui \
     ui/playerwidget.ui \
     ui/screenwidget.ui \
     ui/window.ui \
-    ui/gamewidget.ui
+    ui/gamewidget.ui \
+    ui/loadingwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread -Wall
 

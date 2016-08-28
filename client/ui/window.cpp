@@ -1,6 +1,7 @@
 #include "ui_window.h"
 #include "window.h"
 #include "loginwidget.h"
+#include "loadingwidget.h"
 #include "gamewidget.h"
 
 #include <iostream>
@@ -16,20 +17,16 @@ Window::Window(QWidget * parent)
     ui->setupUi(this);
 
     addState(new LoginWidget(this));
+    addState(new LoadingWidget(this));
     addState(new GameWidget(this));
-
-    QObject::connect(
-        this, SIGNAL(setIndex(unsigned int)),
-        this, SLOT(setIndex(unsigned int))
-    );
 
     setLoginUi();
     std::thread(&Window::gameLoop, this).detach();
 }
 
 Window::~Window() {
-    delete ui;
     _isRunning = false;
+    delete ui;
 }
 
 void Window::gameLoop() {
@@ -37,10 +34,9 @@ void Window::gameLoop() {
     while (_isRunning) {
         auto begin = std::chrono::high_resolution_clock::now();
         if (_nextIndex != -1) {
-            emit setIndex(_nextIndex);
+            changeToState(_nextIndex);
             _nextIndex = -1;
         }
-        QCoreApplication::processEvents();
         currentState()->process();
         auto end = std::chrono::high_resolution_clock::now();
         int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
@@ -53,6 +49,10 @@ void Window::setLoginUi() {
     _nextIndex = 0;
 }
 
-void Window::setGameUi() {
+void Window::setLoadingUi() {
     _nextIndex = 1;
+}
+
+void Window::setGameUi() {
+    _nextIndex = 2;
 }

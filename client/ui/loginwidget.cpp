@@ -73,8 +73,7 @@ void LoginWidget::checkResult() {
     if(data["Type"].string_value() == "Login_Success") {
         if(data["Success"].bool_value() == true) {
             _self = new Self(std::move(map::parse_player(data["Player"])));
-            Window *w = dynamic_cast<Window *> (this->parentWidget());
-            w->setGameUi();
+            dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
         }
         else
             popupBox("Login failed!");

@@ -21,14 +21,11 @@ public:
     void gameLoop();
 
     void setLoginUi();
+    void setLoadingUi();
     void setGameUi();
 
 private:
     Ui::Window *ui;
-
-signals:
-    void setIndex(unsigned int);
-
 };
 
 #endif

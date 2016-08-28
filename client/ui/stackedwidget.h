@@ -18,9 +18,14 @@ protected:
     void addState(GameState *);
     GameState * currentState();
 
-protected slots:
-    void setIndex(unsigned int);
+    void changeToState(const unsigned int);
 
+private slots:
+    void changeUi(const unsigned int);
+
+signals:
+    void executeChange(const unsigned int);
+    void done();
 };
 
 #endif
