@@ -90,8 +90,17 @@ func processInput() {
 }
 
 func processPlayers() {
+	var deadPlayers []*gamestruct.Client
 	for _, c := range gamestruct.NameToClient {
 		c.Player.Process()
+		if c.Player.Health <= 0 {
+			deadPlayers = append(deadPlayers, c)
+		}
+	}
+
+	for _, c := range deadPlayers {
+		c.Player.Died()
+		c.Kick()
 	}
 }
 

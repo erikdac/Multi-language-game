@@ -27,6 +27,10 @@ func (player *Player) Process() {
 	player.auto_attack()
 }
 
+func (player *Player) Died() {
+	// TODO: Something...
+}
+
 func (player Player) sendLocalMap() {
 	packet := map_packet {
 		Type: "Map",

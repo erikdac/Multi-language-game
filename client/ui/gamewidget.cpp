@@ -157,6 +157,11 @@ void GameWidget::processNetwork() {
     }
 }
 
+// TODO: Implement a game menu instead of just logging out.
+void GameWidget::openMenu() {
+    logout();
+}
+
 void GameWidget::logout() {
     _isRunning = false;
     connection::disconnect();
@@ -190,16 +195,16 @@ void GameWidget::networkReader() {
                 std::string error = "\tError in JSON recieved: " + packet;
                 std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
                 std::cerr << error << std::endl;
+
+                data = Json::object {
+                    {"Type", "Disconnect"},
+                };
+                _networkHandler.addEvent(data);
+                return;
             }
         }
     }
     assert(!_isRunning);
-    connection::disconnect();
-}
-
-// TODO: Implement a game menu instead of just logging out.
-void GameWidget::openMenu() {
-    logout();
 }
 
 PlayerWidget * GameWidget::player_widget() const {

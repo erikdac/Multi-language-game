@@ -16,7 +16,7 @@ type Creature struct {
 	spawnX		int
 	spawnY		int
 	Health		int
-	max_health 	int
+	maxHealth 	int
 
 	target		string
 }
@@ -50,7 +50,7 @@ func (creature *Creature) dead() {
 	if creature.cooldownMS("DEAD") > RESPAWN_TIME {
 		creature.X = creature.spawnX
 		creature.Y = creature.spawnY
-		creature.Health = creature.max_health
+		creature.Health = creature.maxHealth
 		x, y := sliceMap(creature.X, creature.Y)
 		creatureMap[x][y][creature.Name] = creature
 		sendCreatureUpdate(creature)
@@ -110,14 +110,14 @@ func (creature *Creature) outOfCombat() {
 }
 
 func (creature *Creature) regnerate() {
-	if creature.Health < creature.max_health  && creature.cooldownMS("REGNERATE") > 1000 {
-		hp_reg := int(float64(creature.max_health) * 0.05)
+	if creature.Health < creature.maxHealth  && creature.cooldownMS("REGNERATE") > 1000 {
+		hp_reg := int(float64(creature.maxHealth) * 0.05)
 		if hp_reg < 1 {
 			hp_reg = 1
 		}
 
-		if creature.max_health - creature.Health  < hp_reg {
-			hp_reg = creature.max_health - creature.Health
+		if creature.maxHealth - creature.Health  < hp_reg {
+			hp_reg = creature.maxHealth - creature.Health
 		}
 		creature.Health += hp_reg
 		creature.Actor.cooldowns["REGNERATE"] = time.Now()

@@ -2,6 +2,7 @@
 #define LOGINWIDGET_H
 
 #include "gamestate.h"
+#include "json11/json11.hpp"
 
 namespace Ui {
     class LoginWidget;
@@ -22,6 +23,7 @@ public:
     void process() override;
 
 private:
+    bool sendLoginData(json11::Json);
     void checkResult();
     void popupBox(const QString);
 
