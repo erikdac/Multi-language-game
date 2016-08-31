@@ -8,6 +8,7 @@
 #include "game/objects/player.h"
 #include "game/movementcontroller.h"
 #include "game/eventhandler.h"
+#include "json11/json11.hpp"
 
 #include <QWidget>
 #include <QMouseEvent>
@@ -29,6 +30,7 @@ class GameWidget : public GameState {
 
     EventHandler<QMouseEvent *> _mouseHandler;
     EventHandler<std::pair<QKeyEvent, bool>> _keyboardHandler;
+    EventHandler<json11::Json> _networkHandler;
 
     MovementController * _movementController;
 
@@ -47,6 +49,7 @@ private:
 
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
+    void networkReader();
 
     void openMenu();
     void logout();

@@ -12,6 +12,9 @@
 
 using namespace json11;
 
+static const std::string IP = "localhost";
+static const int PORT = 1337;
+
 static const std::size_t READ_BUFFER_SIZE= 128 * 1024;
 
 int _s0; // Socket.
@@ -32,14 +35,14 @@ bool connectToServer() {
     std::memset(&peeraddr, 0, sizeof(peeraddr));
 
     // Resolve the server address (convert from symbolic name to IP number)
-    struct hostent *host = gethostbyname("localhost");
+    struct hostent *host = gethostbyname(IP.c_str());
     if (host == NULL) {
         assert(!_isOnline);
         return false;
     }
 
     peeraddr.sin_family = AF_INET;
-    peeraddr.sin_port = htons(1337);
+    peeraddr.sin_port = htons(PORT);
 
     // Write resolved IP address of a server to the address structure
     std::memmove(&(peeraddr.sin_addr.s_addr), host->h_addr_list[0], 4);
@@ -107,17 +110,17 @@ std::string connection::readPacket(const int timeout_ms) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
 
-    for (int i = 0; i < 2*timeout_ms; ++i) {
+    for (int i = 0; i < 2; ++i) {
         FD_ZERO(&readfds);
         FD_SET(_s0, &readfds);
-        struct timeval tv = {0, 500};
+        struct timeval tv = {0, 500 * timeout_ms};
 
         int res = select(_s0 + 1, &readfds, NULL, NULL, &tv);
 
         if (res < 0) {
             disconnect();
             assert(!_isOnline);
-            return "Error";
+            return "Connection error";
         } else if (res > 0) {
             assert(_isOnline);
 
@@ -128,8 +131,9 @@ std::string connection::readPacket(const int timeout_ms) {
             );
 
             if (res <= 0) {
-                _isOnline = false;
-                return "Error";
+                disconnect();
+                assert(!_isOnline);
+                return "network read error";
             } else {
                 received += res;
                 i = 0;

@@ -18,6 +18,7 @@
 #include <QMouseEvent>
 #include <utility>
 #include <cassert>
+#include <thread>
 
 using namespace json11;
 
@@ -44,6 +45,7 @@ void GameWidget::resume() {
     target_widget()->setVisible(false);
     setFocus();
     _isRunning = true;
+    std::thread(&GameWidget::networkReader, this).detach();
 }
 
 void GameWidget::pause() {
@@ -53,7 +55,6 @@ void GameWidget::pause() {
 
 void GameWidget::process() {
     if (_isRunning) {
-        assert(_isRunning);
         processMouse();
         processKeyboard();
 
@@ -123,44 +124,36 @@ void GameWidget::processKeyboard() {
 }
 
 void GameWidget::processNetwork() {
-    std::string packet = connection::readPacket(1);
-    if (packet.empty()) {
-        return;
-    }
 
-    std::string error;
-    Json data = Json::parse(packet, error);
-    if (!error.empty()) {
-        std::string error = "Error in JSON recieved: " + packet;
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
-    }
+    for (const Json & data : _networkHandler.events()) {
 
-    const std::string type = data["Type"].string_value();
-    if (type == "Disconnect") {
-        logout();
-    }
-    else if (type == "Map") {
-        map::parse_map(data, target_widget());
-    }
-    else if (type == "Player_update") {
-        map::update_player(data, target_widget());
-    }
-    else if (type == "Creature_update") {
-        map::update_creature(data, target_widget());
-    }
-    else if (type == "Actor_removed") {
-        map::remove_actor(data, target_widget());
-    }
+        const std::string type = data["Type"].string_value();
+        if (type == "Disconnect") {
+            logout();
+            break;
+        }
+        else if (type == "Map") {
+            map::parse_map(data, target_widget());
+        }
+        else if (type == "Player_update") {
+            map::update_player(data, target_widget());
+        }
+        else if (type == "Creature_update") {
+            map::update_creature(data, target_widget());
+        }
+        else if (type == "Actor_removed") {
+            map::remove_actor(data, target_widget());
+        }
 
-    // SELF
+        // SELF
 
-    else if (type == "Moved") {
-        _self->set_position(data["NewX"].number_value(), data["NewY"].number_value());
-    }
-    else if (type == "Attacked") {
-        _self->set_health(data["Health"].number_value());
-        player_widget()->update();
+        else if (type == "Moved") {
+            _self->set_position(data["NewX"].number_value(), data["NewY"].number_value());
+        }
+        else if (type == "Attacked") {
+            _self->set_health(data["Health"].number_value());
+            player_widget()->update();
+        }
     }
 }
 
@@ -183,6 +176,25 @@ void GameWidget::keyReleaseEvent(QKeyEvent * event) {
         std::pair<QKeyEvent, bool> p(*event, false);
         _keyboardHandler.addEvent(p);
     }
+}
+
+void GameWidget::networkReader() {
+    while (_isRunning) {
+        std::string packet = connection::readPacket(10);
+        if (!packet.empty()) {
+            std::string error;
+            Json data = Json::parse(packet, error);
+            if (error.empty()) {
+                _networkHandler.addEvent(data);
+            } else if (_isRunning) {
+                std::string error = "\tError in JSON recieved: " + packet;
+                std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
+                std::cerr << error << std::endl;
+            }
+        }
+    }
+    assert(!_isRunning);
+    connection::disconnect();
 }
 
 // TODO: Implement a game menu instead of just logging out.

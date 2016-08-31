@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+const (
+	AUTO_ATTACK_DELAY = 1500
+)
+
 type Player struct {
 	Actor
 
@@ -17,6 +21,10 @@ type Player struct {
 	maxMana		int
 	target		string
 	cooldowns	map[string]time.Time
+}
+
+func (player *Player) Process() {
+	player.auto_attack()
 }
 
 func (player Player) sendLocalMap() {
@@ -119,15 +127,15 @@ func (player Player) moveCorrection() {
 	NameToClient[player.Name].sendPacket(data)
 }
 
-func (player *Player) Auto_attack() {
+func (player *Player) auto_attack() {
 	if c, ok := NameToClient[player.target]; ok {
 		victim := &c.Player
-		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
+		if player.cooldownMS("AUTO_ATTACK") > AUTO_ATTACK_DELAY && player.distanceTo(victim.X, victim.Y) <= 1 {
 			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
 			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
 		}
 	} else if victim, ok := CreatureList[player.target]; ok {
-		if player.cooldownMS("AUTO_ATTACK") > 2000 && player.distanceTo(victim.X, victim.Y) <= 1 {
+		if player.cooldownMS("AUTO_ATTACK") > AUTO_ATTACK_DELAY && player.distanceTo(victim.X, victim.Y) <= 1 {
 			victim.attacked(player.Name, 5) // TODO: Make some calculation for the damage.
 			player.Actor.cooldowns["AUTO_ATTACK"] = time.Now()
 		}

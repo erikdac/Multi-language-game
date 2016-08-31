@@ -123,6 +123,7 @@ void update_actor(Actor * actor, std::vector<Actor *> & vec, TargetWidget * targ
         if (it != vec.end()) {
             if (actor->name() == targetWidget->target()) {
                 targetWidget->update_target(actor);
+                assert(targetWidget->target() != "");
             }
             delete *it;
             *it = actor;

@@ -51,7 +51,7 @@ func processAdmin() {
 func processClients() {
 	processNewClients()
 	processInput()
-	processAutoAttack()
+	processPlayers()
 	processDisconnects()
 }
 
@@ -89,9 +89,9 @@ func processInput() {
 	}
 }
 
-func processAutoAttack() {
+func processPlayers() {
 	for _, c := range gamestruct.NameToClient {
-		c.Player.Auto_attack()
+		c.Player.Process()
 	}
 }
 
