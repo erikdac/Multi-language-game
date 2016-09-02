@@ -16,9 +16,7 @@ type Player struct {
 
 	Level		int
 	Health 		int
-	maxHealth	int
 	Mana		int
-	maxMana		int
 	target		string
 	cooldowns	map[string]time.Time
 }
@@ -29,6 +27,10 @@ func (player *Player) Process() {
 
 func (player *Player) Died() {
 	// TODO: Something...
+}
+
+func (player Player) maxHealth() (int) {
+	return 100  + (player.Level - 1) * 5
 }
 
 func (player Player) sendLocalMap() {
