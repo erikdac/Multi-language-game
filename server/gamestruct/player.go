@@ -18,7 +18,6 @@ type Player struct {
 	Health 		int
 	Mana		int
 	target		string
-	cooldowns	map[string]time.Time
 }
 
 func (player *Player) Process() {
