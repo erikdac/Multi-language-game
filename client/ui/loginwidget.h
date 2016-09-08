@@ -24,6 +24,7 @@ public:
 
 private:
     bool sendLoginData(json11::Json);
+    bool isConnected();
     void checkResult();
     void popupBox(const QString);
 

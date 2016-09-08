@@ -19,7 +19,7 @@ static const std::size_t READ_BUFFER_SIZE= 128 * 1024;
 
 int _s0; // Socket.
 
-bool connectToServer() {
+bool connection::connectToServer() {
 
     // Create a socket
     _s0 = socket(AF_INET, SOCK_STREAM, 0);

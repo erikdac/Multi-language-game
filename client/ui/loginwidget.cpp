@@ -53,11 +53,29 @@ void LoginWidget::on_pushButton_clicked() {
     };
     password->clear();
 
-    if(connection::output(data) == false) {
-        popupBox("Connection failed!");
-    } else {
-        checkResult();
+    if (isConnected()) {
+        if(connection::output(data) == false) {
+            popupBox("Connection failed!");
+        } else {
+            checkResult();
+        }
     }
+}
+
+/**
+ * Needed to detect if the connection with the server is alive or not.
+ *
+ * @return True, if a connection exists.
+ */
+bool LoginWidget::isConnected() {
+    if (connection::readPacket(1) != "") {
+        std::cout << "HERE" << std::endl;
+        if (connection::connectToServer() == false) {
+            connection::disconnect();
+            return false;
+        }
+    }
+    return true;
 }
 
 void LoginWidget::checkResult() {
