@@ -13,6 +13,11 @@ type map_packet struct {
 	Creatures	[]Creature
 }
 
+type environment_map_packet struct {
+	Type 		string
+	Environment []Environment
+}
+
 type player_update_packet struct {
 	Type 		string
 	Player 		Player

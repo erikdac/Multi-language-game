@@ -29,8 +29,8 @@ var NameToClient = make(map[string]*Client)
 
 var CreatureList = make(map[string]*Creature)
 
-var playerMap [MAP_X][MAP_Y] (map[string]*Player)			// TODO: Fix!
-var creatureMap [MAP_X][MAP_Y] (map[string]*Creature)		// TODO: Fix!
+var playerMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] (map[string]*Player)
+var creatureMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] (map[string]*Creature)
 var environmentMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
 
 func InitiateGame() (error) {
@@ -39,8 +39,8 @@ func InitiateGame() (error) {
 		return errors.New("Error clearing the database online list!")
 	}	
 	
-	for i := 0; i < MAP_X; i++ {
-		for j := 0; j < MAP_Y; j++ {
+	for i := 0; i < MAP_X*MAP_SLICE; i++ {
+		for j := 0; j < MAP_Y*MAP_SLICE; j++ {
 			playerMap[i][j] = map[string]*Player{}
 			creatureMap[i][j] = map[string]*Creature{}
 		}
@@ -104,8 +104,7 @@ func loadSpawns() (error) {
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
 		c := NewCreature(creatureType, name, x, y, 10)
-		secX, secY := sliceMap(x, y)
-    	creatureMap[secX][secY][c.Name] = c
+    	creatureMap[x][y][c.Name] = c
     	CreatureList[c.Name] = c
     }
 	return nil
@@ -133,15 +132,12 @@ func AddClient(client *Client) {
 
 	NameToClient[player.Name] = client
 	player.sendLocalMap()
-	x, y := sliceMap(player.X, player.Y)
-	section := playerMap[x][y]
-	section[player.Name] = player
+	playerMap[player.X][player.Y][player.Name] = player
 	sendPlayerUpdate(player);
 }
 
 func RemovePlayer(player *Player) (error) {
-	x, y := sliceMap(player.X, player.Y)
-	section := playerMap[x][y]
+	section := playerMap[player.X][player.Y]
 	if _, ok := section[player.Name]; ok {
 		delete(NameToClient, player.Name)
 		delete(section, player.Name)
