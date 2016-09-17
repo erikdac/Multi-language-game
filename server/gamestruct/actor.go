@@ -14,14 +14,13 @@ type Actor struct {
 }
 
 func (actor Actor) localPlayerMap() ([]Player) {
+	x, y := sliceMap(actor.X, actor.Y)
 
-//	x, y := sliceMap(actor.X, actor.Y)
+	fromX := int(math.Max(float64(x-1), 0.0))
+	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
 
-	fromX := int(math.Max(float64(actor.X-MAP_SLICE), 0.0))
-	toX := int(math.Min(float64(actor.X+MAP_SLICE), float64(MAP_X*MAP_SLICE-1)))
-
-	fromY := int(math.Max(float64(actor.Y-MAP_SLICE), 0.0))
-	toY := int(math.Min(float64(actor.Y+MAP_SLICE), float64(MAP_Y*MAP_SLICE-1)))
+	fromY := int(math.Max(float64(y-1), 0.0))
+	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
 
 	var list []Player
 
@@ -34,6 +33,7 @@ func (actor Actor) localPlayerMap() ([]Player) {
 			}
 		}
 	}
+
 
 	return list
 }

@@ -65,7 +65,7 @@ void GameWidget::process() {
         if (_isRunning) {
             assert(_isRunning);
             _movementController->execute();
-            _screenWidget->repaint();
+            _screenWidget->refresh();
         }
     }
 }

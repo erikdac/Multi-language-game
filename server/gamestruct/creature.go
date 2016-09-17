@@ -89,14 +89,18 @@ func (creature *Creature) move(newX int, newY int) {
 	oldSectionX, oldSectionY := sliceMap(creature.X, creature.Y)
 
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
+		oldSection := creatureMap[oldSectionX][oldSectionY]
+		delete(oldSection, creature.Name)
 		sendActorRemoved(creature.Actor)
+		creature.X = newX
+		creature.Y = newY
+		newSection := creatureMap[newSectionX][newSectionY]
+		newSection[creature.Name] = creature
+	} else {
+		creature.X = newX
+		creature.Y = newY
 	}
-
-	delete(creatureMap[creature.X][creature.Y], creature.Name)
-	creature.X = newX
-	creature.Y = newY
-	creatureMap[newX][newY][creature.Name] = creature
-
+	
 	sendCreatureUpdate(creature)
 }
 
@@ -174,7 +178,8 @@ func (creature *Creature) walk() {
 func (victim * Creature) attacked(attacker string, damage int) {
 	victim.Health -= damage
 	if victim.Health <= 0 {
-		delete(creatureMap[victim.X][victim.Y], victim.Name)
+		x, y := sliceMap(victim.X, victim.Y)
+		delete(creatureMap[x][y], victim.Name)
 		sendActorRemoved(victim.Actor)
 		victim.Actor.cooldowns["DEAD"] = time.Now()
 	} else {

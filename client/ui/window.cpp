@@ -1,5 +1,6 @@
 #include "ui_window.h"
 #include "window.h"
+#include "config.h"
 #include "loginwidget.h"
 #include "loadingwidget.h"
 #include "gamewidget.h"
@@ -7,8 +8,6 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-
-static const int MAX_FPS = 50;
 
 Window::Window(QWidget * parent)
     : StackedWidget(parent)
@@ -40,7 +39,7 @@ void Window::gameLoop() {
         currentState()->process();
         auto end = std::chrono::high_resolution_clock::now();
         int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        int delay = (1000/MAX_FPS) - diff;
+        int delay = (1000/MAX_UPDATE_RATE) - diff;
         std::this_thread::sleep_for (std::chrono::milliseconds(delay));
     }
 }

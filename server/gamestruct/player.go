@@ -62,12 +62,13 @@ func (player Player) localEnvironmentMap() ([]Environment) {
 }
 
 func (player Player) localCreatureMap() ([]Creature) {
+	x, y := sliceMap(player.X, player.Y)
 
-	fromX := int(math.Max(float64(player.X-MAP_SLICE), 0.0))
-	toX := int(math.Min(float64(player.X+MAP_SLICE), float64(MAP_Y*MAP_SLICE-1)))
+	fromX := int(math.Max(float64(x-1), 0.0))
+	toX := int(math.Min(float64(x+1), float64(MAP_X-1)))
 
-	fromY := int(math.Max(float64(player.Y-MAP_SLICE), 0.0))
-	toY := int(math.Min(float64(player.Y+MAP_SLICE), float64(MAP_Y*MAP_SLICE-1)))
+	fromY := int(math.Max(float64(y-1), 0.0))
+	toY := int(math.Min(float64(y+1), float64(MAP_Y-1)))
 
 	var list []Creature
 
@@ -91,14 +92,19 @@ func (player *Player) movement(movement map[string]string) {
 
 	newSectionX, newSectionY := sliceMap(newX, newY)
 	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
-	
-	delete(playerMap[player.X][player.Y], player.Name)
-	player.X = newX
-	player.Y = newY
-	playerMap[newX][newY][player.Name] = player
 
 	if newSectionX != oldSectionX || newSectionY != oldSectionY {
+		oldSection := playerMap[oldSectionX][oldSectionY]
+		delete(oldSection, player.Name)
+		sendActorRemoved(player.Actor)
+		player.X = newX
+		player.Y = newY
+		newSection := playerMap[newSectionX][newSectionY]
+		newSection[player.Name] = player
 		player.sendLocalMap()
+	} else {
+		player.X = newX
+		player.Y = newY
 	}
 
 	sendPlayerUpdate(player);

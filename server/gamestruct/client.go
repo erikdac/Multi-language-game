@@ -43,28 +43,6 @@ func (client *Client) Login() bool {
 			client.net.Write(data)
 			return true;
 		}
-
-/*
-		data, errorResponse := parseJson(input)
-		if errorResponse != nil {
-			client.net.Write(errorResponse)
-		} else {
-			player, err := checkLogin(data)
-			packet := &login_packet {Type: "Login_Success"}
-			if err != nil {
-				packet.Success = false
-				data,  _ := json.Marshal(packet)
-				client.net.Write(data)
-			} else {
-				client.Player = player
-				packet.Success = true
-				packet.Player = player
-			    data, _ := json.Marshal(packet)
-				client.net.Write(data)
-				return true;
-			}
-		}
-*/
 	}
 	return false
 }

@@ -22,6 +22,8 @@ public:
 
     void setMouseHandler(EventHandler<QMouseEvent *> *);
 
+    void refresh();
+
 protected:
     void intitializeGL();
     void paintGL();
@@ -32,6 +34,7 @@ private:
 
 signals:
     void repaint();
+    void done();
 };
 
 #endif

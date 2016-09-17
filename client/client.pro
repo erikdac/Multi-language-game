@@ -55,7 +55,8 @@ HEADERS  += mainwindow.h \
     game/objects/actor.h \
     game/objects/troll.h \
     ui/gamewidget.h \
-    ui/loadingwidget.h
+    ui/loadingwidget.h \
+    config.h
 
 FORMS    += \
     ui/loginwidget.ui \

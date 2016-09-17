@@ -82,6 +82,7 @@ void LoginWidget::checkResult() {
     std::string error;
     Json data = Json::parse(input, error);
     if (!error.empty()) {
+        popupBox("Connection refused!");
         std::string error = "Error in JSON recieved: " + input;
         std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
         std::cerr << "\tError: " << error << std::endl;
