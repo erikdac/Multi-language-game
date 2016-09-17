@@ -173,11 +173,7 @@ func sendCreatureUpdate(creature *Creature) {
 }
 
 func sendActorRemoved(actor Actor) {
-	packet := actor_removed_packet {
-		Type: "Actor_removed",
-		Name: actor.Name,
-	}
-	data,  _ := json.Marshal(packet)
+	data, _ := ActorRemovedPacket(actor)
 	for _, p := range actor.localPlayerMap() {
 		NameToClient[p.Name].sendPacket(data)
 	}

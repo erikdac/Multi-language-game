@@ -1,5 +1,9 @@
 package gamestruct
 
+import (
+	"encoding/json"
+)
+
 type login_packet struct {
 	Type 		string
 	Success 	bool 
@@ -40,7 +44,15 @@ type creature_update_packet struct {
 	Creature 	Creature
 }
 
-type actor_removed_packet struct {
-	Type 		string
-	Name 		string
+func ActorRemovedPacket(actor Actor) ([]byte, error) {
+	packet := struct {
+		Type string
+		Name string
+	} {
+		"Actor_removed",
+		actor.Name,
+	}
+
+	data, err := json.Marshal(packet)
+	return data, err
 }

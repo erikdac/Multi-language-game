@@ -107,7 +107,7 @@ func (player *Player) movement(movement map[string]string) {
 	sendPlayerUpdate(player);
 }
 
-func (player *Player) checkMoveBoundaries(movement map[string]string) (int, int, error) {
+func (player Player) checkMoveBoundaries(movement map[string]string) (int, int, error) {
 	newX, err := strconv.Atoi(movement["ToX"])
 	if err != nil {
 		return 0, 0, err
@@ -117,11 +117,16 @@ func (player *Player) checkMoveBoundaries(movement map[string]string) (int, int,
 		return 0, 0, err
 	}
 
-	if newX < 0 || newX >= MAP_X * MAP_SLICE || newY < 0 || newY >= MAP_Y * MAP_SLICE {
-		return newX, newY, errors.New("Player out of map boundaries.")
-	} else if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1 {
+	if newX < 0 || newX >= MAP_X * MAP_SLICE {
+		return newX, newY, errors.New("Player out of map horizontal boundaries.")
+	} 
+	if newY < 0 || newY >= MAP_Y * MAP_SLICE {
+		return newX, newY, errors.New("Player out of map vertical boundaries.")
+	} 
+	if math.Abs(float64(player.X - newX)) > 1 || math.Abs(float64(player.Y - newY)) > 1 {
 		return newX, newY, errors.New("Player moved to far.")
-	} else if !environmentMap[newX][newY].isWalkable {
+	} 
+	if !environmentMap[newX][newY].isWalkable {
 		return newX, newY, errors.New("New position not allowed.")
 	}
 	
