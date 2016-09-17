@@ -1,7 +1,6 @@
 package gamestruct
 
 import (
-	"encoding/json"
 	"strconv"
 	"math"
 	"time"
@@ -34,13 +33,11 @@ func (player Player) maxHealth() (int) {
 }
 
 func (player Player) sendLocalMap() {
-	packet := map_packet {
-		Type: "Map",
-		Players: player.localPlayerMap(),
-		Environment: player.localEnvironmentMap(),
-		Creatures: player.localCreatureMap(),
-	}
-	data,  _ := json.Marshal(packet)
+	players := player.localPlayerMap()
+	environment := player.localEnvironmentMap()
+	creatures := player.localCreatureMap()
+
+	data, _ := MapPacket(players, environment, creatures)
 	NameToClient[player.Name].sendPacket(data)
 }
 
@@ -134,12 +131,7 @@ func (player Player) checkMoveBoundaries(movement map[string]string) (int, int, 
 }
 
 func (player Player) moveCorrection() {
-	packet := player_moved_packet {
-		Type: "Moved",
-		NewX: player.X,
-		NewY: player.Y,
-	}
-	data,  _ := json.Marshal(packet)
+	data,  _ := PlayerMovedPacket(player)
 	NameToClient[player.Name].sendPacket(data)
 }
 
@@ -160,13 +152,7 @@ func (player *Player) auto_attack() {
 
 func (victim *Player) attacked(attacker string, damage int) {
 	victim.Health -= damage
-	packet := player_attacked_packet {
-		Type: "Attacked",
-		Health: victim.Health,
-		Attacker: attacker,
-	}
-	data, _ := json.Marshal(packet)
+	data, _ := PlayerAttackedPacket(*victim, attacker)
 	NameToClient[victim.Name].sendPacket(data)
-
 	sendPlayerUpdate(victim)
 }

@@ -69,7 +69,6 @@ void LoginWidget::on_pushButton_clicked() {
  */
 bool LoginWidget::isConnected() {
     if (connection::readPacket(1) != "") {
-        std::cout << "HERE" << std::endl;
         if (connection::connectToServer() == false) {
             connection::disconnect();
             return false;
@@ -88,7 +87,7 @@ void LoginWidget::checkResult() {
         std::cerr << "\tError: " << error << std::endl;
     }
 
-    if(data["Type"].string_value() == "Login_Success") {
+    if(data["Type"].string_value() == "Login_success") {
         if(data["Success"].bool_value() == true) {
             _self = new Self(std::move(map::parse_player(data["Player"])));
             dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();

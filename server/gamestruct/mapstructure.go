@@ -3,7 +3,6 @@ package gamestruct
 import (
 	"os"
 	"errors"
-	"encoding/json"
 	"bufio"
 	"strings"
 	"strconv"
@@ -149,24 +148,14 @@ func RemovePlayer(player *Player) (error) {
 }
 
 func sendPlayerUpdate(player *Player) {
-	packet := player_update_packet {
-		Type: "Player_update",
-		Player: *player,
-	}
-	data,  _ := json.Marshal(packet)
-
+	data,  _ := PlayerUpdatePacket(*player)
 	for _, p := range player.localPlayerMap() {
 		NameToClient[p.Name].sendPacket(data)
 	}
 }
 
 func sendCreatureUpdate(creature *Creature) {
-	packet := creature_update_packet {
-		Type: "Creature_update",
-		Creature: *creature,
-	}
-	data,  _ := json.Marshal(packet)
-
+	data,  _ := CreatureUpdatePacket(*creature)
 	for _, p := range creature.localPlayerMap() {
 		NameToClient[p.Name].sendPacket(data)
 	}
