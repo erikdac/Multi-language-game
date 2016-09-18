@@ -90,16 +90,24 @@ func (player *Player) movement(movement map[string]string) {
 		return
 	}
 
-	newSectionX, newSectionY := sliceMap(newX, newY)
-	oldSectionX, oldSectionY := sliceMap(player.X, player.Y)
+	newSecX, newSecY := sliceMap(newX, newY)
+	oldSecX, oldSecY := sliceMap(player.X, player.Y)
 
-	if newSectionX != oldSectionX || newSectionY != oldSectionY {
-		oldSection := playerMap[oldSectionX][oldSectionY]
+	if newSecX != oldSecX || newSecY != oldSecY {
+		oldSection := playerMap[oldSecX][oldSecY]
 		delete(oldSection, player.Name)
-		sendActorRemoved(player.Actor)
+		if newSecY < oldSecY {
+			sendActorRemoved(player.Actor, NORTH)
+		} else if newSecX > oldSecX {
+			sendActorRemoved(player.Actor, EAST)			
+		} else if newSecY > oldSecY {
+			sendActorRemoved(player.Actor, SOUTH)
+		} else if newSecX < oldSecX {
+			sendActorRemoved(player.Actor, WEST)			
+		}
 		player.X = newX
 		player.Y = newY
-		newSection := playerMap[newSectionX][newSectionY]
+		newSection := playerMap[newSecX][newSecY]
 		newSection[player.Name] = player
 		player.sendLocalMap()
 	} else {

@@ -52,7 +52,7 @@ func (creature *Creature) dead() {
 		creature.Y = creature.spawnY
 		creature.Health = creature.maxHealth
 		creatureMap[creature.X][creature.Y][creature.Name] = creature
-		sendCreatureUpdate(creature)
+		sendCreatureUpdate(*creature)
 	}
 }
 
@@ -85,23 +85,31 @@ func (creature *Creature) combat() {
 }
 
 func (creature *Creature) move(newX int, newY int) {
-	newSectionX, newSectionY := sliceMap(newX, newY)
-	oldSectionX, oldSectionY := sliceMap(creature.X, creature.Y)
+	newSecX, newSecY := sliceMap(newX, newY)
+	oldSecX, oldSecY := sliceMap(creature.X, creature.Y)
 
-	if newSectionX != oldSectionX || newSectionY != oldSectionY {
-		oldSection := creatureMap[oldSectionX][oldSectionY]
+	if newSecX != oldSecX || newSecY != oldSecY {
+		oldSection := creatureMap[oldSecX][oldSecY]
 		delete(oldSection, creature.Name)
-		sendActorRemoved(creature.Actor)
+		if newSecY < oldSecY {
+			sendActorRemoved(creature.Actor, NORTH)
+		} else if newSecX > oldSecX {
+			sendActorRemoved(creature.Actor, EAST)			
+		} else if newSecY > oldSecY {
+			sendActorRemoved(creature.Actor, SOUTH)
+		} else if newSecX < oldSecX {
+			sendActorRemoved(creature.Actor, WEST)			
+		}
 		creature.X = newX
 		creature.Y = newY
-		newSection := creatureMap[newSectionX][newSectionY]
+		newSection := creatureMap[newSecX][newSecY]
 		newSection[creature.Name] = creature
 	} else {
 		creature.X = newX
 		creature.Y = newY
 	}
 	
-	sendCreatureUpdate(creature)
+	sendCreatureUpdate(*creature)
 }
 
 func (creature *Creature) outOfCombat() {
@@ -121,7 +129,7 @@ func (creature *Creature) regnerate() {
 		}
 		creature.Health += hp_reg
 		creature.Actor.cooldowns["REGNERATE"] = time.Now()
-		sendCreatureUpdate(creature)
+		sendCreatureUpdate(*creature)
 	}
 }
 
@@ -180,9 +188,9 @@ func (victim * Creature) attacked(attacker string, damage int) {
 	if victim.Health <= 0 {
 		x, y := sliceMap(victim.X, victim.Y)
 		delete(creatureMap[x][y], victim.Name)
-		sendActorRemoved(victim.Actor)
+		sendActorRemoved(victim.Actor, NONE)
 		victim.Actor.cooldowns["DEAD"] = time.Now()
 	} else {
-		sendCreatureUpdate(victim)
+		sendCreatureUpdate(*victim)
 	}
 }

@@ -143,7 +143,7 @@ func RemovePlayer(player *Player) (error) {
 	if _, ok := section[player.Name]; ok {
 		delete(NameToClient, player.Name)
 		delete(section, player.Name)
-		sendActorRemoved(player.Actor)
+		sendActorRemoved(player.Actor, NONE)
 		return nil
 	} else {
 		return errors.New("Player '" + player.Name + "' could not be found on the map. ")
@@ -157,16 +157,63 @@ func sendPlayerUpdate(player *Player) {
 	}
 }
 
-func sendCreatureUpdate(creature *Creature) {
-	data,  _ := CreatureUpdatePacket(*creature)
+func sendCreatureUpdate(creature Creature) {
+	data,  _ := CreatureUpdatePacket(creature)
 	for _, p := range creature.localPlayerMap() {
 		NameToClient[p.Name].sendPacket(data)
 	}
 }
 
-func sendActorRemoved(actor Actor) {
+type Direction int
+const ( 
+	NONE Direction = 1 << iota
+	NORTH
+	EAST
+	SOUTH
+	WEST
+)
+
+// The direction represents the direction that the actor is moving in.
+// NONE means that the actor was removed. 
+func sendActorRemoved(actor Actor, direction Direction) {
+	x, y := sliceMap(actor.X, actor.Y)
 	data, _ := ActorRemovedPacket(actor)
-	for _, p := range actor.localPlayerMap() {
-		NameToClient[p.Name].sendPacket(data)
+
+	if direction == NONE {
+		for _, p := range actor.localPlayerMap() {
+			NameToClient[p.Name].sendPacket(data)
+		}
+	} else if direction == NORTH {
+		for i := x-1; i <= x+1; i++ {
+			for _, p := range playerMap[i][y+1] {
+				if p.Name != actor.Name {
+					NameToClient[p.Name].sendPacket(data)
+				}
+			}
+		}
+	} else if direction == EAST {
+		for i := y-1; i <= y+1; i++ {
+			for _, p := range playerMap[x-1][i] {
+				if p.Name != actor.Name {
+					NameToClient[p.Name].sendPacket(data)
+				}
+			}
+		}
+	} else if direction == SOUTH {
+		for i := x-1; i <= x+1; i++ {
+			for _, p := range playerMap[i][y-1] {
+				if p.Name != actor.Name {
+					NameToClient[p.Name].sendPacket(data)
+				}
+			}
+		}
+	} else if direction == WEST {
+		for i := y-1; i <= y+1; i++ {
+			for _, p := range playerMap[x+1][i] {
+				if p.Name != actor.Name {
+					NameToClient[p.Name].sendPacket(data)
+				}
+			}
+		}
 	}
 }

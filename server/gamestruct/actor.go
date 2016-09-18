@@ -34,7 +34,6 @@ func (actor Actor) localPlayerMap() ([]Player) {
 		}
 	}
 
-
 	return list
 }
 

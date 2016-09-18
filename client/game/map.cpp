@@ -98,6 +98,7 @@ void map::parse_map(const Json data, TargetWidget * targetWidget) {
     }
 
     const std::string target = targetWidget->target();
+    bool targetFound = false;
     clearActors();
 
     const Json::array players = data["Players"].array_items();
@@ -105,15 +106,24 @@ void map::parse_map(const Json data, TargetWidget * targetWidget) {
         _actors.push_back(map::parse_player(p));
         if (_actors.back()->name() == target) {
             targetWidget->update_target(_actors.back());
+            targetFound = true;
         }
     }
+    assert(targetWidget->target() == target || !targetFound);
 
     const Json::array creatures = data["Creatures"].array_items();
     for (const Json & c : creatures) {
         _actors.push_back(parse_troll(c));
         if (_actors.back()->name() == target) {
             targetWidget->update_target(_actors.back());
+            targetFound = true;
         }
+    }
+    assert(targetWidget->target() == target || !targetFound);
+
+    if (!targetFound) {
+        targetWidget->unselect_target();
+        assert(targetWidget->target() == "");
     }
 }
 
