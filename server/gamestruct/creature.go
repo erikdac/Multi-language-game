@@ -135,45 +135,50 @@ func (creature *Creature) regnerate() {
 
 func (creature *Creature) walk() {
 	if creature.cooldownMS("MOVEMENT") > 5000 {
+
+		// Just renaming for easy reading. 
+		x, y := creature.X, creature.Y
+		sX, sY := creature.spawnX, creature.spawnY
+
 		switch(rand.Intn(8)) {
 		case 0:
-			if environmentMap[creature.X][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX, creature.spawnY + 1) <= 10 {
-				creature.move(creature.X, creature.Y - 1)
+			if environmentMap[x][y - 1].isWalkable && creature.distanceTo(sX, sY + 1) <= 10 {
+				creature.move(x, y - 1)
 				break
 			}
 		case 1:
-			if environmentMap[creature.X + 1][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY + 1) <= 10 {
-				creature.move(creature.X + 1, creature.Y - 1)
+			if environmentMap[x + 1][y - 1].isWalkable && creature.distanceTo(sX - 1, sY + 1) <= 10 {
+				creature.move(x + 1, y - 1)
 				break
 			}
 		case 2:
-			if environmentMap[creature.X + 1][creature.Y].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY) <= 10 {
-				creature.move(creature.X + 1, creature.Y)
+			if environmentMap[x + 1][y].isWalkable && creature.distanceTo(sX - 1, sY) <= 10 {
+				creature.move(x + 1, y)
 				break
 			}
 		case 3:
-			if environmentMap[creature.X + 1][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX - 1, creature.spawnY - 1) <= 10 {
-				creature.move(creature.X + 1, creature.Y + 1)
+			if environmentMap[x + 1][y + 1].isWalkable && creature.distanceTo(sX - 1, sY - 1) <= 10 {
+				creature.move(x + 1, y + 1)
 				break
 			}
 		case 4:
-			if environmentMap[creature.X][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX, creature.spawnY - 1) <= 10 {
-				creature.move(creature.X, creature.Y + 1)
+			if environmentMap[x][y + 1].isWalkable && creature.distanceTo(sX, sY - 1) <= 10 {
+				creature.move(x, y + 1)
 				break
 			}
 		case 5:
-			if environmentMap[creature.X - 1][creature.Y - 1].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY + 1) <= 10 {
-				creature.move(creature.X - 1, creature.Y - 1)
+			if environmentMap[x - 1][y - 1].isWalkable && creature.distanceTo(sX + 1, sY + 1) <= 10 {
+				creature.move(x - 1, y - 1)
 				break
 			}
 		case 6:
-			if environmentMap[creature.X - 1][creature.Y].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY) <= 10 {
-				creature.move(creature.X - 1, creature.Y)
+			if environmentMap[x - 1][y].isWalkable && creature.distanceTo(sX + 1, sY) <= 10 {
+				creature.move(x- 1, y)
 				break
 			}
 		case 7:
-			if environmentMap[creature.X - 1][creature.Y + 1].isWalkable && creature.distanceTo(creature.spawnX + 1, creature.spawnY - 1) <= 10 {
-				creature.move(creature.X - 1, creature.Y + 1)
+			if environmentMap[x - 1][y + 1].isWalkable && creature.distanceTo(sX + 1, sY - 1) <= 10 {
+				creature.move(x - 1, y + 1)
 				break
 			}
 		}
@@ -183,7 +188,7 @@ func (creature *Creature) walk() {
 	}
 }
 
-func (victim * Creature) attacked(attacker string, damage int) {
+func (victim *Creature) attacked(attacker string, damage int) {
 	victim.Health -= damage
 	if victim.Health <= 0 {
 		x, y := sliceMap(victim.X, victim.Y)
