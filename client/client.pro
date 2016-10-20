@@ -66,7 +66,7 @@ FORMS    += \
     ui/gamewidget.ui \
     ui/loadingwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++0x -pthread -Wall
+QMAKE_CXXFLAGS += -std=c++0x -O2 -pthread -Wall -isystem -Wconversion
 
 LIBS += -lglut
 
