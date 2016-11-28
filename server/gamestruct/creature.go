@@ -133,58 +133,25 @@ func (creature *Creature) regnerate() {
 	}
 }
 
+func (creature *Creature) allowedWalk(newX int, newY int) bool {
+	sX, sY := creature.spawnX, creature.spawnY
+	xDiff := creature.X - newX
+	yDiff := creature.Y - newY
+
+	return environmentMap[newX][newY].isWalkable &&
+		creature.distanceTo(sX + xDiff, sY + yDiff) <= 10
+}
+
 func (creature *Creature) walk() {
 	if creature.cooldownMS("MOVEMENT") > 5000 {
+		newX := creature.X + (rand.Intn(2) - 1)
+		newY := creature.Y + (rand.Intn(2) - 1)
 
-		// Just renaming for easy reading. 
-		x, y := creature.X, creature.Y
-		sX, sY := creature.spawnX, creature.spawnY
-
-		switch(rand.Intn(8)) {
-		case 0:
-			if environmentMap[x][y - 1].isWalkable && creature.distanceTo(sX, sY + 1) <= 10 {
-				creature.move(x, y - 1)
-				break
-			}
-		case 1:
-			if environmentMap[x + 1][y - 1].isWalkable && creature.distanceTo(sX - 1, sY + 1) <= 10 {
-				creature.move(x + 1, y - 1)
-				break
-			}
-		case 2:
-			if environmentMap[x + 1][y].isWalkable && creature.distanceTo(sX - 1, sY) <= 10 {
-				creature.move(x + 1, y)
-				break
-			}
-		case 3:
-			if environmentMap[x + 1][y + 1].isWalkable && creature.distanceTo(sX - 1, sY - 1) <= 10 {
-				creature.move(x + 1, y + 1)
-				break
-			}
-		case 4:
-			if environmentMap[x][y + 1].isWalkable && creature.distanceTo(sX, sY - 1) <= 10 {
-				creature.move(x, y + 1)
-				break
-			}
-		case 5:
-			if environmentMap[x - 1][y - 1].isWalkable && creature.distanceTo(sX + 1, sY + 1) <= 10 {
-				creature.move(x - 1, y - 1)
-				break
-			}
-		case 6:
-			if environmentMap[x - 1][y].isWalkable && creature.distanceTo(sX + 1, sY) <= 10 {
-				creature.move(x- 1, y)
-				break
-			}
-		case 7:
-			if environmentMap[x - 1][y + 1].isWalkable && creature.distanceTo(sX + 1, sY - 1) <= 10 {
-				creature.move(x - 1, y + 1)
-				break
-			}
+		if (newX != creature.X || newY != creature.Y) && creature.allowedWalk(newX, newY) {
+			creature.move(newX, newY)
+			delay := time.Millisecond * time.Duration(rand.Intn(1000))
+			creature.Actor.cooldowns["MOVEMENT"] = time.Now().Add(delay)
 		}
-
-		delay := time.Millisecond * time.Duration(rand.Intn(1000))
-		creature.Actor.cooldowns["MOVEMENT"] = time.Now().Add(delay)
 	}
 }
 

@@ -179,11 +179,13 @@ func sendActorRemoved(actor Actor, direction Direction) {
 	x, y := sliceMap(actor.X, actor.Y)
 	data, _ := ActorRemovedPacket(actor)
 
-	if direction == NONE {
+	switch direction {
+	case NONE:
 		for _, p := range actor.localPlayerMap() {
 			NameToClient[p.Name].sendPacket(data)
 		}
-	} else if direction == NORTH {
+		break
+	case NORTH:
 		for i := x-1; i <= x+1; i++ {
 			for _, p := range playerMap[i][y+1] {
 				if p.Name != actor.Name {
@@ -191,7 +193,8 @@ func sendActorRemoved(actor Actor, direction Direction) {
 				}
 			}
 		}
-	} else if direction == EAST {
+		break
+	case EAST:
 		for i := y-1; i <= y+1; i++ {
 			for _, p := range playerMap[x-1][i] {
 				if p.Name != actor.Name {
@@ -199,7 +202,8 @@ func sendActorRemoved(actor Actor, direction Direction) {
 				}
 			}
 		}
-	} else if direction == SOUTH {
+		break
+	case SOUTH:
 		for i := x-1; i <= x+1; i++ {
 			for _, p := range playerMap[i][y-1] {
 				if p.Name != actor.Name {
@@ -207,7 +211,8 @@ func sendActorRemoved(actor Actor, direction Direction) {
 				}
 			}
 		}
-	} else if direction == WEST {
+		break
+	case WEST:
 		for i := y-1; i <= y+1; i++ {
 			for _, p := range playerMap[x+1][i] {
 				if p.Name != actor.Name {
@@ -215,5 +220,6 @@ func sendActorRemoved(actor Actor, direction Direction) {
 				}
 			}
 		}
+		break
 	}
 }
