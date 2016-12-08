@@ -5,7 +5,6 @@
 
 #include <QWidget>
 
-
 namespace Ui {
     class LoadingWidget;
 }

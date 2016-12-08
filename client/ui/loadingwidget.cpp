@@ -4,7 +4,9 @@
 
 #include <iostream>
 
-LoadingWidget::LoadingWidget(QWidget *parent) : ui(new Ui::LoadingWidget) {
+LoadingWidget::LoadingWidget(QWidget *parent)
+    : ui(new Ui::LoadingWidget)
+{
     this->setParent(parent);
     ui->setupUi(this);
 }

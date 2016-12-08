@@ -1,6 +1,5 @@
 #include "ui_window.h"
 #include "window.h"
-#include "config.h"
 #include "loginwidget.h"
 #include "loadingwidget.h"
 #include "gamewidget.h"
@@ -9,8 +8,9 @@
 #include <chrono>
 #include <thread>
 
-Window::Window(QWidget * parent)
+Window::Window(const int max_update_rate, QWidget * parent)
     : StackedWidget(parent)
+    , _max_update_rate(max_update_rate)
     , ui(new Ui::Window)
 {
     ui->setupUi(this);
@@ -20,7 +20,6 @@ Window::Window(QWidget * parent)
     addState(new GameWidget(this));
 
     setLoginUi();
-    std::thread(&Window::gameLoop, this).detach();
 }
 
 Window::~Window() {
@@ -28,8 +27,13 @@ Window::~Window() {
     delete ui;
 }
 
-void Window::gameLoop() {
+void Window::run() {
     _isRunning = true;
+    std::thread(&Window::gameLoop, this).detach();
+}
+
+void Window::gameLoop() {
+    assert(_isRunning == true);
     while (_isRunning) {
         auto begin = std::chrono::high_resolution_clock::now();
         if (_nextIndex != -1) {
@@ -39,7 +43,7 @@ void Window::gameLoop() {
         currentState()->process();
         auto end = std::chrono::high_resolution_clock::now();
         int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        int delay = (1000/MAX_UPDATE_RATE) - diff;
+        int delay = (1000/_max_update_rate) - diff;
         std::this_thread::sleep_for (std::chrono::milliseconds(delay));
     }
 }

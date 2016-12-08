@@ -11,12 +11,15 @@ class Window : public StackedWidget {
 
     Q_OBJECT
 
+    int _max_update_rate;
     bool _isRunning;
     int _nextIndex = -1;
 
 public:
-    explicit Window(QWidget * parent = 0);
+    Window(const int, QWidget * parent = 0);
     ~Window();
+
+    void run();
 
     void gameLoop();
 
