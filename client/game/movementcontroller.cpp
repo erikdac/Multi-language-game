@@ -1,5 +1,5 @@
 #include "movementcontroller.h"
-#include "game/map.h"
+#include "game/gamestruct.h"
 #include "objects/self.h"
 
 #include <chrono>
@@ -58,36 +58,38 @@ void MovementController::execute() {
         return;
     }
 
+    Self * self = gamestruct::self();
+
     if ((_activeKey == 'w' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 'w')) {
-        _self->moveUpLeft();
+        self->moveUpLeft();
         expensiveLast = true;
     }
     else if ((_activeKey == 'w' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 'w')) {
-        _self->moveUpRight();
+        self->moveUpRight();
         expensiveLast = true;
     }
     else if ((_activeKey == 's' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 's')) {
-        _self->moveDownLeft();
+        self->moveDownLeft();
         expensiveLast = true;
     }
     else if ((_activeKey == 's' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 's')) {
-        _self->moveDownRight();
+        self->moveDownRight();
         expensiveLast = true;
     }
     else if (_activeKey == 'w') {
-        _self->moveUp();
+        self->moveUp();
         expensiveLast = false;
     }
     else if (_activeKey == 'a') {
-        _self->moveLeft();
+        self->moveLeft();
         expensiveLast = false;
     }
     else if (_activeKey == 's') {
-        _self->moveDown();
+        self->moveDown();
         expensiveLast = false;
     }
     else if (_activeKey == 'd') {
-        _self->moveRight();
+        self->moveRight();
         expensiveLast = false;
     }
 

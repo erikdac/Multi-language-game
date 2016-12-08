@@ -1,5 +1,5 @@
 #include "grass.h"
-#include "game/map.h"
+#include "game/gamestruct.h"
 
 #include <QPainter>
 #include <QOpenGLTexture>
@@ -14,14 +14,15 @@ bool Grass::isWalkable() const {
 }
 
 void Grass::load_graphics() const {
-    float x = (-0.5f + _x - _self->x())/VIEW_WIDTH;
-    float y = -(0.5f + _y - _self->y())/VIEW_HEIGHT;
+    std::vector<float> pos = relativePos(
+                _x, _y, gamestruct::self()->x(), gamestruct::self()->y()
+            );
 
     glBegin(GL_QUADS);
         glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(x, y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
-        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
+        glVertex2f(pos[0], pos[1]);
+        glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1]);
+        glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1] + (1.0f/VIEW_HEIGHT));
+        glVertex2f(pos[0], pos[1] + (1.0f/VIEW_HEIGHT));
     glEnd();
 }

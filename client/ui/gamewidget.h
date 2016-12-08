@@ -8,7 +8,7 @@
 #include "game/objects/player.h"
 #include "game/movementcontroller.h"
 #include "game/eventhandler.h"
-#include "json11/json11.hpp"
+#include "json/json11.hpp"
 
 #include <QWidget>
 #include <QMouseEvent>

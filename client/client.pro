@@ -12,10 +12,9 @@ TARGET = client
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    json11/json11.cpp \
+    json/json11.cpp \
     network/connection.cpp \
     ui/loginwidget.cpp \
-    game/map.cpp \
     game/objects/player.cpp \
     game/objects/environment.cpp \
     game/objects/water.cpp \
@@ -30,13 +29,14 @@ SOURCES += main.cpp\
     ui/window.cpp \
     game/objects/troll.cpp \
     ui/gamewidget.cpp \
-    ui/loadingwidget.cpp
+    ui/loadingwidget.cpp \
+    game/gamestruct.cpp
 
 HEADERS  += mainwindow.h \
-    json11/json11.hpp \
+    json/json11.hpp \
     network/connection.h \
     ui/loginwidget.h \
-    game/map.h \
+    game/objects/actor.h \
     game/objects/player.h \
     game/objects/graphics.h \
     game/objects/environment.h \
@@ -52,11 +52,11 @@ HEADERS  += mainwindow.h \
     ui/stackedwidget.h \
     ui/window.h \
     game/eventhandler.h \
-    game/objects/actor.h \
     game/objects/troll.h \
     ui/gamewidget.h \
     ui/loadingwidget.h \
-    config.h
+    config.h \
+    game/gamestruct.h
 
 FORMS    += \
     ui/loginwidget.ui \

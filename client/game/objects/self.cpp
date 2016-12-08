@@ -1,7 +1,7 @@
 #include "self.h"
-#include "json11/json11.hpp"
+#include "json/json11.hpp"
 #include "network/connection.h"
-#include "game/map.h"
+#include "game/gamestruct.h"
 
 #include <QPainter>
 #include <QOpenGLTexture>
@@ -16,56 +16,56 @@ Self::~Self() {
 }
 
 void Self::moveUp() {
-    if (map::walkable(_x, _y - 1)) {
+    if (gamestruct::walkable(_x, _y - 1)) {
         set_position(_x, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveDown() {
-    if (map::walkable(_x, _y + 1)) {
+    if (gamestruct::walkable(_x, _y + 1)) {
         set_position(_x, _y + 1);
         sendMovement();
     }
 }
 
 void Self::moveLeft() {
-    if (map::walkable(_x - 1, _y)) {
+    if (gamestruct::walkable(_x - 1, _y)) {
         set_position(_x - 1, _y);
         sendMovement();
     }
 }
 
 void Self::moveRight() {
-    if (map::walkable(_x + 1, _y)) {
+    if (gamestruct::walkable(_x + 1, _y)) {
         ++_x;
         sendMovement();
     }
 }
 
 void Self::moveUpRight() {
-    if (map::walkable(_x + 1, _y - 1)) {
+    if (gamestruct::walkable(_x + 1, _y - 1)) {
         set_position(_x + 1, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveUpLeft() {
-    if (map::walkable(_x - 1, _y - 1)) {
+    if (gamestruct::walkable(_x - 1, _y - 1)) {
         set_position(_x - 1, _y - 1);
         sendMovement();
     }
 }
 
 void Self::moveDownRight() {
-    if (map::walkable(_x + 1, _y + 1)) {
+    if (gamestruct::walkable(_x + 1, _y + 1)) {
         set_position(_x + 1, _y + 1);
         sendMovement();
     }
 }
 
 void Self::moveDownLeft() {
-    if (map::walkable(_x - 1, _y + 1)) {
+    if (gamestruct::walkable(_x - 1, _y + 1)) {
         set_position(_x - 1, _y + 1);
         sendMovement();
     }

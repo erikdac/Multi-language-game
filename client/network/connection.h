@@ -1,7 +1,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include "json11/json11.hpp"
+#include "json/json11.hpp"
 
 using namespace json11;
 

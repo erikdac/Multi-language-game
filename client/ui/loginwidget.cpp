@@ -1,9 +1,9 @@
 #include "ui_loginwidget.h"
 #include "loginwidget.h"
 #include "network/connection.h"
-#include "json11/json11.hpp"
+#include "json/json11.hpp"
 #include "window.h"
-#include "game/map.h"
+#include "game/gamestruct.h"
 #include "game/objects/player.h"
 
 #include <iostream>
@@ -90,7 +90,7 @@ void LoginWidget::checkResult() {
 
     if(data["Type"].string_value() == "Login_success") {
         if(data["Success"].bool_value() == true) {
-            _self = new Self(std::move(map::parse_player(data["Player"])));
+            gamestruct::set_self(parse_player(data["Player"]));
             dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
         }
         else

@@ -5,7 +5,7 @@
 #include "gamewidget.h"
 #include "network/connection.h"
 #include "game/objects/player.h"
-#include "game/map.h"
+#include "game/gamestruct.h"
 
 #include <iostream>
 #include <QPainter>
@@ -65,15 +65,15 @@ void ScreenWidget::refresh() {
 void ScreenWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (const Environment * e : _environment) {
+    for (auto e : gamestruct::environment()) {
         e->load_graphics();
     }
 
-    for (const Actor * a : _actors) {
+    for (auto a : gamestruct::actors()) {
         a->load_graphics();
     }
 
-    _self->load_graphics();
+    gamestruct::self()->load_graphics();
 
     emit done();
 }

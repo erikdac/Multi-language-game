@@ -2,7 +2,7 @@
 #define LOGINWIDGET_H
 
 #include "gamestate.h"
-#include "json11/json11.hpp"
+#include "json/json11.hpp"
 
 namespace Ui {
     class LoginWidget;
