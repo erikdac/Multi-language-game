@@ -13,9 +13,14 @@ bool Grass::isWalkable() const {
     return true;
 }
 
-void Grass::load_graphics() const {
+void Grass::update() {
+
+}
+
+void Grass::draw() const {
     std::vector<float> pos = relativePos(
-                _x, _y, gamestruct::self()->x(), gamestruct::self()->y()
+                _x, _y,
+                gamestruct::self()->visualX(), gamestruct::self()->visualY()
             );
 
     glBegin(GL_QUADS);

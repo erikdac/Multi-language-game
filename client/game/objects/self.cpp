@@ -3,6 +3,7 @@
 #include "network/connection.h"
 #include "game/gamestruct.h"
 
+#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
@@ -38,7 +39,7 @@ void Self::moveLeft() {
 
 void Self::moveRight() {
     if (gamestruct::walkable(_x + 1, _y)) {
-        ++_x;
+        set_position(_x + 1, _y);
         sendMovement();
     }
 }
@@ -80,6 +81,12 @@ void Self::set_position(const int x, const int y) {
     _y = y;
 }
 
+void Self::fix_position(const int x, const int y) {
+    set_position(x, y);
+    _visualX = _x;
+    _visualY = _y;
+}
+
 void Self::sendMovement() const {
     const json11::Json data = json11::Json::object {
         {"Type", "Movement"},
@@ -89,7 +96,26 @@ void Self::sendMovement() const {
     connection::output(data);
 }
 
-void Self::load_graphics() const {
+// TODO: Should use a timer instead of fixed intervall.
+void Self::update() {
+    if (std::abs(_x - _visualX) < 0.1) {
+        _visualX = _x;
+    } else if (_x < _visualX) {
+        _visualX -= 0.05;
+    } else if (_x > _visualX) {
+        _visualX += 0.05;
+    }
+
+    if (std::abs(_y - _visualY) < 0.1) {
+        _visualY = _y;
+    } else if (_y < _visualY) {
+        _visualY -= 0.05;
+    } else if (_y > _visualY) {
+        _visualY += 0.05;
+    }
+}
+
+void Self::draw() const {
     float x = -0.5f/VIEW_WIDTH;
     float y = -0.5f/VIEW_HEIGHT;
 

@@ -11,7 +11,8 @@ public:
 
     virtual bool isWalkable() const override;
 
-    virtual void load_graphics() const override;
+    virtual void update() override;
+    virtual void draw() const override;
 };
 
 #endif // STONE_H

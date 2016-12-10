@@ -9,6 +9,8 @@ Troll::Troll(std::string name, int x, int y, int health, int mana) {
     _name = name;
     _x = x;
     _y = y;
+    _visualX = _x;
+    _visualY = _y;
     _level = 1;
     _health = health;
     _mana = mana;
@@ -26,9 +28,14 @@ int Troll::max_mana() const {
     return 10;
 }
 
-void Troll::load_graphics() const {
+void Troll::update() {
+
+}
+
+void Troll::draw() const {
     std::vector<float> pos = relativePos(
-                _x, _y, gamestruct::self()->x(), gamestruct::self()->y()
+                _x, _y,
+                gamestruct::self()->visualX(), gamestruct::self()->visualY()
             );
 
     glBegin(GL_QUADS);

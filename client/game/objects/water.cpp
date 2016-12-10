@@ -14,9 +14,14 @@ bool Water::isWalkable() const {
     return false;
 }
 
-void Water::load_graphics() const {
+void Water::update() {
+
+}
+
+void Water::draw() const {
     std::vector<float> pos = relativePos(
-                _x, _y, gamestruct::self()->x(), gamestruct::self()->y()
+                _x, _y,
+                gamestruct::self()->visualX(), gamestruct::self()->visualY()
             );
 
     glBegin(GL_QUADS);

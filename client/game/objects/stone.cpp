@@ -15,9 +15,14 @@ bool Stone::isWalkable() const {
     return false;
 }
 
-void Stone::load_graphics() const {
+void Stone::update() {
+
+}
+
+void Stone::draw() const {
     std::vector<float> pos = relativePos(
-                _x, _y, gamestruct::self()->x(), gamestruct::self()->y()
+                _x, _y,
+                gamestruct::self()->visualX(), gamestruct::self()->visualY()
             );
 
     glBegin(GL_QUADS);

@@ -16,6 +16,8 @@
 #include <chrono>
 #include "unistd.h"
 
+// TODO: Animation, https://www.youtube.com/watch?v=-NcnJ1Q-x50
+
 ScreenWidget::ScreenWidget(QWidget *parent)
     : QOpenGLWidget(parent)
     , ui(new Ui::ScreenWidget)
@@ -66,14 +68,17 @@ void ScreenWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (auto e : gamestruct::environment()) {
-        e->load_graphics();
+        e->update();
+        e->draw();
     }
 
     for (auto a : gamestruct::actors()) {
-        a->load_graphics();
+        a->update();
+        a->draw();
     }
 
-    gamestruct::self()->load_graphics();
+    gamestruct::self()->update();
+    gamestruct::self()->draw();
 
     emit done();
 }

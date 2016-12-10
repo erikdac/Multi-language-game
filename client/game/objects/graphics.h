@@ -10,7 +10,8 @@ static constexpr float VIEW_HEIGHT = 8 + 0.5f;
 class Graphics {
 
 public:
-    virtual void load_graphics() const = 0;
+    virtual void update() = 0;
+    virtual void draw() const = 0;
 
     std::vector<float> relativePos(const float x, const float y, const float xp, const float yp) const {
         std::vector<float> vec = {

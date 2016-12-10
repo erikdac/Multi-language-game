@@ -34,29 +34,23 @@ Self * gamestruct::self() {
     return _self;
 }
 
-std::vector<const Actor *> gamestruct::actors() {
-    return std::vector<const Actor *> (
-                std::begin(_actors),
-                std::end(_actors)
-            );
+std::vector<Actor *> gamestruct::actors() {
+    return _actors;
 }
 
-std::vector<const Environment *> gamestruct::environment() {
-    return std::vector<const Environment *> (
-                std::begin(_environment),
-                std::end(_environment)
-            );
+std::vector<Environment *> gamestruct::environment() {
+    return _environment;
 }
 
 void clearActors() {
-    for(const Actor * a : _actors) {
+    for (auto a : _actors) {
         delete a;
     }
     _actors.clear();
 }
 
 void clearEnvironment() {
-    for(const Environment * e : _environment) {
+    for (auto e : _environment) {
         delete e;
     }
     _environment.clear();

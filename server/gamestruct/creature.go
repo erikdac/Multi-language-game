@@ -108,7 +108,6 @@ func (creature *Creature) move(newX int, newY int) {
 		creature.X = newX
 		creature.Y = newY
 	}
-	
 	sendCreatureUpdate(*creature)
 }
 

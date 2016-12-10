@@ -9,6 +9,14 @@ public:
     Self(const Player *);
     virtual ~Self();
 
+    float visualX() const {
+        return _visualX;
+    }
+
+    float visualY() const {
+        return _visualY;
+    }
+
     void moveUp();
     void moveDown();
     void moveLeft();
@@ -19,11 +27,13 @@ public:
     void moveDownLeft();
 
     void set_health(const int);
-    void set_position(const int, const int);
+    void fix_position(const int, const int);
 
-    virtual void load_graphics() const override;
+    virtual void update() override;
+    virtual void draw() const override;
 
 private:
+    void set_position(const int, const int);
     void sendMovement() const;
 };
 

@@ -148,7 +148,7 @@ void GameWidget::processNetwork() {
         // SELF
 
         else if (type == "Moved") {
-            gamestruct::self()->set_position(data["NewX"].number_value(), data["NewY"].number_value());
+            gamestruct::self()->fix_position(data["NewX"].number_value(), data["NewY"].number_value());
         }
         else if (type == "Attacked") {
             gamestruct::self()->set_health(data["Health"].number_value());

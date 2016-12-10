@@ -11,7 +11,8 @@ protected:
     std::string _name;
     int _x;
     int _y;
-    double _direction;
+    float _visualX;
+    float _visualY;
     int _level;
     int _health;
     int _mana;
@@ -49,7 +50,6 @@ public:
 
     virtual int max_health() const = 0;
     virtual int max_mana() const = 0;
-    virtual void load_graphics() const = 0;
 };
 
 #endif // ACTOR

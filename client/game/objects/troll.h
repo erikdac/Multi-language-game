@@ -14,7 +14,8 @@ public:
     virtual int max_health() const override;
     virtual int max_mana() const override;
 
-    virtual void load_graphics() const override;
+    virtual void update() override;
+    virtual void draw() const override;
 };
 
 #endif // TROLL_H

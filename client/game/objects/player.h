@@ -16,7 +16,8 @@ public:
 
     unsigned int distance_to_player(const Player &) const;
 
-    virtual void load_graphics() const override;
+    virtual void update() override;
+    virtual void draw() const override;
 };
 
 #endif // PLAYER_H
