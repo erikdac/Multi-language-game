@@ -1,7 +1,7 @@
 #ifndef LOADINGWIDGET_H
 #define LOADINGWIDGET_H
 
-#include "gamestate.h"
+#include "gameengine/gamestate.h"
 
 #include <QWidget>
 

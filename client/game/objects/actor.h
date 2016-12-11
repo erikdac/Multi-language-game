@@ -32,10 +32,6 @@ public:
         return _y;
     }
 
-    double direction() const {
-        return _direction;
-    }
-
     int level() const {
         return _level;
     }

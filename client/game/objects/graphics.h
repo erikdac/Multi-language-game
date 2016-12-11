@@ -10,6 +10,8 @@ static constexpr float VIEW_HEIGHT = 8 + 0.5f;
 class Graphics {
 
 public:
+    virtual ~Graphics() {}
+
     virtual void update() = 0;
     virtual void draw() const = 0;
 

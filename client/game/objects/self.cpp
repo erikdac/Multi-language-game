@@ -98,20 +98,20 @@ void Self::sendMovement() const {
 
 // TODO: Should use a timer instead of fixed intervall.
 void Self::update() {
-    if (std::abs(_x - _visualX) < 0.1) {
+    if (std::abs(_x - _visualX) < 0.06) {
         _visualX = _x;
     } else if (_x < _visualX) {
-        _visualX -= 0.05;
+        _visualX -= 0.04;
     } else if (_x > _visualX) {
-        _visualX += 0.05;
+        _visualX += 0.04;
     }
 
-    if (std::abs(_y - _visualY) < 0.1) {
+    if (std::abs(_y - _visualY) < 0.06) {
         _visualY = _y;
     } else if (_y < _visualY) {
-        _visualY -= 0.05;
+        _visualY -= 0.04;
     } else if (_y > _visualY) {
-        _visualY += 0.05;
+        _visualY += 0.04;
     }
 }
 

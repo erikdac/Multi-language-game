@@ -61,7 +61,7 @@ void Window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
 }
 
 const QMetaObject Window::staticMetaObject = {
-    { &StackedWidget::staticMetaObject, qt_meta_stringdata_Window.data,
+    { &EngineWidget::staticMetaObject, qt_meta_stringdata_Window.data,
       qt_meta_data_Window,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
@@ -76,12 +76,12 @@ void *Window::qt_metacast(const char *_clname)
     if (!_clname) return Q_NULLPTR;
     if (!strcmp(_clname, qt_meta_stringdata_Window.stringdata))
         return static_cast<void*>(const_cast< Window*>(this));
-    return StackedWidget::qt_metacast(_clname);
+    return EngineWidget::qt_metacast(_clname);
 }
 
 int Window::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = StackedWidget::qt_metacall(_c, _id, _a);
+    _id = EngineWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     return _id;

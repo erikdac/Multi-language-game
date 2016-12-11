@@ -1,7 +1,7 @@
 #ifndef LOGINWIDGET_H
 #define LOGINWIDGET_H
 
-#include "gamestate.h"
+#include "gameengine/gamestate.h"
 #include "json/json11.hpp"
 
 namespace Ui {

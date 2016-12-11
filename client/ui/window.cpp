@@ -3,59 +3,39 @@
 #include "loginwidget.h"
 #include "loadingwidget.h"
 #include "gamewidget.h"
+#include "config.h"
 
-#include <iostream>
-#include <chrono>
-#include <thread>
+static const std::string LOGIN      = "login";
+static const std::string LOADING    = "loading";
+static const std::string GAME       = "game";
 
-Window::Window(const int max_update_rate, QWidget * parent)
-    : StackedWidget(parent)
-    , _max_update_rate(max_update_rate)
+Window::Window(QWidget * parent)
+    : EngineWidget(MAX_UPDATE_RATE, parent)
     , ui(new Ui::Window)
 {
     ui->setupUi(this);
 
-    addState(new LoginWidget(this));
-    addState(new LoadingWidget(this));
-    addState(new GameWidget(this));
+    addState(LOGIN, new LoginWidget(this));
+    addState(LOADING, new LoadingWidget(this));
+    addState(GAME, new GameWidget(this));
 
     setLoginUi();
+
+    this->run();
 }
 
 Window::~Window() {
-    _isRunning = false;
     delete ui;
 }
 
-void Window::run() {
-    _isRunning = true;
-    std::thread(&Window::gameLoop, this).detach();
-}
-
-void Window::gameLoop() {
-    assert(_isRunning == true);
-    while (_isRunning) {
-        auto begin = std::chrono::high_resolution_clock::now();
-        if (_nextIndex != -1) {
-            changeToState(_nextIndex);
-            _nextIndex = -1;
-        }
-        currentState()->process();
-        auto end = std::chrono::high_resolution_clock::now();
-        int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-        int delay = (1000/_max_update_rate) - diff;
-        std::this_thread::sleep_for (std::chrono::milliseconds(delay));
-    }
-}
-
 void Window::setLoginUi() {
-    _nextIndex = 0;
+    prepareState(LOGIN);
 }
 
 void Window::setLoadingUi() {
-    _nextIndex = 1;
+    prepareState(LOADING);
 }
 
 void Window::setGameUi() {
-    _nextIndex = 2;
+    prepareState(GAME);
 }

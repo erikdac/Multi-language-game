@@ -6,7 +6,7 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../client/ui/stackedwidget.h"
+#include "../client/ui/gameengine/stackedwidget.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
@@ -62,11 +62,11 @@ static const uint qt_meta_data_StackedWidget[] = {
        4,    1,   33,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::UInt,    2,
+    QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::UInt,    2,
+    QMetaType::Void, QMetaType::Int,    2,
 
        0        // eod
 };
@@ -76,16 +76,16 @@ void StackedWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
     if (_c == QMetaObject::InvokeMetaMethod) {
         StackedWidget *_t = static_cast<StackedWidget *>(_o);
         switch (_id) {
-        case 0: _t->executeChange((*reinterpret_cast< const uint(*)>(_a[1]))); break;
+        case 0: _t->executeChange((*reinterpret_cast< const int(*)>(_a[1]))); break;
         case 1: _t->done(); break;
-        case 2: _t->changeUi((*reinterpret_cast< const uint(*)>(_a[1]))); break;
+        case 2: _t->changeUi((*reinterpret_cast< const int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (StackedWidget::*_t)(const unsigned int );
+            typedef void (StackedWidget::*_t)(const int );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&StackedWidget::executeChange)) {
                 *result = 0;
             }
@@ -136,7 +136,7 @@ int StackedWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void StackedWidget::executeChange(const unsigned int _t1)
+void StackedWidget::executeChange(const int _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

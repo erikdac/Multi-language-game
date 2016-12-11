@@ -1,7 +1,7 @@
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 
-#include "gamestate.h"
+#include "gameengine/gamestate.h"
 #include "playerwidget.h"
 #include "targetwidget.h"
 #include "screenwidget.h"

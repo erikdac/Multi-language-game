@@ -25,12 +25,13 @@ SOURCES += main.cpp\
     ui/playerwidget.cpp \
     ui/targetwidget.cpp \
     ui/screenwidget.cpp \
-    ui/stackedwidget.cpp \
     ui/window.cpp \
     game/objects/troll.cpp \
     ui/gamewidget.cpp \
     ui/loadingwidget.cpp \
-    game/gamestruct.cpp
+    game/gamestruct.cpp \
+    ui/gameengine/stackedwidget.cpp \
+    ui/gameengine/enginewidget.cpp
 
 HEADERS  += mainwindow.h \
     json/json11.hpp \
@@ -49,14 +50,16 @@ HEADERS  += mainwindow.h \
     ui/targetwidget.h \
     ui/screenwidget.h \
     ui/gamestate.h \
-    ui/stackedwidget.h \
     ui/window.h \
     game/eventhandler.h \
     game/objects/troll.h \
     ui/gamewidget.h \
     ui/loadingwidget.h \
     config.h \
-    game/gamestruct.h
+    game/gamestruct.h \
+    ui/gameengine/gamestate.h \
+    ui/gameengine/stackedwidget.h \
+    ui/gameengine/enginewidget.h
 
 FORMS    += \
     ui/loginwidget.ui \
@@ -66,7 +69,7 @@ FORMS    += \
     ui/gamewidget.ui \
     ui/loadingwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++0x -O2 -pthread -Wall -isystem -Wconversion -pedantic
+QMAKE_CXXFLAGS += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
 
 LIBS += -lglut
 

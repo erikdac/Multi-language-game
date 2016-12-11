@@ -68,7 +68,7 @@ void ScreenWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (auto e : gamestruct::environment()) {
-        e->update();
+//        e->update();  // TODO: This makes the program crash from time to time...
         e->draw();
     }
 
