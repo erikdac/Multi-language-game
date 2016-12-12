@@ -1,5 +1,3 @@
 **~
-client/*.pro.*
-client/build
 **.o
-build*
+**build.*
