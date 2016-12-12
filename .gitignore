@@ -2,3 +2,4 @@
 client/*.pro.*
 client/build
 **.o
+build*

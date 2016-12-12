@@ -90,7 +90,7 @@ void LoginWidget::checkResult() {
 
     if(data["Type"].string_value() == "Login_success") {
         if(data["Success"].bool_value() == true) {
-            gamestruct::set_self(parse_player(data["Player"]));
+            gamestruct::set_self(*parse_player(data["Player"]));
             dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
         }
         else

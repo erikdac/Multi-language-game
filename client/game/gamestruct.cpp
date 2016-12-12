@@ -26,8 +26,8 @@ Self * _self;
 std::vector<Actor *> _actors;
 std::vector<Environment *> _environment;
 
-void gamestruct::set_self(const Player * player) {
-    _self = new Self(std::move(player));
+void gamestruct::set_self(const Player & player) {
+    _self = new Self(player);
 }
 
 Self * gamestruct::self() {
@@ -199,7 +199,7 @@ Actor * gamestruct::actor_at_position(const double x, const double y) {
 }
 
 bool gamestruct::walkable(const int x, const int y) {
-    for (const Environment * e : _environment) {
+    for (auto e : _environment) {
         if (e->x() == x && e->y() == y) {
             return e->isWalkable();
         }

@@ -13,7 +13,7 @@
 Player * parse_player(const json11::Json);
 
 namespace gamestruct {
-    void set_self(const Player *);
+    void set_self(const Player &);
     Self * self();
     std::vector<Actor *> actors();
     std::vector<Environment *> environment();

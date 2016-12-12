@@ -8,7 +8,7 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-Self::Self(const Player * player) : Player(*player) {
+Self::Self(const Player & player) : Player(player) {
 
 }
 

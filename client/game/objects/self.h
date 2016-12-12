@@ -6,7 +6,7 @@
 class Self : public Player {
 
 public:
-    Self(const Player *);
+    Self(const Player &);
     virtual ~Self();
 
     float visualX() const {
