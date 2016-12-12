@@ -10,7 +10,7 @@
 
 #include <vector>
 
-Player * parse_player(const json11::Json);
+Player * parse_player(const json11::Json &);
 
 namespace gamestruct {
     void set_self(const Player &);
@@ -18,10 +18,10 @@ namespace gamestruct {
     std::vector<Actor *> actors();
     std::vector<Environment *> environment();
     void clear();
-    void parse_map(const json11::Json, TargetWidget *);
-    void update_player(const json11::Json data, TargetWidget *);
-    void update_creature(const json11::Json data, TargetWidget *);
-    void remove_actor(const json11::Json data, TargetWidget *);
+    void parse_map(const json11::Json &, TargetWidget *);
+    void update_player(const json11::Json &, TargetWidget *);
+    void update_creature(const json11::Json &, TargetWidget *);
+    void remove_actor(const json11::Json &, TargetWidget *);
     Actor * actor_at_position(const double x, const double y);
     bool walkable(const int x, const int y);
 }

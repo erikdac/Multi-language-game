@@ -87,7 +87,7 @@ Environment * parse_environment(const Json & environment) {
 }
 
 // TODO: Should check that the values exists.
-Player * parse_player(const Json player) {
+Player * parse_player(const Json & player) {
     std::string name = player["Name"].string_value();
     int x = player["X"].number_value();
     int y = player["Y"].number_value();
@@ -99,7 +99,7 @@ Player * parse_player(const Json player) {
 
 // TODO: Should check that the values exists.
 // TODO: Should be parse_creature() in the future.
-Troll * parse_troll(const Json creature) {
+Troll * parse_troll(const Json & creature) {
     std::string name = creature["Name"].string_value();
     int x = creature["X"].number_value();
     int y = creature["Y"].number_value();
@@ -108,7 +108,7 @@ Troll * parse_troll(const Json creature) {
     return new Troll(name, x, y, health, mana);
 }
 
-void gamestruct::parse_map(const Json data, TargetWidget * targetWidget) {
+void gamestruct::parse_map(const Json & data, TargetWidget * targetWidget) {
     clearEnvironment();
     const Json::array environments = data["Environment"].array_items();
     for (const Json & e : environments) {
@@ -165,17 +165,17 @@ void update_actor(Actor * actor, std::vector<Actor *> & vec, TargetWidget * targ
     }
 }
 
-void gamestruct::update_player(const Json data, TargetWidget * targetWidget) {
+void gamestruct::update_player(const Json & data, TargetWidget * targetWidget) {
     Actor * actor = parse_player(data["Player"]);
     update_actor(actor, _actors, targetWidget);
 }
 
-void gamestruct::update_creature(const Json data, TargetWidget * targetWidget) {
+void gamestruct::update_creature(const Json & data, TargetWidget * targetWidget) {
     Actor * actor = parse_troll(data["Creature"]);
     update_actor(actor, _actors, targetWidget);
 }
 
-void gamestruct::remove_actor(const Json data, TargetWidget * targetWidget) {
+void gamestruct::remove_actor(const Json & data, TargetWidget * targetWidget) {
     const std::string name = data["Name"].string_value();
 
     auto it = std::find_if(_actors.begin(), _actors.end(), [&name](const Actor * a) {return a->name() == name;});

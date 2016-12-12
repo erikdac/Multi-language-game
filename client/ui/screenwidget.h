@@ -1,40 +1,33 @@
 #ifndef SCREENWIDGET_H
 #define SCREENWIDGET_H
 
+#include "gameengine/glwidget.h"
 #include "game/eventhandler.h"
 
-#include <QOpenGLWidget>
 #include <QMouseEvent>
 
 namespace Ui {
     class ScreenWidget;
 }
 
-class ScreenWidget : public QOpenGLWidget
-{
+class ScreenWidget : public GLWidget {
+
     Q_OBJECT
 
     EventHandler<QMouseEvent *> * _mouseHandler;
 
 public:
     ScreenWidget(QWidget *);
-    ~ScreenWidget();
+    virtual ~ScreenWidget();
 
     void setMouseHandler(EventHandler<QMouseEvent *> *);
 
-    void refresh();
-
 protected:
-    void intitializeGL();
-    void paintGL();
+    void paintGL() override;
     void mousePressEvent(QMouseEvent *);
 
 private:
     Ui::ScreenWidget *ui;
-
-signals:
-    void repaint();
-    void done();
 };
 
 #endif

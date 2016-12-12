@@ -5,7 +5,6 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
-
 Water::~Water() {
 
 }

@@ -44,6 +44,7 @@ public:
             LoginWidget->setObjectName(QStringLiteral("LoginWidget"));
         LoginWidget->resize(800, 600);
         LoginWidget->setLayoutDirection(Qt::LeftToRight);
+        LoginWidget->setAutoFillBackground(false);
         gridLayout = new QGridLayout(LoginWidget);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         pushButton = new QPushButton(LoginWidget);

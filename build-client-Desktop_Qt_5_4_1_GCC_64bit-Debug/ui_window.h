@@ -47,6 +47,7 @@ public:
         palette.setBrush(QPalette::Disabled, QPalette::Base, brush1);
         palette.setBrush(QPalette::Disabled, QPalette::Window, brush1);
         Window->setPalette(palette);
+        Window->setAutoFillBackground(false);
 
         retranslateUi(Window);
 

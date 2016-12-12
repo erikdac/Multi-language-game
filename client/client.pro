@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     ui/loadingwidget.cpp \
     game/gamestruct.cpp \
     ui/gameengine/stackedwidget.cpp \
-    ui/gameengine/enginewidget.cpp
+    ui/gameengine/enginewidget.cpp \
+    ui/gameengine/glwidget.cpp
 
 HEADERS  += mainwindow.h \
     json/json11.hpp \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     game/gamestruct.h \
     ui/gameengine/gamestate.h \
     ui/gameengine/stackedwidget.h \
-    ui/gameengine/enginewidget.h
+    ui/gameengine/enginewidget.h \
+    ui/gameengine/glwidget.h
 
 FORMS    += \
     ui/loginwidget.ui \
