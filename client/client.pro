@@ -32,7 +32,14 @@ SOURCES += main.cpp\
     game/gamestruct.cpp \
     ui/gameengine/stackedwidget.cpp \
     ui/gameengine/enginewidget.cpp \
-    ui/gameengine/glwidget.cpp
+    ui/gameengine/glwidget.cpp \
+    game/entities/environment.cpp \
+    game/entities/grass.cpp \
+    game/entities/player.cpp \
+    game/entities/self.cpp \
+    game/entities/stone.cpp \
+    game/entities/troll.cpp \
+    game/entities/water.cpp
 
 HEADERS  += mainwindow.h \
     json/json11.hpp \
@@ -61,7 +68,16 @@ HEADERS  += mainwindow.h \
     ui/gameengine/gamestate.h \
     ui/gameengine/stackedwidget.h \
     ui/gameengine/enginewidget.h \
-    ui/gameengine/glwidget.h
+    ui/gameengine/glwidget.h \
+    game/entities/actor.h \
+    game/entities/environment.h \
+    game/entities/graphics.h \
+    game/entities/grass.h \
+    game/entities/player.h \
+    game/entities/self.h \
+    game/entities/stone.h \
+    game/entities/troll.h \
+    game/entities/water.h
 
 FORMS    += \
     ui/loginwidget.ui \
