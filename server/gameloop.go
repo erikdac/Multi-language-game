@@ -57,7 +57,7 @@ func processClients() {
 
 func processAi() {
 	for _, creature := range gamestruct.CreatureList {
-		creature.Process()
+		gamestruct.ProcessCreature(creature)
 	}
 }
 
@@ -92,14 +92,14 @@ func processInput() {
 func processPlayers() {
 	var deadPlayers []*gamestruct.Client
 	for _, c := range gamestruct.NameToClient {
-		c.Player.Process()
+		gamestruct.ProcessPlayer(&c.Player)
 		if c.Player.Health <= 0 {
 			deadPlayers = append(deadPlayers, c)
 		}
 	}
 
 	for _, c := range deadPlayers {
-		c.Player.Died()
+		gamestruct.DeadPlayer(&c.Player)
 		c.Kick()
 	}
 }

@@ -6,6 +6,9 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"../dbhandler"
+	"../nethandler/packets"
+	"./entity"
 )
 
 const (
@@ -16,32 +19,25 @@ const (
 	SPAWN_FILE = "gamestruct/resources/spawns.mf"
 )
 
-type Environment struct {
-	Type 		string
-	X 			int
-	Y 			int
-	isWalkable	bool
-}
-
 // Binds the player names to their clients.
 var NameToClient = make(map[string]*Client)
 
-var CreatureList = make(map[string]*Creature)
+var CreatureList = make(map[string]*entity.Creature)
 
-var playerMap [MAP_X] [MAP_Y] (map[string]*Player)
-var creatureMap [MAP_X] [MAP_Y] (map[string]*Creature)
-var environmentMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] Environment
+var playerMap [MAP_X] [MAP_Y] (map[string]*entity.Player)
+var creatureMap [MAP_X] [MAP_Y] (map[string]*entity.Creature)
+var environmentMap [MAP_X * MAP_SLICE] [MAP_Y * MAP_SLICE] entity.Environment
 
 func InitiateGame() (error) {
-	err := resetDBOnlineList()
+	err := dbhandler.ResetOnlineList()
 	if err != nil {
 		return errors.New("Error clearing the database online list!")
 	}	
 	
 	for i := 0; i < MAP_X; i++ {
 		for j := 0; j < MAP_Y; j++ {
-			playerMap[i][j] = map[string]*Player{}
-			creatureMap[i][j] = map[string]*Creature{}
+			playerMap[i][j] = map[string]*entity.Player{}
+			creatureMap[i][j] = map[string]*entity.Creature{}
 		}
 	}
 
@@ -81,7 +77,7 @@ func loadEnvironment() (error) {
 		x, _ := strconv.Atoi(v[1])
 		y, _ := strconv.Atoi(v[2])
 		isWalkable := (v[3] == "T")
-		e := Environment{env, x, y, isWalkable}
+		e := entity.NewEnvironment(env, x, y, isWalkable)
     	environmentMap[e.X][e.Y] = e
     }
 	return nil
@@ -102,7 +98,7 @@ func loadSpawns() (error) {
     	name := v[1]
 		x, _ := strconv.Atoi(v[2])
 		y, _ := strconv.Atoi(v[3])
-		c := NewCreature(creatureType, name, x, y, 10)
+		c := entity.NewCreature(creatureType, name, x, y, 10)
     	secX, secY := sliceMap(x, y)
     	creatureMap[secX][secY][c.Name] = c
     	CreatureList[c.Name] = c
@@ -130,14 +126,14 @@ func sliceMap(x int, y int) (int, int) {
 func AddClient(client *Client) {
 	player := &client.Player
 	NameToClient[player.Name] = client
-	player.sendLocalMap()
+	sendLocalMap(*player)
 	x, y := sliceMap(player.X, player.Y)
 	section := playerMap[x][y]
 	section[player.Name] = player
 	sendPlayerUpdate(player);
 }
 
-func RemovePlayer(player *Player) (error) {
+func RemovePlayer(player *entity.Player) (error) {
 	x, y := sliceMap(player.X, player.Y)
 	section := playerMap[x][y]
 	if _, ok := section[player.Name]; ok {
@@ -150,16 +146,16 @@ func RemovePlayer(player *Player) (error) {
 	}
 }
 
-func sendPlayerUpdate(player *Player) {
-	data,  _ := PlayerUpdatePacket(*player)
-	for _, p := range player.localPlayerMap() {
+func sendPlayerUpdate(player *entity.Player) {
+	data,  _ := packets.PlayerUpdate(*player)
+	for _, p := range localPlayerMap(player.Actor) {
 		NameToClient[p.Name].sendPacket(data)
 	}
 }
 
-func sendCreatureUpdate(creature Creature) {
-	data,  _ := CreatureUpdatePacket(creature)
-	for _, p := range creature.localPlayerMap() {
+func sendCreatureUpdate(creature entity.Creature) {
+	data,  _ := packets.CreatureUpdate(creature)
+	for _, p := range localPlayerMap(creature.Actor) {
 		NameToClient[p.Name].sendPacket(data)
 	}
 }
@@ -175,13 +171,13 @@ const (
 
 // The direction represents the direction that the actor is moving in.
 // NONE means that the actor was removed. 
-func sendActorRemoved(actor Actor, direction Direction) {
+func sendActorRemoved(actor entity.Actor, direction Direction) {
 	x, y := sliceMap(actor.X, actor.Y)
-	data, _ := ActorRemovedPacket(actor)
+	data, _ := packets.ActorRemoved(actor)
 
 	switch direction {
 	case NONE:
-		for _, p := range actor.localPlayerMap() {
+		for _, p := range localPlayerMap(actor) {
 			NameToClient[p.Name].sendPacket(data)
 		}
 		break

@@ -1,35 +1,35 @@
-package gamestruct
+package dbhandler
 
 import (
 	"database/sql"
 	"errors"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
-//	"time"
+	"../gamestruct/entity"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
 
-func checkLogin(request map[string]string) (Player, error) {
+func CheckLogin(request map[string]string) (entity.Player, error) {
 
 	db, err := sql.Open("mysql", database)
 	if err != nil {
-		return Player{}, err
+		return entity.Player{}, err
 	}
 	defer db.Close()
 
 	playerName, err := queryAccount(request, db)
 	if err != nil {
-		return Player{}, errors.New("Login fail!")
+		return entity.Player{}, errors.New("Login fail!")
 	}
 
 	player, err := queryPlayer(db, playerName)
 	if err != nil {
-		return Player{}, errors.New("Database fail!")
+		return entity.Player{}, errors.New("Database fail!")
 	}
 
 	err = setOnlineStatus(db, player.Name, true)
 	if err != nil {
-		return Player{}, errors.New("Player is already online!")
+		return entity.Player{}, errors.New("Player is already online!")
 	}
 
 	return player, nil
@@ -51,34 +51,31 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 // It will retrieve the players attributes which it will use to instanziate 
 // a Player-struct and return it. If the database couldn't match it 
 // has a database missmatch. 
-func queryPlayer(db *sql.DB, name string) (Player, error) {
-	var player Player
+func queryPlayer(db *sql.DB, name string) (entity.Player, error) {
 	
 	query := "SELECT * FROM players WHERE name = ?"
 	rows, err := db.Query(query, name)
 	defer rows.Close()
 	if err != nil {
-		return player, err
+		return entity.Player{}, err
 	}
+
+	var x, y int
+
 	for rows.Next() {
-		err := rows.Scan(&player.Name, &player.X, &player.Y)
+		err := rows.Scan(&name, &x, &y)
 		if err != nil {
-			return player, err
+			return entity.Player{}, err
 		}
 	}
 	err = rows.Err()
 
-	// TODO: Put into SQL-database
-	player.Level = 1
-	player.Health = 88
-	player.Mana = 12
-	player.target = ""
-//	player.Actor.cooldowns = map[string]time.Time{}
+	player := entity.NewPlayer(name, x, y)
 
 	return player, err		
 }
 
-func logOut(player Player) (error) {
+func LogOut(player entity.Player) (error) {
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		return err
@@ -102,7 +99,7 @@ func setOnlineStatus(db *sql.DB, username string, isOnline bool) (error) {
 }
 
 // Resets the online indexes in the 'account' table to false for all players.
-func resetDBOnlineList() (error) {
+func ResetOnlineList() (error) {
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		return err

@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"../nethandler"
+	"../nethandler/packets"
+	"../dbhandler"
+	"./entity"
 )
 
 type Client struct {
 	net			nethandler.Nethandler
-	Player     	Player
+	Player     	entity.Player
 	Input		(chan map[string]string)
 }
 
@@ -33,13 +36,13 @@ func (client *Client) Login() bool {
 			continue
 		} 
 
-		player, err := checkLogin(data)
+		player, err := dbhandler.CheckLogin(data)
 		if err != nil {
-			data,  _ := LoginPacket(false, Player{})
+			data,  _ := packets.Login(false, entity.Player{})
 			client.net.Write(data)
 		} else {
 			client.Player = player
-		    data, _ := LoginPacket(true, player)
+		    data, _ := packets.Login(true, player)
 			client.net.Write(data)
 			return true;
 		}
@@ -74,12 +77,12 @@ func (client * Client) Reader() (error) {
 // Function used to handle whatever data the server has recieved from the user.
 func (client *Client) HandleInput(data map[string]string) (error) {
 	if data["Type"] == "Movement" {
-		client.Player.movement(data)
+		movement(&client.Player, data)
 	} else if data["Type"] == "Attack" {
 		if data["Condition"] == "Start" {
-			client.Player.target = data["Victim"]
+			client.Player.SetTarget(data["Victim"])
 		} else if data["Condition"] == "Stop" {
-			client.Player.target = ""
+			client.Player.SetTarget(data[""])
 		}
 	} else {
 		return errors.New("Failed Package")
@@ -107,7 +110,7 @@ func (client *Client) Disconnect() {
 	client.net.Disconnect()
 	if &client.Player != nil {
 		RemovePlayer(&client.Player)
-		logOut(client.Player)
+		dbhandler.LogOut(client.Player)
 	}
 }
 

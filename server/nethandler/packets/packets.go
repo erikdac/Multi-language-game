@@ -1,14 +1,15 @@
-package gamestruct
+package packets
 
 import (
 	"encoding/json"
+	"../../gamestruct/entity"
 )
 
-func LoginPacket(success bool, player Player) ([]byte, error) {
+func Login(success bool, player entity.Player) ([]byte, error) {
 	packet := struct {
 		Type 		string
 		Success 	bool 
-		Player 		Player
+		Player 		entity.Player
 	} {
 		"Login_success",
 		success,
@@ -19,12 +20,12 @@ func LoginPacket(success bool, player Player) ([]byte, error) {
 	return data, err
 }
 
-func MapPacket(players []Player, environment []Environment, creatures []Creature) ([]byte, error) {
+func Map(players []entity.Player, environment []entity.Environment, creatures []entity.Creature) ([]byte, error) {
 	packet := struct {
 		Type 		string
-		Players 	[]Player
-		Environment []Environment
-		Creatures	[]Creature
+		Players 	[]entity.Player
+		Environment []entity.Environment
+		Creatures	[]entity.Creature
 	} {
 		"Map",
 		players,
@@ -36,10 +37,10 @@ func MapPacket(players []Player, environment []Environment, creatures []Creature
 	return data, err
 }
 
-func EnvironmentMapPacket(environment []Environment) ([]byte, error) {
+func EnvironmentMap(environment []entity.Environment) ([]byte, error) {
 	packet := struct {
 		Type 		string
-		Environment []Environment
+		Environment []entity.Environment
 	} {
 		"Environment_map",
 		environment,
@@ -49,10 +50,10 @@ func EnvironmentMapPacket(environment []Environment) ([]byte, error) {
 	return data, err
 }
 
-func PlayerUpdatePacket(player Player) ([]byte, error) {
+func PlayerUpdate(player entity.Player) ([]byte, error) {
 	packet := struct {
 		Type 	string
-		Player 	Player
+		Player 	entity.Player
 	} {
 		"Player_update",
 		player,
@@ -62,7 +63,7 @@ func PlayerUpdatePacket(player Player) ([]byte, error) {
 	return data, err
 }
 
-func PlayerAttackedPacket(victim Player, attacker string) ([]byte, error) {
+func PlayerAttacked(victim entity.Player, attacker string) ([]byte, error) {
 	packet := struct {
 		Type 		string
 		Health 		int
@@ -77,7 +78,7 @@ func PlayerAttackedPacket(victim Player, attacker string) ([]byte, error) {
 	return data, err
 }
 
-func PlayerMovedPacket(player Player) ([]byte, error) {
+func PlayerMoved(player entity.Player) ([]byte, error) {
 	packet := struct {
 		Type 	string
 		NewX 	int
@@ -92,10 +93,10 @@ func PlayerMovedPacket(player Player) ([]byte, error) {
 	return data, err
 }
 
-func CreatureUpdatePacket(creature Creature) ([]byte, error) {
+func CreatureUpdate(creature entity.Creature) ([]byte, error) {
 	packet := struct {
 		Type 		string
-		Creature 	Creature
+		Creature 	entity.Creature
 	} {
 		"Creature_update",
 		creature,
@@ -105,7 +106,7 @@ func CreatureUpdatePacket(creature Creature) ([]byte, error) {
 	return data, err
 }
 
-func ActorRemovedPacket(actor Actor) ([]byte, error) {
+func ActorRemoved(actor entity.Actor) ([]byte, error) {
 	packet := struct {
 		Type string
 		Name string
