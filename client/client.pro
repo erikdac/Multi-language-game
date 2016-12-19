@@ -15,18 +15,11 @@ SOURCES += main.cpp\
     json/json11.cpp \
     network/connection.cpp \
     ui/loginwidget.cpp \
-    game/objects/player.cpp \
-    game/objects/environment.cpp \
-    game/objects/water.cpp \
-    game/objects/grass.cpp \
-    game/objects/stone.cpp \
     game/movementcontroller.cpp \
-    game/objects/self.cpp \
     ui/playerwidget.cpp \
     ui/targetwidget.cpp \
     ui/screenwidget.cpp \
     ui/window.cpp \
-    game/objects/troll.cpp \
     ui/gamewidget.cpp \
     ui/loadingwidget.cpp \
     game/gamestruct.cpp \
@@ -45,13 +38,6 @@ HEADERS  += mainwindow.h \
     json/json11.hpp \
     network/connection.h \
     ui/loginwidget.h \
-    game/objects/actor.h \
-    game/objects/player.h \
-    game/objects/graphics.h \
-    game/objects/environment.h \
-    game/objects/water.h \
-    game/objects/grass.h \
-    game/objects/stone.h \
     game/movementcontroller.h \
     game/objects/self.h \
     ui/playerwidget.h \

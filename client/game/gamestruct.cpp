@@ -2,10 +2,10 @@
 #include "json/json11.hpp"
 #include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
-#include "objects/water.h"
-#include "objects/grass.h"
-#include "objects/stone.h"
-#include "objects/troll.h"
+#include "entities/water.h"
+#include "entities/grass.h"
+#include "entities/stone.h"
+#include "entities/troll.h"
 
 #include <iostream>
 #include <algorithm>

@@ -1,8 +1,8 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include "game/objects/self.h"
-#include "game/objects/actor.h"
+#include "game/entities/self.h"
+#include "game/entities/actor.h"
 
 #include <QWidget>
 #include <memory>

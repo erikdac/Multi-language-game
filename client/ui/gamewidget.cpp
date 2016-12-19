@@ -4,10 +4,10 @@
 #include "targetwidget.h"
 #include "network/connection.h"
 #include "window.h"
-#include "game/objects/player.h"
+#include "game/entities/player.h"
 #include "game/movementcontroller.h"
 #include "game/gamestruct.h"
-#include "game/objects/graphics.h"
+#include "game/entities/graphics.h"
 
 #include <iostream>
 #include <QGridLayout>

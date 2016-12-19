@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
-	"time"
+//	"time"
 )
 
 var database = "root:1@tcp(localhost:3306)/server"
@@ -73,7 +73,7 @@ func queryPlayer(db *sql.DB, name string) (Player, error) {
 	player.Health = 88
 	player.Mana = 12
 	player.target = ""
-	player.Actor.cooldowns = map[string]time.Time{}
+//	player.Actor.cooldowns = map[string]time.Time{}
 
 	return player, err		
 }

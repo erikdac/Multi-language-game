@@ -5,7 +5,7 @@
 #include "playerwidget.h"
 #include "targetwidget.h"
 #include "screenwidget.h"
-#include "game/objects/player.h"
+#include "game/entities/player.h"
 #include "game/movementcontroller.h"
 #include "game/eventhandler.h"
 #include "json/json11.hpp"

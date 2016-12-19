@@ -1,6 +1,6 @@
 #include "movementcontroller.h"
 #include "game/gamestruct.h"
-#include "objects/self.h"
+#include "entities/self.h"
 
 #include <chrono>
 #include <cmath>

@@ -1,12 +1,12 @@
 #ifndef GAMESTRUCT_H
 #define GAMESTRUCT_H
 
-#include "objects/actor.h"
-#include "objects/player.h"
+#include "entities/actor.h"
+#include "entities/player.h"
 #include "json/json11.hpp"
 #include "ui/targetwidget.h"
-#include "objects/environment.h"
-#include "game/objects/self.h"
+#include "entities/environment.h"
+#include "game/entities/self.h"
 
 #include <vector>
 

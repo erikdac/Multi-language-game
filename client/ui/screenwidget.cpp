@@ -4,7 +4,7 @@
 #include "window.h"
 #include "gamewidget.h"
 #include "network/connection.h"
-#include "game/objects/player.h"
+#include "game/entities/player.h"
 #include "game/gamestruct.h"
 #include "gameengine/glwidget.h"
 

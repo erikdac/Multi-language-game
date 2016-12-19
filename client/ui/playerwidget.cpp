@@ -1,6 +1,6 @@
 #include "ui_playerwidget.h"
 #include "playerwidget.h"
-#include "game/objects/actor.h"
+#include "game/entities/actor.h"
 
 #include <QLabel>
 #include <QRect>

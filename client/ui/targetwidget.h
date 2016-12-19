@@ -1,8 +1,8 @@
 #ifndef TARGETWIDGET_H
 #define TARGETWIDGET_H
 
-#include "game/objects/actor.h"
-#include "game/objects/player.h"
+#include "game/entities/actor.h"
+#include "game/entities/player.h"
 #include "ui/playerwidget.h"
 
 #include <QWidget>

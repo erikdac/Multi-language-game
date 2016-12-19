@@ -13,7 +13,7 @@ type Actor struct {
 	cooldowns	map[string]time.Time
 }
 
-func (actor Actor) localPlayerMap(playerMap [][] ) ([]Player) {
+func (actor Actor) localPlayerMap() ([]Player) {
 	x, y := sliceMap(actor.X, actor.Y)
 
 	fromX := int(math.Max(float64(x-1), 0.0))

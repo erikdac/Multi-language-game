@@ -4,7 +4,7 @@
 #include "json/json11.hpp"
 #include "window.h"
 #include "game/gamestruct.h"
-#include "game/objects/player.h"
+#include "game/entities/player.h"
 
 #include <iostream>
 #include <QLabel>
