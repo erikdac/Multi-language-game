@@ -32,7 +32,7 @@ SOURCES += main.cpp\
     game/entities/stone.cpp \
     game/entities/troll.cpp \
     game/entities/water.cpp \
-    external/json11/json11.cpp
+    external/json11/json11.cpp \
 
 HEADERS  += mainwindow.h \
     network/connection.h \
