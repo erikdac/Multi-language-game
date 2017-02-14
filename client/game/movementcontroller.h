@@ -1,9 +1,6 @@
 #ifndef MOVEMENTCONTROLLER_H
 #define MOVEMENTCONTROLLER_H
 
-#include <thread>
-#include <mutex>
-
 class MovementController {
 
     char _activeKey;
