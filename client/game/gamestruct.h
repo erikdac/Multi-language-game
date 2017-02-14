@@ -3,7 +3,7 @@
 
 #include "entities/actor.h"
 #include "entities/player.h"
-#include "json/json11.hpp"
+#include "external/json11/json11.hpp"
 #include "ui/targetwidget.h"
 #include "entities/environment.h"
 #include "game/entities/self.h"

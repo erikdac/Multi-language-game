@@ -1,5 +1,5 @@
 #include "self.h"
-#include "json/json11.hpp"
+#include "external/json11/json11.hpp"
 #include "network/connection.h"
 #include "game/gamestruct.h"
 

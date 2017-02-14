@@ -12,7 +12,6 @@ TARGET = client
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    json/json11.cpp \
     network/connection.cpp \
     ui/loginwidget.cpp \
     game/movementcontroller.cpp \
@@ -32,10 +31,10 @@ SOURCES += main.cpp\
     game/entities/self.cpp \
     game/entities/stone.cpp \
     game/entities/troll.cpp \
-    game/entities/water.cpp
+    game/entities/water.cpp \
+    external/json11/json11.cpp
 
 HEADERS  += mainwindow.h \
-    json/json11.hpp \
     network/connection.h \
     ui/loginwidget.h \
     game/movementcontroller.h \
@@ -63,7 +62,8 @@ HEADERS  += mainwindow.h \
     game/entities/self.h \
     game/entities/stone.h \
     game/entities/troll.h \
-    game/entities/water.h
+    game/entities/water.h \
+    external/json11/json11.hpp
 
 FORMS    += \
     ui/loginwidget.ui \
