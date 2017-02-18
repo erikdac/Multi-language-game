@@ -70,13 +70,13 @@ Environment * parse_environment(const Json & environment) {
     int y = environment["Y"].number_value();
 
     const std::string type = environment["Type"].string_value();
-    if(type == "GRASS") {
+    if(type == "grass") {
         return new Grass(x, y);
     }
-    else if(type == "STONE") {
+    else if(type == "stone") {
         return new Stone(x, y);
     }
-    else if(type == "WATER") {
+    else if(type == "water") {
         return new Water(x, y);
     } else {
         std::string error = "No environment type specified in JSON!";

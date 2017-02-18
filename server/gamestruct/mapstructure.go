@@ -15,8 +15,8 @@ const (
 	MAP_X = 50
 	MAP_Y = 50
 	MAP_SLICE = 14
-	ENVIRONMENT_FILE = "gamestruct/resources/map.mf"
-	SPAWN_FILE = "gamestruct/resources/spawns.mf"
+	ENVIRONMENT_FILE = "resources/map.mf"
+	SPAWN_FILE = "resources/spawns.mf"
 )
 
 // Binds the player names to their clients.

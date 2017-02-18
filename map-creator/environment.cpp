@@ -9,15 +9,15 @@ std::string Environment::to_string() const {
 	char isWalkable;
 	switch(_type) {
 	case Environment::GRASS:
-		str = "GRASS";
+		str = "grass";
 		isWalkable = 'T';
 		break;
 	case Environment::STONE:
-		str = "STONE";
+		str = "stone";
 		isWalkable = 'F';
 		break;
 	case Environment::WATER:
-		str = "WATER";
+		str = "water";
 		isWalkable = 'F';
 		break;
 	}
