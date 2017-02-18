@@ -33,6 +33,7 @@ SOURCES += main.cpp\
     game/entities/troll.cpp \
     game/entities/water.cpp \
     external/json11/json11.cpp \
+    external/pugixml/src/pugixml.cpp
 
 HEADERS  += mainwindow.h \
     network/connection.h \
@@ -63,7 +64,9 @@ HEADERS  += mainwindow.h \
     game/entities/stone.h \
     game/entities/troll.h \
     game/entities/water.h \
-    external/json11/json11.hpp
+    external/json11/json11.hpp \
+    external/pugixml/src/pugiconfig.hpp \
+    external/pugixml/src/pugixml.hpp
 
 FORMS    += \
     ui/loginwidget.ui \
