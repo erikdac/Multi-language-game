@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     game/entities/water.cpp \
     external/json11/json11.cpp \
     external/pugixml/src/pugixml.cpp \
-    graphics/polygon.cpp
+    graphics/polygon.cpp \
+    graphics/graphics.cpp
 
 HEADERS  += mainwindow.h \
     network/connection.h \
