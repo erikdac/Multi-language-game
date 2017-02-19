@@ -39,7 +39,7 @@ void LoginWidget::pause() {
 
 }
 
-void LoginWidget::process() {
+void LoginWidget::tick(float deltaTime) {
 
 }
 

@@ -23,7 +23,7 @@ void LoadingWidget::pause() {
 
 }
 
-void LoadingWidget::process() {
+void LoadingWidget::tick(float deltaTime) {
     std::cout << "LOADING..." << std::endl;
     dynamic_cast<Window *> (this->parentWidget())->setGameUi();
 }

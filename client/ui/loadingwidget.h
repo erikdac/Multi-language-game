@@ -3,8 +3,6 @@
 
 #include "gameengine/gamestate.h"
 
-#include <QWidget>
-
 namespace Ui {
     class LoadingWidget;
 }
@@ -18,7 +16,7 @@ public:
 
     void resume() override;
     void pause() override;
-    void process() override;
+    void tick(float) override;
 
 private:
     Ui::LoadingWidget *ui;

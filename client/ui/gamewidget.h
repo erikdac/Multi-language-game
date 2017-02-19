@@ -10,7 +10,6 @@
 #include "game/eventhandler.h"
 #include "external/json11/json11.hpp"
 
-#include <QWidget>
 #include <QMouseEvent>
 #include <QKeyEvent>
 
@@ -40,7 +39,7 @@ public:
 
     void resume() override;
     void pause() override;
-    void process() override;
+    void tick(float) override;
 
 private:
     void processMouse();

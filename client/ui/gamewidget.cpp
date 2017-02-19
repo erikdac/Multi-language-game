@@ -53,7 +53,7 @@ void GameWidget::pause() {
     _movementController->clear();
 }
 
-void GameWidget::process() {
+void GameWidget::tick(float deltaTime) {
     if (_isRunning) {
         processMouse();
         processKeyboard();

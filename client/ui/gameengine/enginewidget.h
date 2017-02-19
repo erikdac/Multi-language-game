@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QObject>
 #include <string>
+#include <chrono>
 
 class EngineWidget : public StackedWidget {
 
@@ -16,7 +17,7 @@ class EngineWidget : public StackedWidget {
     std::string _nextState;
 
 protected:
-    EngineWidget(const int max_update_rate, QWidget *);
+    EngineWidget(const int, QWidget *);
     virtual ~EngineWidget();
 
     void run();
@@ -24,7 +25,10 @@ protected:
     void prepareState(const std::string);
 
 private:
+    typedef std::chrono::time_point<std::chrono::high_resolution_clock> TimePoint;
+
     void gameLoop();
+    int timeSince(TimePoint) const;
 
 };
 

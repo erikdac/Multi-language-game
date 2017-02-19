@@ -20,7 +20,7 @@ public:
 
     void resume() override;
     void pause() override;
-    void process() override;
+    void tick(float) override;
 
 private:
     bool sendLoginData(json11::Json);

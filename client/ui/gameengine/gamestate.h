@@ -8,7 +8,7 @@ class GameState : public QWidget {
 public:
     virtual void resume() = 0;
     virtual void pause() = 0;
-    virtual void process() = 0;
+    virtual void tick(float) = 0;
 };
 
 #endif // GAMESTATE_H
