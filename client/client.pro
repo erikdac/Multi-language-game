@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     game/entities/troll.cpp \
     game/entities/water.cpp \
     external/json11/json11.cpp \
-    external/pugixml/src/pugixml.cpp
+    external/pugixml/src/pugixml.cpp \
+    graphics/polygon.cpp
 
 HEADERS  += mainwindow.h \
     network/connection.h \
@@ -57,7 +58,6 @@ HEADERS  += mainwindow.h \
     ui/gameengine/glwidget.h \
     game/entities/actor.h \
     game/entities/environment.h \
-    game/entities/graphics.h \
     game/entities/grass.h \
     game/entities/player.h \
     game/entities/self.h \
@@ -66,7 +66,9 @@ HEADERS  += mainwindow.h \
     game/entities/water.h \
     external/json11/json11.hpp \
     external/pugixml/src/pugiconfig.hpp \
-    external/pugixml/src/pugixml.hpp
+    external/pugixml/src/pugixml.hpp \
+    graphics/polygon.h \
+    graphics/graphics.h
 
 FORMS    += \
     ui/loginwidget.ui \

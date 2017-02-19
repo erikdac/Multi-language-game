@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
-#include "graphics.h"
+#include "graphics/graphics.h"
 
 class Environment : public Graphics {
 

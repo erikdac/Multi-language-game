@@ -7,7 +7,7 @@
 #include "game/entities/player.h"
 #include "game/movementcontroller.h"
 #include "game/gamestruct.h"
-#include "game/entities/graphics.h"
+//#include "game/entities/graphics.h"
 
 #include <iostream>
 #include <QGridLayout>

@@ -1,7 +1,7 @@
 #ifndef ACTOR
 #define ACTOR
 
-#include "graphics.h"
+#include "graphics/graphics.h"
 
 #include <string>
 
