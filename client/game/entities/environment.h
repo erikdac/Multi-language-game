@@ -18,6 +18,7 @@ class Environment : public Graphics {
 public:
 	Environment();
     Environment(int, int, bool, std::vector<Polygon> *);
+    virtual ~Environment();
 
     int x() const;
     int y() const;

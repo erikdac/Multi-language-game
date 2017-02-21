@@ -17,6 +17,10 @@ Environment::Environment(int x, int y, bool walkable, std::vector<Polygon> * pol
 
 }
 
+Environment::~Environment() {
+
+}
+
 int Environment::x() const {
     return _x;
 }

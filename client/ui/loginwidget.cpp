@@ -4,14 +4,11 @@
 #include "external/json11/json11.hpp"
 #include "window.h"
 #include "game/gamestruct.h"
-#include "game/entities/player.h"
 
 #include <iostream>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QGlobalStatic>
-#include <memory>
 
 using namespace json11;
 
@@ -90,7 +87,7 @@ void LoginWidget::checkResult() {
 
     if(data["Type"].string_value() == "Login_success") {
         if(data["Success"].bool_value() == true) {
-            gamestruct::set_self(*parse_player(data["Player"]));
+            gamestruct::set_self(data);
             dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
         }
         else

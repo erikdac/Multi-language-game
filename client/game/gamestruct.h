@@ -10,15 +10,13 @@
 
 #include <vector>
 
-Player * parse_player(const json11::Json &);
-
 namespace gamestruct {
-    void set_self(const Player &);
+    void set_self(const json11::Json &);
     Self * self();
     std::vector<Actor *> actors();
     std::vector<Environment> environment();
     void clear();
-    void parse_map(const json11::Json &, TargetWidget *);
+    void new_map(const json11::Json &, TargetWidget *);
     void update_player(const json11::Json &, TargetWidget *);
     void update_creature(const json11::Json &, TargetWidget *);
     void remove_actor(const json11::Json &, TargetWidget *);

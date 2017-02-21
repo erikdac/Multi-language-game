@@ -4,10 +4,10 @@
 #include "window.h"
 #include "gamewidget.h"
 #include "network/connection.h"
-#include "game/entities/player.h"
 #include "game/gamestruct.h"
 #include "gameengine/glwidget.h"
 
+#include "iostream"
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
@@ -35,12 +35,18 @@ void ScreenWidget::mousePressEvent(QMouseEvent * event) {
 }
 
 // Should only be called by refresh().
+// PROBLEM: Is called whenever stuff such as resize happens...
 void ScreenWidget::paintGL() {
+    // TODO: Find a way to remove ugly-hack.
+    if (!_called_refresh) {
+        return;
+    }
+    _called_refresh = false;
+
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // TODO: This makes the program crash from time to time...
-    for (auto e : gamestruct::environment()) {
-//        e.update();
+    for (Environment & e : gamestruct::environment()) {
+        e.update();
         e.draw();
     }
 

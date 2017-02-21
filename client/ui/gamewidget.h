@@ -5,7 +5,6 @@
 #include "playerwidget.h"
 #include "targetwidget.h"
 #include "screenwidget.h"
-#include "game/entities/player.h"
 #include "game/movementcontroller.h"
 #include "game/eventhandler.h"
 #include "external/json11/json11.hpp"
@@ -31,7 +30,7 @@ class GameWidget : public GameState {
     EventHandler<std::pair<QKeyEvent, bool>> _keyboardHandler;
     EventHandler<json11::Json> _networkHandler;
 
-    MovementController * _movementController;
+    MovementController _movementController;
 
 public:
     GameWidget(QWidget *);

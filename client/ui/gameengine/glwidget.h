@@ -17,6 +17,8 @@ public:
     void refresh();
 
 protected:
+    bool _called_refresh = false;
+
     void intitializeGL();
 
     virtual void paintGL() = 0;

@@ -13,7 +13,7 @@ protected:
     std::vector<float> relativePos(const float, const float, const float, const float) const;
 
 public:
-    virtual ~Graphics() {}
+    virtual ~Graphics();
 
     virtual void update() = 0;
     virtual void draw() const = 0;

@@ -5,9 +5,7 @@
 #include "network/connection.h"
 #include "window.h"
 #include "game/entities/player.h"
-#include "game/movementcontroller.h"
 #include "game/gamestruct.h"
-//#include "game/entities/graphics.h"
 
 #include <iostream>
 #include <QGridLayout>
@@ -28,7 +26,6 @@ GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
 
     _screenWidget = findChild<ScreenWidget *>("screenwidget");
     _screenWidget->setMouseHandler(&_mouseHandler);
-    _movementController = new MovementController();
 
     _isRunning = true;
 }
@@ -36,7 +33,7 @@ GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
 GameWidget::~GameWidget() {
     _isRunning = false;
     gamestruct::clear();
-    delete _movementController;
+    target_widget()->unselect_target();
     delete ui;
 }
 
@@ -50,7 +47,7 @@ void GameWidget::resume() {
 
 void GameWidget::pause() {
     _isRunning = false;
-    _movementController->clear();
+    _movementController.clear();
 }
 
 void GameWidget::tick(float deltaTime) {
@@ -64,7 +61,7 @@ void GameWidget::tick(float deltaTime) {
         }
         if (_isRunning) {
             assert(_isRunning);
-            _movementController->execute();
+            _movementController.execute();
             _screenWidget->refresh();
         }
     }
@@ -91,30 +88,30 @@ void GameWidget::processKeyboard() {
 
         if (e.first.key() == Qt::Key_W) {
             if (e.second) {
-                _movementController->pushed('w');
+                _movementController.pushed('w');
             } else {
-                _movementController->released('w');
+                _movementController.released('w');
             }
         }
         else if (e.first.key() == Qt::Key_A) {
             if (e.second) {
-                _movementController->pushed('a');
+                _movementController.pushed('a');
             } else {
-                _movementController->released('a');
+                _movementController.released('a');
             }
         }
         else if (e.first.key() == Qt::Key_S) {
             if (e.second) {
-                _movementController->pushed('s');
+                _movementController.pushed('s');
             } else {
-                _movementController->released('s');
+                _movementController.released('s');
             }
         }
         else if (e.first.key() == Qt::Key_D) {
             if (e.second) {
-                _movementController->pushed('d');
+                _movementController.pushed('d');
             } else {
-                _movementController->released('d');
+                _movementController.released('d');
             }
         }
         else if (e.first.key() == Qt::Key_Escape && e.second) {
@@ -133,7 +130,7 @@ void GameWidget::processNetwork() {
             break;
         }
         else if (type == "Map") {
-            gamestruct::parse_map(data, target_widget());
+            gamestruct::new_map(data, target_widget());
         }
         else if (type == "Player_update") {
             gamestruct::update_player(data, target_widget());

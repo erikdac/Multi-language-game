@@ -2,6 +2,10 @@
 
 #include <cassert>
 
+Graphics::~Graphics() {
+
+}
+
 std::vector<float> Graphics::relativePos(const float x, const float y, const float xp, const float yp) const {
     std::vector<float> vec = {
         (-0.5f + x - xp)/VIEW_WIDTH,

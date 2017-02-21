@@ -1,7 +1,6 @@
 #include "parser.h"
 #include "external/pugixml/src/pugixml.hpp"
 #include "external/json11/json11.hpp"
-#include "entities/environment.h"
 #include "graphics/polygon.h"
 
 #include <iostream>
@@ -138,4 +137,24 @@ Environment parser::parseEnvironment(const Json & data) {
 
     EnvironmentType & envType = _environmentTypes[type];
     return Environment(x, y, envType._walkable, &envType._polygons);
+}
+
+Player * parser::parsePlayer(const Json & data) {
+    std::string name = data["Name"].string_value();
+    int x = data["X"].number_value();
+    int y = data["Y"].number_value();
+    int level = data["Level"].number_value();
+    int health = data["Health"].number_value();
+    int mana = data["Mana"].number_value();
+    return new Player(name, x, y, level, health, mana);
+}
+
+// TODO: Should be parse_creature() in the future.
+Troll * parser::parseTroll(const Json & data) {
+    std::string name = data["Name"].string_value();
+    int x = data["X"].number_value();
+    int y = data["Y"].number_value();
+    int health = data["Health"].number_value();
+    int mana = data["Mana"].number_value();
+    return new Troll(name, x, y, health, mana);
 }

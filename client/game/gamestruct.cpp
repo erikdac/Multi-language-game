@@ -15,22 +15,20 @@
 #include <QWidget>
 #include <cassert>
 
-// TODO: Maybe make this namespace as a class instead?
-
-// TODO: Move out the parsing parts to a separate source file.
-
 using namespace json11;
 
-Self * _self;
+Self _self;
 std::vector<Actor *> _actors;
 std::vector<Environment> _environment;
 
-void gamestruct::set_self(const Player & player) {
-    _self = new Self(player);
+void gamestruct::set_self(const Json & data) {
+    Player * player = parser::parsePlayer(data["Player"]);
+    _self = Self(*player);
+    delete player;
 }
 
 Self * gamestruct::self() {
-    return _self;
+    return &_self;
 }
 
 std::vector<Actor *> gamestruct::actors() {
@@ -49,36 +47,12 @@ void clearActors() {
 }
 
 void gamestruct::clear() {
-    delete _self;
     _environment.clear();
-
     clearActors();
-    assert(_actors.size() == 0);
+    assert(_actors.empty());
 }
 
-// TODO: Should check that the values exists.
-Player * parse_player(const Json & player) {
-    std::string name = player["Name"].string_value();
-    int x = player["X"].number_value();
-    int y = player["Y"].number_value();
-    int level = player["Level"].number_value();
-    int health = player["Health"].number_value();
-    int mana = player["Mana"].number_value();
-    return new Player(name, x, y, level, health, mana);
-}
-
-// TODO: Should check that the values exists.
-// TODO: Should be parse_creature() in the future.
-Troll * parse_troll(const Json & creature) {
-    std::string name = creature["Name"].string_value();
-    int x = creature["X"].number_value();
-    int y = creature["Y"].number_value();
-    int health = creature["Health"].number_value();
-    int mana = creature["Mana"].number_value();
-    return new Troll(name, x, y, health, mana);
-}
-
-void gamestruct::parse_map(const Json & data, TargetWidget * targetWidget) {
+void gamestruct::new_map(const Json & data, TargetWidget * targetWidget) {
     _environment.clear();
     const Json::array environments = data["Environment"].array_items();
     for (const Json & e : environments) {
@@ -91,7 +65,7 @@ void gamestruct::parse_map(const Json & data, TargetWidget * targetWidget) {
 
     const Json::array players = data["Players"].array_items();
     for (const Json & p : players) {
-        _actors.push_back(parse_player(p));
+        _actors.push_back(parser::parsePlayer(p));
         if (_actors.back()->name() == target) {
             targetWidget->update_target(_actors.back());
             targetFound = true;
@@ -101,7 +75,7 @@ void gamestruct::parse_map(const Json & data, TargetWidget * targetWidget) {
 
     const Json::array creatures = data["Creatures"].array_items();
     for (const Json & c : creatures) {
-        _actors.push_back(parse_troll(c));
+        _actors.push_back(parser::parseTroll(c));
         if (_actors.back()->name() == target) {
             targetWidget->update_target(_actors.back());
             targetFound = true;
@@ -136,12 +110,12 @@ void update_actor(Actor * actor, std::vector<Actor *> & vec, TargetWidget * targ
 }
 
 void gamestruct::update_player(const Json & data, TargetWidget * targetWidget) {
-    Actor * actor = parse_player(data["Player"]);
+    Actor * actor = parser::parsePlayer(data["Player"]);
     update_actor(actor, _actors, targetWidget);
 }
 
 void gamestruct::update_creature(const Json & data, TargetWidget * targetWidget) {
-    Actor * actor = parse_troll(data["Creature"]);
+    Actor * actor = parser::parseTroll(data["Creature"]);
     update_actor(actor, _actors, targetWidget);
 }
 
@@ -153,9 +127,14 @@ void gamestruct::remove_actor(const Json & data, TargetWidget * targetWidget) {
         if (name == targetWidget->target()) {
             targetWidget->unselect_target();
         }
-        delete *it;
-        *it = _actors.back();
-        _actors.pop_back();
+        if (_actors.size() > 1) {
+            delete *it;
+            *it = _actors.back();
+            _actors.pop_back();
+        } else {
+            delete *it;
+            _actors.erase(it);
+        }
     }
 }
 

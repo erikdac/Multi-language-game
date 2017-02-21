@@ -6,6 +6,7 @@
 class Self : public Player {
 
 public:
+    Self();
     Self(const Player &);
     virtual ~Self();
 

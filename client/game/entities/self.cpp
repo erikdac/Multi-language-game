@@ -8,6 +8,10 @@
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 
+Self::Self() {
+
+}
+
 Self::Self(const Player & player) : Player(player) {
 
 }

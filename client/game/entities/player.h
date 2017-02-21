@@ -8,6 +8,7 @@
 class Player : public Actor {
 
 public:
+    Player();
     Player(std::string, int, int, int, int, int);
     virtual ~Player();
 

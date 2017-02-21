@@ -39,6 +39,7 @@ void GLWidget::refresh() {
         this, SIGNAL(done()),
         &loop, SLOT(quit())
     );
+    _called_refresh = true;
     emit repaint();
     loop.exec();
 
