@@ -2,10 +2,9 @@
 #include "external/json11/json11.hpp"
 #include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
-#include "entities/water.h"
-#include "entities/grass.h"
-#include "entities/stone.h"
 #include "entities/troll.h"
+#include "entities/environment.h"
+#include "parser.h"
 
 #include <iostream>
 #include <algorithm>
@@ -24,7 +23,7 @@ using namespace json11;
 
 Self * _self;
 std::vector<Actor *> _actors;
-std::vector<Environment *> _environment;
+std::vector<Environment> _environment;
 
 void gamestruct::set_self(const Player & player) {
     _self = new Self(player);
@@ -38,7 +37,7 @@ std::vector<Actor *> gamestruct::actors() {
     return _actors;
 }
 
-std::vector<Environment *> gamestruct::environment() {
+std::vector<Environment> gamestruct::environment() {
     return _environment;
 }
 
@@ -49,41 +48,12 @@ void clearActors() {
     _actors.clear();
 }
 
-void clearEnvironment() {
-    for (auto e : _environment) {
-        delete e;
-    }
-    _environment.clear();
-}
-
 void gamestruct::clear() {
     delete _self;
+    _environment.clear();
+
     clearActors();
-    clearEnvironment();
-
     assert(_actors.size() == 0);
-    assert(_environment.size() == 0);
-}
-
-Environment * parse_environment(const Json & environment) {
-    int x = environment["X"].number_value();
-    int y = environment["Y"].number_value();
-
-    const std::string type = environment["Type"].string_value();
-    if(type == "grass") {
-        return new Grass(x, y);
-    }
-    else if(type == "stone") {
-        return new Stone(x, y);
-    }
-    else if(type == "water") {
-        return new Water(x, y);
-    } else {
-        std::string error = "No environment type specified in JSON!";
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
-        return 0;
-    }
 }
 
 // TODO: Should check that the values exists.
@@ -109,10 +79,10 @@ Troll * parse_troll(const Json & creature) {
 }
 
 void gamestruct::parse_map(const Json & data, TargetWidget * targetWidget) {
-    clearEnvironment();
+    _environment.clear();
     const Json::array environments = data["Environment"].array_items();
     for (const Json & e : environments) {
-        _environment.push_back(parse_environment(e));
+        _environment.push_back(parser::parseEnvironment(e));
     }
 
     const std::string target = targetWidget->target();
@@ -200,8 +170,8 @@ Actor * gamestruct::actor_at_position(const double x, const double y) {
 
 bool gamestruct::walkable(const int x, const int y) {
     for (auto e : _environment) {
-        if (e->x() == x && e->y() == y) {
-            return e->isWalkable();
+        if (e.x() == x && e.y() == y) {
+            return e.walkable();
         }
     }
     return true;

@@ -4,6 +4,7 @@
 #include "loadingwidget.h"
 #include "gamewidget.h"
 #include "config.h"
+#include "game/parser.h"
 
 static const std::string LOGIN      = "login";
 static const std::string LOADING    = "loading";
@@ -18,6 +19,8 @@ Window::Window(QWidget * parent)
     addState(LOGIN, new LoginWidget(this));
     addState(LOADING, new LoadingWidget(this));
     addState(GAME, new GameWidget(this));
+
+    parser::initialize();
 
     setLoginUi();
 

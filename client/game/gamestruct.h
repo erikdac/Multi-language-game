@@ -16,7 +16,7 @@ namespace gamestruct {
     void set_self(const Player &);
     Self * self();
     std::vector<Actor *> actors();
-    std::vector<Environment *> environment();
+    std::vector<Environment> environment();
     void clear();
     void parse_map(const json11::Json &, TargetWidget *);
     void update_player(const json11::Json &, TargetWidget *);

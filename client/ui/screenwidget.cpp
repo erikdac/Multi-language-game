@@ -40,8 +40,8 @@ void ScreenWidget::paintGL() {
 
     // TODO: This makes the program crash from time to time...
     for (auto e : gamestruct::environment()) {
-//        e->update();
-        e->draw();
+//        e.update();
+        e.draw();
     }
 
     for (auto a : gamestruct::actors()) {

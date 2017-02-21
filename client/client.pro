@@ -11,7 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = client
 TEMPLATE = app
 
-SOURCES += main.cpp\
+SOURCES += \
+    main.cpp\
     network/connection.cpp \
     ui/loginwidget.cpp \
     game/movementcontroller.cpp \
@@ -26,18 +27,18 @@ SOURCES += main.cpp\
     ui/gameengine/enginewidget.cpp \
     ui/gameengine/glwidget.cpp \
     game/entities/environment.cpp \
-    game/entities/grass.cpp \
     game/entities/player.cpp \
     game/entities/self.cpp \
-    game/entities/stone.cpp \
     game/entities/troll.cpp \
-    game/entities/water.cpp \
     external/json11/json11.cpp \
     external/pugixml/src/pugixml.cpp \
     graphics/polygon.cpp \
-    graphics/graphics.cpp
+    graphics/graphics.cpp \
+    game/entities/actor.cpp \
+    game/parser.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS += \
+    mainwindow.h \
     network/connection.h \
     ui/loginwidget.h \
     game/movementcontroller.h \
@@ -59,19 +60,17 @@ HEADERS  += mainwindow.h \
     ui/gameengine/glwidget.h \
     game/entities/actor.h \
     game/entities/environment.h \
-    game/entities/grass.h \
     game/entities/player.h \
     game/entities/self.h \
-    game/entities/stone.h \
     game/entities/troll.h \
-    game/entities/water.h \
     external/json11/json11.hpp \
     external/pugixml/src/pugiconfig.hpp \
     external/pugixml/src/pugixml.hpp \
     graphics/polygon.h \
-    graphics/graphics.h
+    graphics/graphics.h \
+    game/parser.h
 
-FORMS    += \
+FORMS += \
     ui/loginwidget.ui \
     ui/playerwidget.ui \
     ui/screenwidget.ui \
@@ -82,5 +81,8 @@ FORMS    += \
 QMAKE_CXXFLAGS += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
 
 LIBS += -lglut
+
+RESOURCES += \
+    resources.qrc
 
 DISTFILES +=

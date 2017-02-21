@@ -2,20 +2,29 @@
 #define ENVIRONMENT_HPP
 
 #include "graphics/graphics.h"
+#include "graphics/polygon.h"
+
+#include <vector>
+
+void initEnvironments();
 
 class Environment : public Graphics {
 
-protected:
     int _x;
     int _y;
+    bool _walkable;
+    std::vector<Polygon> * _polygons;
 
 public:
-    Environment(const int x, const int y);
-    virtual ~Environment();
+	Environment();
+    Environment(int, int, bool, std::vector<Polygon> *);
+
     int x() const;
     int y() const;
+    bool walkable() const;
 
-    virtual bool isWalkable() const = 0;
+    virtual void update() override;
+    virtual void draw() const override;
 };
 
 #endif

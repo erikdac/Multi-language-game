@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/environments/grass.xml</file>
+        <file>resources/environments/stone.xml</file>
+        <file>resources/environments/water.xml</file>
+    </qresource>
+</RCC>

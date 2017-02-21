@@ -5,6 +5,7 @@
 
 static constexpr float VIEW_WIDTH = 12 + 0.5f;
 static constexpr float VIEW_HEIGHT = 8 + 0.5f;
+static const int RGB_MAX = 255;
 
 class Graphics {
 
