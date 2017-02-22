@@ -46,16 +46,13 @@ void ScreenWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (Environment & e : gamestruct::environment()) {
-        e.update();
         e.draw();
     }
 
     for (auto a : gamestruct::actors()) {
-        a->update();
         a->draw();
     }
 
-    gamestruct::self()->update();
     gamestruct::self()->draw();
 
     emit done();

@@ -10,13 +10,8 @@ public:
     Self(const Player &);
     virtual ~Self();
 
-    float visualX() const {
-        return _visualX;
-    }
-
-    float visualY() const {
-        return _visualY;
-    }
+    float visualX() const;
+    float visualY() const;
 
     void moveUp();
     void moveDown();
@@ -29,9 +24,6 @@ public:
 
     void set_health(const int);
     void fix_position(const int, const int);
-
-    virtual void update() override;
-    virtual void draw() const override;
 
 private:
     void set_position(const int, const int);

@@ -1,5 +1,6 @@
 #include "player.h"
 #include "game/gamestruct.h"
+#include "config.h"
 
 #include <iostream>
 #include <QPainter>
@@ -26,7 +27,7 @@ Player::~Player() {
 }
 
 int Player::max_health() const {
-    return 100 + (_level - 1)*5;
+    return 100 + (_level - 1) * 5;
 }
 
 int Player::max_mana() const {
@@ -39,18 +40,33 @@ unsigned int Player::distance_to_player(const Player & p) const {
     return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
 }
 
-void Player::update() {
+void Player::update(float deltaTime) {
+    float dist = deltaTime / MOVEMENT_DELAY;
+    if (std::abs(_x - _visualX) < dist * 1.5) {
+        _visualX = _x;
+    } else if (_x < _visualX) {
+        _visualX -= dist;
+    } else if (_x > _visualX) {
+        _visualX += dist;
+    }
 
+    if (std::abs(_y - _visualY) < dist * 1.5) {
+        _visualY = _y;
+    } else if (_y < _visualY) {
+        _visualY -= dist;
+    } else if (_y > _visualY) {
+        _visualY += dist;
+    }
 }
 
 void Player::draw() const {
     std::vector<float> pos = relativePos(
-                _x, _y,
+                _visualX, _visualY,
                 gamestruct::self()->visualX(), gamestruct::self()->visualY()
             );
 
     glBegin(GL_QUADS);
-        glColor3f(0.0f, 0.0f, 1.0f);
+        glColor3f(1.0f, 0.0f, 0.0f);
         glVertex2f(pos[0], pos[1]);
         glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1]);
         glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1] + (1.0f/VIEW_HEIGHT));

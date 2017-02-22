@@ -1,12 +1,11 @@
 #include "movementcontroller.h"
 #include "game/gamestruct.h"
 #include "entities/self.h"
+#include "config.h"
 
 #include <chrono>
 #include <cmath>
 #include <vector>
-
-static const int MOVEMENT_DELAY = 400;
 
 bool newly_pushed = false;
 std::vector<char> saved_releases;
@@ -45,8 +44,8 @@ bool expensiveLast = false;
 
 bool MovementController::isReady() const {
     auto now = std::chrono::high_resolution_clock::now();
-    int diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
-    if ((!expensiveLast && diff >= MOVEMENT_DELAY) || (expensiveLast && diff >= MOVEMENT_DELAY * std::sqrt(2))) {
+    float diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+    if ((!expensiveLast && diff >= MOVEMENT_DELAY * 1000) || (expensiveLast && diff >= MOVEMENT_DELAY * 1000 * std::sqrt(2))) {
         last = now;
         return true;
     }

@@ -20,6 +20,7 @@ namespace gamestruct {
     void update_player(const json11::Json &, TargetWidget *);
     void update_creature(const json11::Json &, TargetWidget *);
     void remove_actor(const json11::Json &, TargetWidget *);
+    void update_entities(float deltaTime);
     Actor * actor_at_position(const double x, const double y);
     bool walkable(const int x, const int y);
 }

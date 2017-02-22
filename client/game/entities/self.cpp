@@ -20,6 +20,15 @@ Self::~Self() {
 
 }
 
+float Self::visualX() const {
+    return _visualX;
+}
+
+float Self::visualY() const {
+    return _visualY;
+}
+
+
 void Self::moveUp() {
     if (gamestruct::walkable(_x, _y - 1)) {
         set_position(_x, _y - 1);
@@ -98,36 +107,4 @@ void Self::sendMovement() const {
         {"ToY", std::to_string(_y)}
     };
     connection::output(data);
-}
-
-// TODO: Should use a timer instead of fixed intervall.
-void Self::update() {
-    if (std::abs(_x - _visualX) < 0.06) {
-        _visualX = _x;
-    } else if (_x < _visualX) {
-        _visualX -= 0.04;
-    } else if (_x > _visualX) {
-        _visualX += 0.04;
-    }
-
-    if (std::abs(_y - _visualY) < 0.06) {
-        _visualY = _y;
-    } else if (_y < _visualY) {
-        _visualY -= 0.04;
-    } else if (_y > _visualY) {
-        _visualY += 0.04;
-    }
-}
-
-void Self::draw() const {
-    float x = -0.5f/VIEW_WIDTH;
-    float y = -0.5f/VIEW_HEIGHT;
-
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(x, y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y);
-        glVertex2f(x + (1.0f/VIEW_WIDTH), y + (1.0f/VIEW_HEIGHT));
-        glVertex2f(x, y + (1.0f/VIEW_HEIGHT));
-    glEnd();
 }

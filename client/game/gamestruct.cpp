@@ -138,6 +138,18 @@ void gamestruct::remove_actor(const Json & data, TargetWidget * targetWidget) {
     }
 }
 
+void gamestruct::update_entities(float deltaTime) {
+    for (Environment & e : _environment) {
+        e.update(deltaTime);
+    }
+
+    for (auto a : _actors) {
+        a->update(deltaTime);
+    }
+
+    _self.update(deltaTime);
+}
+
 Actor * gamestruct::actor_at_position(const double x, const double y) {
     for (Actor * a : _actors) {
         if (a->x() <= x && a->x() + 1 > x && a->y() <= y && a->y() + 1 > y) {

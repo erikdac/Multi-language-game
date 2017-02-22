@@ -29,7 +29,7 @@ void EngineWidget::gameLoop() {
             changeToState(_nextState);
             _nextState = "";
         }
-        currentState()->tick(0); // TODO: should be time between two calls.
+        currentState()->tick(0.01); // TODO: should be time between two calls.
         int delay = (1000/_max_update_rate) - timeSince(begin);
         std::this_thread::sleep_for (std::chrono::milliseconds(delay));
     }

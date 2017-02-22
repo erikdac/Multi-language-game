@@ -14,7 +14,7 @@ public:
     virtual int max_health() const override;
     virtual int max_mana() const override;
 
-    virtual void update() override;
+    virtual void update(float) override;
     virtual void draw() const override;
 };
 

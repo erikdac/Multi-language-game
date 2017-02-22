@@ -33,7 +33,7 @@ bool Environment::walkable() const {
 	return _walkable;
 }
 
-void Environment::update() {
+void Environment::update(float deltaTime) {
 
 }
 

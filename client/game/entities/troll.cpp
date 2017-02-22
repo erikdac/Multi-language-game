@@ -28,7 +28,7 @@ int Troll::max_mana() const {
     return 10;
 }
 
-void Troll::update() {
+void Troll::update(float deltaTime) {
 
 }
 

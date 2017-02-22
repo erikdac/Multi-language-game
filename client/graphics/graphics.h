@@ -15,7 +15,7 @@ protected:
 public:
     virtual ~Graphics();
 
-    virtual void update() = 0;
+    virtual void update(float ) = 0;
     virtual void draw() const = 0;
 
 

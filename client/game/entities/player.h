@@ -17,7 +17,7 @@ public:
 
     unsigned int distance_to_player(const Player &) const;
 
-    virtual void update() override;
+    virtual void update(float) override;
     virtual void draw() const override;
 };
 

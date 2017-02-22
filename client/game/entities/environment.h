@@ -24,7 +24,7 @@ public:
     int y() const;
     bool walkable() const;
 
-    virtual void update() override;
+    virtual void update(float) override;
     virtual void draw() const override;
 };
 
