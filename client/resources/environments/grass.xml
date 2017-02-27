@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <environment>
-	<walkable>true</walkable>
+        <walkable>true</walkable>
 	<polygons>
 		<polygon>
 			<color r="0" g="255" b="0" />

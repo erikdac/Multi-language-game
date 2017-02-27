@@ -1,11 +1,11 @@
 #include "ui/window.h"
 
 #include <QApplication>
-
-
-#include <iostream>
+#include <QtDebug>
 
 int main(int argc, char *argv[]) {
+    qSetMessagePattern("%{type} - %{file}(%{line}) %{function}(): %{message}");
+
     QApplication a(argc, argv);
     Window w;
     w.show();

@@ -3,7 +3,6 @@
 #include "network/connection.h"
 #include "game/gamestruct.h"
 
-#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>

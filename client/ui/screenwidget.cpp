@@ -7,7 +7,6 @@
 #include "game/gamestruct.h"
 #include "gameengine/glwidget.h"
 
-#include "iostream"
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>

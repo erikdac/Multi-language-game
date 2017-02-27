@@ -3,7 +3,6 @@
 #include "network/connection.h"
 #include "external/json11/json11.hpp"
 
-#include <iostream>
 #include <QWidget>
 
 using namespace json11;

@@ -1,7 +1,6 @@
 #include "environment.h"
 #include "game/gamestruct.h"
 
-#include <iostream>
 #include <QOpenGLTexture>
 #include <GL/glut.h>
 

@@ -2,7 +2,6 @@
 #include "game/gamestruct.h"
 #include "config.h"
 
-#include <iostream>
 #include <QPainter>
 #include <QOpenGLTexture>
 #include <GL/glut.h>

@@ -3,7 +3,8 @@
 #include "external/json11/json11.hpp"
 #include "graphics/polygon.h"
 
-#include <iostream>
+#include <QtGlobal>
+#include <QtDebug>
 #include <vector>
 #include <map>
 #include <string>
@@ -31,10 +32,7 @@ struct EnvironmentType {
 xml_node getXML(const std::string & path) {
     QFile file(QString(path.c_str()));
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        std::string error = "Could not open file: " + path;
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
-        assert(false);
+        qFatal("Could not open file: %s", path.c_str());
     }
     QTextStream textStream(&file);
 
@@ -42,16 +40,11 @@ xml_node getXML(const std::string & path) {
     xml_parse_result result = doc.load_string(textStream.readAll().toStdString().c_str());
     file.close();
     if (!result) {
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << result.description() << std::endl;
-		assert(false);
+        qFatal("Could not parse XML file '%s' \n%s", path.c_str(), result.description());
 	}
 	auto children = doc.root().children();
 	if (std::distance(children.begin(), children.end()) > 1) {
-		std::string error = "Too many root nodes in xml-document \'" + path + "\'";
-		std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
-		assert(false);
+        qFatal("Too many root nodes in XML document '%s'", path.c_str());
     }
 	return doc.root().first_child();
 }
@@ -87,14 +80,17 @@ Polygon XML_polygon(const xml_node & parent) {
 	return Polygon(color, verticies);
 }
 
-EnvironmentType XML_environmentType(const xml_node & parent) {
-	bool walkable = parent.child("walkable").text().as_bool();
+EnvironmentType XML_environmentType(const xml_node & parent, const std::string & filename) {
+    xml_text walkable = parent.child("walkable").text();
+    if (walkable.as_string() == "") {
+        qCritical("'%s' has no element called 'walkable'", filename.c_str());
+    }
     std::vector<Polygon> polygons;
     for (const xml_node & poly : parent.child("polygons").children()) {
 		polygons.push_back(XML_polygon(poly));
 	}
 
-	return EnvironmentType(walkable, polygons);
+    return EnvironmentType(walkable, polygons);
 }
 
 std::map<std::string, EnvironmentType> readEnvironmentTypes() {
@@ -103,7 +99,7 @@ std::map<std::string, EnvironmentType> readEnvironmentTypes() {
 	std::vector<std::string> environmentFiles = {"water.xml", "grass.xml", "stone.xml"}; // Should not be hardcoded!
 	for (const std::string filename : environmentFiles) {
         xml_node parent = getXML(ENVIRONMENT_PATH + filename);
-        EnvironmentType envType = XML_environmentType(parent);
+        EnvironmentType envType = XML_environmentType(parent, filename);
 		std::string name = filename.substr(0, filename.find("."));
 		environments[name] = envType;
 	}
@@ -131,9 +127,7 @@ Environment parser::parseEnvironment(const Json & data) {
 	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
 
 	if (_environmentTypes.find(type) == _environmentTypes.end()) {
-		std::string error = "No environment type specified in JSON!";
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
+        qWarning() << "No environment type specified in JSON to parse.";
 	}
 
     EnvironmentType & envType = _environmentTypes[type];

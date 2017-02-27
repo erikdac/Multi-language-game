@@ -6,7 +6,6 @@
 #include <QRect>
 #include <QPainter>
 #include <QPaintEvent>
-#include <iostream>
 #include <QSizePolicy>
 
 PlayerWidget::PlayerWidget(QWidget * parent) :

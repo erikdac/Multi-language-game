@@ -2,7 +2,7 @@
 #include "ui_loadingwidget.h"
 #include "window.h"
 
-#include <iostream>
+#include <QtDebug>
 
 LoadingWidget::LoadingWidget(QWidget *parent)
     : ui(new Ui::LoadingWidget)
@@ -16,14 +16,13 @@ LoadingWidget::~LoadingWidget() {
 }
 
 void LoadingWidget::resume() {
-
+    // qinfo("Resumed");
 }
 
 void LoadingWidget::pause() {
-
+    // qInfo("Paused");
 }
 
 void LoadingWidget::tick(float deltaTime) {
-    std::cout << "LOADING..." << std::endl;
     dynamic_cast<Window *> (this->parentWidget())->setGameUi();
 }

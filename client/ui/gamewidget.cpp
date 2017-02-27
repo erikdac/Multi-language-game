@@ -7,7 +7,7 @@
 #include "game/entities/player.h"
 #include "game/gamestruct.h"
 
-#include <iostream>
+#include <QtDebug>
 #include <QGridLayout>
 #include <QLabel>
 #include <QKeyEvent>
@@ -38,6 +38,7 @@ GameWidget::~GameWidget() {
 }
 
 void GameWidget::resume() {
+    // qinfo("Resumed");
     player_widget()->setPlayer(gamestruct::self());
     target_widget()->setVisible(false);
     setFocus();
@@ -46,6 +47,7 @@ void GameWidget::resume() {
 }
 
 void GameWidget::pause() {
+    // qInfo("Paused");
     _isRunning = false;
     _movementController.clear();
 }
@@ -152,6 +154,11 @@ void GameWidget::processNetwork() {
             gamestruct::self()->set_health(data["Health"].number_value());
             player_widget()->update();
         }
+
+        // Unknown packet
+        else {
+            qWarning() << "Unknown JSON Type recieved!";
+        }
     }
 }
 
@@ -190,10 +197,7 @@ void GameWidget::networkReader() {
             if (error.empty()) {
                 _networkHandler.addEvent(data);
             } else if (_isRunning) {
-                std::string error = "\tError in JSON recieved: " + packet;
-                std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-                std::cerr << error << std::endl;
-
+                qWarning() << "Incorrect JSON format recieved!";
                 data = Json::object {
                     {"Type", "Disconnect"},
                 };

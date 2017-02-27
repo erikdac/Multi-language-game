@@ -6,7 +6,6 @@
 #include "entities/environment.h"
 #include "parser.h"
 
-#include <iostream>
 #include <algorithm>
 #include <vector>
 #include <algorithm>
@@ -14,6 +13,7 @@
 #include <cmath>
 #include <QWidget>
 #include <cassert>
+#include <QtDebug>
 
 using namespace json11;
 
@@ -103,9 +103,7 @@ void update_actor(Actor * actor, std::vector<Actor *> & vec, TargetWidget * targ
             vec.push_back(actor);
         }
     } else {
-        std::string error = "NULL Actor recieved!";
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
+        qCritical() << "NULL Actor as function parameter!";
     }
 }
 

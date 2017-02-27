@@ -1,7 +1,6 @@
 #include "connection.h"
 #include "external/json11/json11.hpp"
 
-#include <iostream>
 #include <cstring>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -9,6 +8,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <cassert>
+#include <QtDebug>
 
 using namespace json11;
 

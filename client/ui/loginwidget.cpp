@@ -5,10 +5,11 @@
 #include "window.h"
 #include "game/gamestruct.h"
 
-#include <iostream>
+#include <QtDebug>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QString>
 
 using namespace json11;
 
@@ -24,6 +25,7 @@ LoginWidget::~LoginWidget() {
 }
 
 void LoginWidget::resume() {
+    // qinfo("Resumed");
     QLineEdit * username = findChild<QLineEdit*>("username");
     if (username->text().size() > 0) {
         findChild<QLineEdit*>("password")->setFocus();
@@ -33,7 +35,7 @@ void LoginWidget::resume() {
 }
 
 void LoginWidget::pause() {
-
+    // qInfo("Paused");
 }
 
 void LoginWidget::tick(float deltaTime) {
@@ -80,9 +82,7 @@ void LoginWidget::checkResult() {
     Json data = Json::parse(input, error);
     if (!error.empty()) {
         popupBox("Connection refused!");
-        std::string error = "Error in JSON recieved: " + input;
-        std::cerr << "Line: " << __LINE__ << " FILE: " << __FILE__ << std::endl;
-        std::cerr << "\tError: " << error << std::endl;
+        qWarning() << "Error in JSON recieved" << '\n' << QString(error.c_str());
     }
 
     if(data["Type"].string_value() == "Login_success") {
