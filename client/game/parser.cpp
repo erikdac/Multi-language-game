@@ -67,8 +67,9 @@ Color XML_color(const xml_node & parent) {
 
 Vertex XML_vertex(const xml_node & node) {
 	return Vertex(
-		node.attribute("x").as_int(), 
-		node.attribute("y").as_int()
+        node.attribute("x").as_float(),
+        node.attribute("y").as_float(),
+        node.attribute("z").as_float()
 	);
 }
 

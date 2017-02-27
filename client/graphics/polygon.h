@@ -6,12 +6,14 @@
 class Vertex {
 	float _x;
 	float _y;
+    float _z;
 
 public:
-	Vertex(float x, float y);
+    Vertex(float x, float y, float z);
 
 	float x() const;
 	float y() const;
+    float z() const;
 };
 
 class Color {

@@ -48,9 +48,10 @@ void Environment::draw() const {
     	const Color & c = polygon.color();
         glColor3f((float)c.r() / RGB_MAX, (float)c.g() / RGB_MAX, (float)c.b() / RGB_MAX);
         for (const Vertex & vertex : polygon.verticies()) {
-	    	glVertex2f(
-	    		pos[0] + (vertex.x()/VIEW_WIDTH), 
-                pos[1] + (vertex.y()/VIEW_HEIGHT)
+            glVertex3f(
+                pos[0] + (vertex.x()/VIEW_WIDTH),
+                pos[1] + (vertex.y()/VIEW_HEIGHT),
+                vertex.z()
     		);
 	    }
 	}

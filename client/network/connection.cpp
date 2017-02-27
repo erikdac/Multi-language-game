@@ -15,9 +15,9 @@ using namespace json11;
 static const std::string IP = "localhost";
 static const int PORT = 1337;
 
-static const std::size_t READ_BUFFER_SIZE= 128 * 1024;
+static const std::size_t READ_BUFFER_SIZE = 128 * 1024;
 
-int _s0; // Socket.
+int _s0; // Socket
 
 bool connection::connectToServer() {
 

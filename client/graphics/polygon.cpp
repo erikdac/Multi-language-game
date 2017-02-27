@@ -1,6 +1,6 @@
 #include "polygon.h"
 
-Vertex::Vertex(float x, float y) : _x(x), _y(y) {
+Vertex::Vertex(float x, float y, float z) : _x(x), _y(y), _z(z) {
 
 }
 
@@ -9,6 +9,10 @@ float Vertex::x() const {
 }
 float Vertex::y() const {
 	return _y;
+}
+
+float Vertex::z() const {
+    return _z;
 }
 
 Color::Color(int r, int g, int b) : _r(r), _g(g), _b(b) {

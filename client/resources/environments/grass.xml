@@ -5,10 +5,10 @@
 		<polygon>
 			<color r="0" g="255" b="0" />
 			<verticies>
-				<vertex x="0" y="0" />
-                                <vertex x="1" y="0" />
-                                <vertex x="1" y="1" />
-                                <vertex x="0" y="1" />
+                                <vertex x="0" y="0" z="0"/>
+                                <vertex x="1" y="0" z="0"/>
+                                <vertex x="1" y="1" z="0"/>
+                                <vertex x="0" y="1" z="0"/>
 			</verticies>
 		</polygon>
 	</polygons>

@@ -67,9 +67,9 @@ void Player::draw() const {
 
     glBegin(GL_QUADS);
         glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(pos[0], pos[1]);
-        glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1]);
-        glVertex2f(pos[0] + (1.0f/VIEW_WIDTH), pos[1] + (1.0f/VIEW_HEIGHT));
-        glVertex2f(pos[0], pos[1] + (1.0f/VIEW_HEIGHT));
+        glVertex3f(pos[0], pos[1], 0.0);
+        glVertex3f(pos[0] + (1.0f/VIEW_WIDTH), pos[1], 0.0);
+        glVertex3f(pos[0] + (1.0f/VIEW_WIDTH), pos[1] + (1.0f/VIEW_HEIGHT), 0.0);
+        glVertex3f(pos[0], pos[1] + (1.0f/VIEW_HEIGHT), 0.0);
     glEnd();
 }
