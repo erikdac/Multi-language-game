@@ -157,7 +157,7 @@ void GameWidget::processNetwork() {
 
         // Unknown packet
         else {
-            qWarning() << "Unknown JSON Type recieved!";
+            qWarning("Unknown JSON Type recieved!");
         }
     }
 }
@@ -197,7 +197,7 @@ void GameWidget::networkReader() {
             if (error.empty()) {
                 _networkHandler.addEvent(data);
             } else if (_isRunning) {
-                qWarning() << "Incorrect JSON format recieved!";
+                qWarning("Incorrect JSON format recieved!");
                 data = Json::object {
                     {"Type", "Disconnect"},
                 };

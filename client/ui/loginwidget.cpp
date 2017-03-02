@@ -82,7 +82,7 @@ void LoginWidget::checkResult() {
     Json data = Json::parse(input, error);
     if (!error.empty()) {
         popupBox("Connection refused!");
-        qWarning() << "Error in JSON recieved" << '\n' << QString(error.c_str());
+        qWarning("Error in JSON recieved: %s",error.c_str());
     }
 
     if(data["Type"].string_value() == "Login_success") {
