@@ -2,13 +2,12 @@
 #include "game/gamestruct.h"
 
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 
 Environment::Environment() {
 
 }
 
-Environment::Environment(int x, int y, bool walkable, std::vector<Polygon> * polygons) 
+Environment::Environment(int x, int y, bool walkable, std::vector<graphics::Polygon> * polygons)
 	: _x(x)
 	, _y(y)
 	, _walkable(walkable)
@@ -41,15 +40,14 @@ void Environment::draw() const {
         _x, _y,
         gamestruct::self()->visualX(), gamestruct::self()->visualY()
     );
-
     glBegin(GL_QUADS);
-    for (const Polygon & polygon : *_polygons) {
-    	const Color & c = polygon.color();
-        glColor3f((float)c.r() / RGB_MAX, (float)c.g() / RGB_MAX, (float)c.b() / RGB_MAX);
-        for (const Vertex & vertex : polygon.verticies()) {
+    for (const graphics::Polygon & polygon : *_polygons) {
+        const graphics::Color & c = polygon.color();
+        glColor3f((float)c.r() / graphics::RGB_MAX, (float)c.g() / graphics::RGB_MAX, (float)c.b() / graphics::RGB_MAX);
+        for (const graphics::Vertex & vertex : polygon.verticies()) {
             glVertex3f(
-                pos[0] + (vertex.x()/VIEW_WIDTH),
-                pos[1] + (vertex.y()/VIEW_HEIGHT),
+                pos[0] + (vertex.x() / graphics::VIEW_WIDTH),
+                pos[1] + (vertex.y() / graphics::VIEW_HEIGHT),
                 vertex.z()
     		);
 	    }

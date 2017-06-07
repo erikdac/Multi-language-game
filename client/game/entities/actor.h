@@ -5,7 +5,7 @@
 
 #include <string>
 
-class Actor : public Graphics {
+class Actor : public graphics::Graphics {
 
 protected:
     std::string _name;

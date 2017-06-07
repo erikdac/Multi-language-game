@@ -3,7 +3,6 @@
 #include <QEventLoop>
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 #include <QMouseEvent>
 #include <thread>
 #include <chrono>
@@ -21,7 +20,7 @@ GLWidget::~GLWidget() {
 
 }
 
-void GLWidget::intitializeGL() {
+void GLWidget::initializeGL() {
     glClearColor(255, 255, 255, 1);
 }
 

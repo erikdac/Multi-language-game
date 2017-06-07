@@ -3,7 +3,6 @@
 
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 
 Troll::Troll(std::string name, int x, int y, int health, int mana) {
     _name = name;
@@ -41,8 +40,8 @@ void Troll::draw() const {
     glBegin(GL_QUADS);
         glColor3f(1.0f, 0.0f, 1.0f);
         glVertex3f(pos[0], pos[1], 0.0);
-        glVertex3f(pos[0] + (1.0f/VIEW_WIDTH), pos[1], 0.0);
-        glVertex3f(pos[0] + (1.0f/VIEW_WIDTH), pos[1] + (1.0f/VIEW_HEIGHT), 0.0);
-        glVertex3f(pos[0], pos[1] + (1.0f/VIEW_HEIGHT), 0.0);
+        glVertex3f(pos[0] + (1.0f / graphics::VIEW_WIDTH), pos[1], 0.0);
+        glVertex3f(pos[0] + (1.0f / graphics::VIEW_WIDTH), pos[1] + (1.0f / graphics::VIEW_HEIGHT), 0.0);
+        glVertex3f(pos[0], pos[1] + (1.0f / graphics::VIEW_HEIGHT), 0.0);
     glEnd();
 }

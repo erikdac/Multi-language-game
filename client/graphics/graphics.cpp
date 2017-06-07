@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+using namespace graphics;
+
 Graphics::~Graphics() {
 
 }

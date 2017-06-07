@@ -72,8 +72,8 @@ void GameWidget::tick(float deltaTime) {
 
 void GameWidget::processMouse() {
     for (const QMouseEvent * e : _mouseHandler.events()) {
-        const double x = gamestruct::self()->x() - (VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2)));
-        const double y = gamestruct::self()->y() - (VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2)));
+        const double x = gamestruct::self()->x() - (graphics::VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (graphics::VIEW_WIDTH * 2)));
+        const double y = gamestruct::self()->y() - (graphics::VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (graphics::VIEW_HEIGHT * 2)));
         Actor * actor = gamestruct::actor_at_position(x, y);
         if(actor) {
             target_widget()->select_target(actor);

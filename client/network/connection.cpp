@@ -25,7 +25,7 @@ bool connection::connectToServer() {
         qDebug() << "Could not connect to server: " << _socket.errorString();
         return false;
     } else {
-        qDebug() << "Connected successfully to server!";
+        qDebug() << "Successfully connected to server!";
         return true;
     }
 }
@@ -47,6 +47,7 @@ bool connection::output(const Json object) {
     return res >= 0;
 }
 
+// TODO: Should only read UNTIL certain character...
 std::string connection::readPacket(const int timeout_ms) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;

@@ -5,7 +5,6 @@
 
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 
 Self::Self() {
 

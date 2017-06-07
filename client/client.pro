@@ -26,14 +26,14 @@ SOURCES += \
     ui/gameengine/stackedwidget.cpp \
     ui/gameengine/enginewidget.cpp \
     ui/gameengine/glwidget.cpp \
+    graphics/polygon.cpp \
+    graphics/graphics.cpp \
     game/entities/environment.cpp \
     game/entities/player.cpp \
     game/entities/self.cpp \
     game/entities/troll.cpp \
     external/json11/json11.cpp \
     external/pugixml/src/pugixml.cpp \
-    graphics/polygon.cpp \
-    graphics/graphics.cpp \
     game/entities/actor.cpp \
     game/parser.cpp
 
@@ -54,6 +54,7 @@ HEADERS += \
     ui/gameengine/stackedwidget.h \
     ui/gameengine/enginewidget.h \
     ui/gameengine/glwidget.h \
+    graphics/graphics.h \
     game/entities/actor.h \
     game/entities/environment.h \
     game/entities/player.h \
@@ -62,9 +63,8 @@ HEADERS += \
     external/json11/json11.hpp \
     external/pugixml/src/pugiconfig.hpp \
     external/pugixml/src/pugixml.hpp \
-    graphics/polygon.h \
-    graphics/graphics.h \
-    game/parser.h
+    game/parser.h \
+    graphics/polygon.h
 
 FORMS += \
     ui/loginwidget.ui \
@@ -74,9 +74,9 @@ FORMS += \
     ui/gamewidget.ui \
     ui/loadingwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
+CONFIG += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
 
-LIBS += -lglut
+LIBS += -lglut -lopengl32
 
 RESOURCES += \
     resources.qrc

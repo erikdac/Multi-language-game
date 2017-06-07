@@ -9,7 +9,6 @@
 
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 #include <QMouseEvent>
 
 ScreenWidget::ScreenWidget(QWidget *parent)
