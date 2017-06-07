@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl
+QT       += core network gui opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = client
 TEMPLATE = app
@@ -38,18 +38,14 @@ SOURCES += \
     game/parser.cpp
 
 HEADERS += \
-    mainwindow.h \
+    ui/window.h \
     network/connection.h \
     ui/loginwidget.h \
     game/movementcontroller.h \
-    game/objects/self.h \
     ui/playerwidget.h \
     ui/targetwidget.h \
     ui/screenwidget.h \
-    ui/gamestate.h \
-    ui/window.h \
     game/eventhandler.h \
-    game/objects/troll.h \
     ui/gamewidget.h \
     ui/loadingwidget.h \
     config.h \
