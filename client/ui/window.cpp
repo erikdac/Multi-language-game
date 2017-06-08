@@ -6,6 +6,8 @@
 #include "config.h"
 #include "game/parser.h"
 
+#include <QtDebug>
+
 static const std::string LOGIN      = "login";
 static const std::string LOADING    = "loading";
 static const std::string GAME       = "game";
@@ -32,13 +34,16 @@ Window::~Window() {
 }
 
 void Window::setLoginUi() {
+    qDebug() << "setting Login UI";
     prepareState(LOGIN);
 }
 
 void Window::setLoadingUi() {
+    qDebug() << "setting Loading UI";
     prepareState(LOADING);
 }
 
 void Window::setGameUi() {
+    qDebug() << "setting Game UI";
     prepareState(GAME);
 }
