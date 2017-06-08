@@ -15,11 +15,11 @@ func New(connection net.Conn) (Nethandler) {
 	return handler
 }
 
-// This method reads the data from the client until it reaches a null-byte 
+// This method reads the data from the client until it reaches a null-byte
 // in which case it will return all the data.
 func (handler *Nethandler) ReadPacket() ([]byte, error) {
 	socket_reader := bufio.NewReader(handler.connection)
-	data, err := socket_reader.ReadBytes(0)
+	data, err := socket_reader.ReadBytes('\n')
 	if err == nil {
 		data = data[:len(data)-1]
 	}
@@ -27,11 +27,11 @@ func (handler *Nethandler) ReadPacket() ([]byte, error) {
 }
 
 /**
- * The protocol for sending out all the data. 
+ * The protocol for sending out all the data.
  *
  * THE PROTOCOL:
  * 1. Takes the data as an byte array.
- * 2. Appends a null-byte to the end of the array.
+ * 2. Appends a newline-byte to the end of the array.
  * 3. Sends the data.
  *
  * The message sent will look something like:
@@ -39,7 +39,7 @@ func (handler *Nethandler) ReadPacket() ([]byte, error) {
  *
  */
 func (handler *Nethandler) Write(data []byte) {
-	data = append(data, 0)
+	data = append(data, '\n')
 	handler.connection.Write(data)
 }
 

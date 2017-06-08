@@ -1,16 +1,16 @@
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
 CREATE TABLE accounts (
-	active	 bool DEFAULT 0,
-	username VARCHAR(30) PRIMARY KEY,
+	active	 BOOLEAN DEFAULT 0,
+	username VARCHAR(30) NOT NULL PRIMARY KEY,
 	password VARCHAR(40) NOT NULL
 );
 
 CREATE TABLE players (
 	name	VARCHAR(30),
-	x 		INTEGER CHECK (x >= 0),
-	y		INTEGER CHECK (x >= 0),
-	lvl		INTEGER CHECK (lvl > 0) DEFAULT 1,
+	x	INTEGER CHECK (x >= 0),
+	y	INTEGER CHECK (x >= 0),
+	lvl	INTEGER DEFAULT 1 CHECK (lvl > 0),
 	health	INTEGER CHECK (health > 0),
 	mana	INTEGER CHECK (mana >= 0),
 	FOREIGN KEY (name) REFERENCES accounts (username)

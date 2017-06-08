@@ -34,7 +34,7 @@ func (client *Client) Login() bool {
 		if errorResponse != nil {
 			client.net.Write(errorResponse)
 			continue
-		} 
+		}
 
 		player, err := dbhandler.CheckLogin(data)
 		if err != nil {

@@ -35,7 +35,7 @@ func CheckLogin(request map[string]string) (entity.Player, error) {
 	return player, nil
 }
 
-// Queries the database table 'account' with the username and password and get 
+// Queries the database table 'account' with the username and password and get
 // the username back if it exists in the database.
 func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 	username := request["Username"]
@@ -47,12 +47,12 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 	return playerName, err
 }
 
-// Queries the database table 'player' with the username defined as "name". 
-// It will retrieve the players attributes which it will use to instanziate 
-// a Player-struct and return it. If the database couldn't match it 
-// has a database missmatch. 
+// Queries the database table 'player' with the username defined as "name".
+// It will retrieve the players attributes which it will use to instanziate
+// a Player-struct and return it. If the database couldn't match it
+// has a database missmatch.
 func queryPlayer(db *sql.DB, name string) (entity.Player, error) {
-	
+
 	query := "SELECT * FROM players WHERE name = ?"
 	rows, err := db.Query(query, name)
 	defer rows.Close()
@@ -60,10 +60,10 @@ func queryPlayer(db *sql.DB, name string) (entity.Player, error) {
 		return entity.Player{}, err
 	}
 
-	var x, y int
+	var x, y, lvl, health, mana int
 
 	for rows.Next() {
-		err := rows.Scan(&name, &x, &y)
+		err := rows.Scan(&name, &x, &y, &lvl, &health, &mana)
 		if err != nil {
 			return entity.Player{}, err
 		}
@@ -72,7 +72,7 @@ func queryPlayer(db *sql.DB, name string) (entity.Player, error) {
 
 	player := entity.NewPlayer(name, x, y)
 
-	return player, err		
+	return player, err
 }
 
 func LogOut(player entity.Player) (error) {
