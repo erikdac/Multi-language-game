@@ -1,7 +1,6 @@
 #include "parser.h"
 #include "external/pugixml/src/pugixml.hpp"
 #include "external/json11/json11.hpp"
-#include "graphics/polygon_OLD.h"
 
 #include <QtGlobal>
 #include <QtDebug>

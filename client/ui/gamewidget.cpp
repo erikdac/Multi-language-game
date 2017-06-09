@@ -38,7 +38,7 @@ GameWidget::~GameWidget() {
 }
 
 void GameWidget::resume() {
-    // qinfo("Resumed");
+    qInfo("Resumed");
     player_widget()->setPlayer(gamestruct::self());
     target_widget()->setVisible(false);
     setFocus();
@@ -47,7 +47,7 @@ void GameWidget::resume() {
 }
 
 void GameWidget::pause() {
-    // qInfo("Paused");
+    qInfo("Paused");
     _isRunning = false;
     _movementController.clear();
 }

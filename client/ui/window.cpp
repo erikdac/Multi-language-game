@@ -34,16 +34,16 @@ Window::~Window() {
 }
 
 void Window::setLoginUi() {
-    qDebug() << "setting Login UI";
+    qInfo("Setting login UI");
     prepareState(LOGIN);
 }
 
 void Window::setLoadingUi() {
-    qDebug() << "setting Loading UI";
+    qInfo("Setting loading UI");
     prepareState(LOADING);
 }
 
 void Window::setGameUi() {
-    qDebug() << "setting Game UI";
+    qInfo("Setting game UI");
     prepareState(GAME);
 }

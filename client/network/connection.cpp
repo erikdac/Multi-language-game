@@ -13,26 +13,24 @@ static const std::size_t READ_BUFFER_SIZE = 64 * 1024;
 
 static QTcpSocket _socket;
 
-bool connection::connectToServer() {
+void connectToServer() {
+    connection::disconnect();
     _socket.connectToHost(IP, PORT);
     if(!_socket.waitForConnected(10000)) {
         qDebug() << "Could not connect to server: " << _socket.errorString();
-        return false;
     } else {
         qDebug() << "Successfully connected to server!";
-        return true;
     }
 }
 
 bool connection::output(const Json object) {
     const std::string data = object.dump() + '\n';
-    int res = _socket.write(data.c_str(), data.size() + 1);
+    int res = _socket.write(data.c_str(), data.size());
 
     if (res < 0) {
-        disconnect();
-        bool isOnline = connectToServer();
-        if(isOnline) {
-            res = _socket.write(data.c_str(), data.size() + 1);
+        connectToServer();
+        if(_socket.isWritable()) {
+            res = _socket.write(data.c_str(), data.size());
         } else {
             qDebug() << "Could not reconnect to server: " << _socket.errorString();
         }
@@ -45,7 +43,6 @@ bool connection::output(const Json object) {
     return res > 0;
 }
 
-// TODO: Should only read UNTIL certain character...
 std::string connection::readPacket(const int timeout_ms) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
@@ -67,5 +64,5 @@ std::string connection::readPacket(const int timeout_ms) {
 
 void connection::disconnect() {
     qDebug() << "Disconnected!";
-    _socket.disconnectFromHost();;
+    _socket.disconnectFromHost();
 }

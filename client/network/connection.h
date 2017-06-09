@@ -3,11 +3,8 @@
 
 #include "external/json11/json11.hpp"
 
-using namespace json11;
-
 namespace connection {
-    bool connectToServer();
-    bool output(const Json);
+    bool output(const json11::Json);
     std::string readPacket(const int);
     void disconnect();
 }

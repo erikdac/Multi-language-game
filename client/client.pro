@@ -12,67 +12,66 @@ TARGET = client
 TEMPLATE = app
 
 SOURCES += \
-    main.cpp\
-    network/connection.cpp \
-    ui/loginwidget.cpp \
-    game/movementcontroller.cpp \
-    ui/playerwidget.cpp \
-    ui/targetwidget.cpp \
-    ui/screenwidget.cpp \
-    ui/window.cpp \
-    ui/gamewidget.cpp \
-    ui/loadingwidget.cpp \
-    game/gamestruct.cpp \
-    ui/gameengine/stackedwidget.cpp \
-    ui/gameengine/enginewidget.cpp \
-    ui/gameengine/glwidget.cpp \
-    graphics/polygon.cpp \
-    graphics/graphics.cpp \
+    external/json11/json11.cpp \
+    external/pugixml/src/pugixml.cpp \
+    game/entities/actor.cpp \
     game/entities/environment.cpp \
     game/entities/player.cpp \
     game/entities/self.cpp \
     game/entities/troll.cpp \
-    external/json11/json11.cpp \
-    external/pugixml/src/pugixml.cpp \
-    game/entities/actor.cpp \
-    game/parser.cpp
+    game/gamestruct.cpp \
+    game/movementcontroller.cpp \
+    game/parser.cpp \
+    graphics/graphics.cpp \
+    graphics/polygon.cpp \
+    network/connection.cpp \
+    ui/gameengine/enginewidget.cpp \
+    ui/gameengine/glwidget.cpp \
+    ui/gameengine/stackedwidget.cpp \
+    ui/gamewidget.cpp \
+    ui/loadingwidget.cpp \
+    ui/loginwidget.cpp \
+    ui/playerwidget.cpp \
+    ui/screenwidget.cpp \
+    ui/targetwidget.cpp \
+    ui/window.cpp \
+    main.cpp
 
 HEADERS += \
-    ui/window.h \
-    network/connection.h \
-    ui/loginwidget.h \
-    game/movementcontroller.h \
-    ui/playerwidget.h \
-    ui/targetwidget.h \
-    ui/screenwidget.h \
-    game/eventhandler.h \
-    ui/gamewidget.h \
-    ui/loadingwidget.h \
-    config.h \
-    game/gamestruct.h \
-    ui/gameengine/gamestate.h \
-    ui/gameengine/stackedwidget.h \
-    ui/gameengine/enginewidget.h \
-    ui/gameengine/glwidget.h \
-    graphics/graphics.h \
+    external/json11/json11.hpp \
+    external/pugixml/src/pugixml.hpp \
     game/entities/actor.h \
     game/entities/environment.h \
     game/entities/player.h \
     game/entities/self.h \
     game/entities/troll.h \
-    external/json11/json11.hpp \
-    external/pugixml/src/pugiconfig.hpp \
-    external/pugixml/src/pugixml.hpp \
+    game/eventhandler.h \
+    game/gamestruct.h \
+    game/movementcontroller.h \
     game/parser.h \
-    graphics/polygon.h
+    graphics/graphics.h \
+    graphics/polygon.h \
+    network/connection.h \
+    ui/gameengine/enginewidget.h \
+    ui/gameengine/gamestate.h \
+    ui/gameengine/glwidget.h \
+    ui/gameengine/stackedwidget.h \
+    ui/gamewidget.h \
+    ui/loadingwidget.h \
+    ui/loginwidget.h \
+    ui/playerwidget.h \
+    ui/screenwidget.h \
+    ui/targetwidget.h \
+    ui/window.h \
+    config.h
 
 FORMS += \
+    ui/gamewidget.ui \
+    ui/loadingwidget.ui \
     ui/loginwidget.ui \
     ui/playerwidget.ui \
     ui/screenwidget.ui \
-    ui/window.ui \
-    ui/gamewidget.ui \
-    ui/loadingwidget.ui
+    ui/window.ui
 
 CONFIG += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
 
@@ -81,4 +80,10 @@ LIBS += -lglut -lopengl32
 RESOURCES += \
     resources.qrc
 
-DISTFILES +=
+DISTFILES += \
+    resources/environments/grass.xml \
+    resources/environments/stone.xml \
+    resources/environments/water.xml
+
+SUBDIRS += \
+    client.pro
