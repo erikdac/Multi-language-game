@@ -32,6 +32,7 @@ GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
 
 GameWidget::~GameWidget() {
     _isRunning = false;
+    connection::disconnect();
     gamestruct::clear();
     target_widget()->unselect_target();
     delete ui;
@@ -43,12 +44,13 @@ void GameWidget::resume() {
     target_widget()->setVisible(false);
     setFocus();
     _isRunning = true;
-    std::thread(&GameWidget::networkReader, this).detach();
+    connection::startReading();
 }
 
 void GameWidget::pause() {
     qInfo("Paused");
     _isRunning = false;
+    connection::disconnect();
     _movementController.clear();
 }
 
@@ -125,7 +127,7 @@ void GameWidget::processKeyboard() {
 
 void GameWidget::processNetwork() {
 
-    for (const Json & data : _networkHandler.events()) {
+    for (const Json & data : connection::_inputHandler.events()) {
 
         const std::string type = data["Type"].string_value();
         if (type == "Disconnect") {
@@ -186,27 +188,6 @@ void GameWidget::keyReleaseEvent(QKeyEvent * event) {
         std::pair<QKeyEvent, bool> p(*event, false);
         _keyboardHandler.addEvent(p);
     }
-}
-
-void GameWidget::networkReader() {
-    while (_isRunning) {
-        std::string packet = connection::readPacket(10);
-        if (!packet.empty()) {
-            std::string error;
-            Json data = Json::parse(packet, error);
-            if (error.empty()) {
-                _networkHandler.addEvent(data);
-            } else if (_isRunning) {
-                qWarning("Incorrect JSON format recieved!");
-                data = Json::object {
-                    {"Type", "Disconnect"},
-                };
-                _networkHandler.addEvent(data);
-                return;
-            }
-        }
-    }
-    assert(!_isRunning);
 }
 
 PlayerWidget * GameWidget::player_widget() const {

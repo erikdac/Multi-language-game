@@ -3,18 +3,25 @@
 
 #include <QtDebug>
 #include <QTcpSocket>
+#include <thread>
 
 using namespace json11;
 
-static const QString IP = "192.168.1.137";
+static const QString IP = "192.168.1.91";
 static const int PORT = 1337;
 
 static const std::size_t READ_BUFFER_SIZE = 64 * 1024;
 
-static QTcpSocket _socket;
+QTcpSocket _socket;
+
+EventHandler<json11::Json> connection::_inputHandler;
+bool _isReading = false;
 
 void connectToServer() {
-    connection::disconnect();
+    if (_socket.isValid()) {
+        qWarning() << "Trying to set up a connection with an already existing one. ";
+        connection::disconnect();
+    }
     _socket.connectToHost(IP, PORT);
     if(!_socket.waitForConnected(10000)) {
         qDebug() << "Could not connect to server: " << _socket.errorString();
@@ -62,7 +69,33 @@ std::string connection::readPacket(const int timeout_ms) {
     return std::string(readBuffer);
 }
 
+void connection::startReading() {
+    _isReading = true;
+    auto func = [&]() -> void {
+        qDebug() << "Starting to read from server!";
+        while (_isReading) {
+            std::string packet = connection::readPacket(10);
+            if (!packet.empty()) {
+                std::string error;
+                Json data = Json::parse(packet, error);
+                if (error.empty()) {
+                    _inputHandler.addEvent(data);
+                } else if (_isReading) {
+                    qWarning("Incorrect JSON format recieved!");
+                    data = Json::object {
+                        {"Type", "Disconnect"},
+                    };
+                    _inputHandler.addEvent(data);
+                    return;
+                }
+            }
+        }
+    };
+    std::thread(func).detach();
+}
+
 void connection::disconnect() {
     qDebug() << "Disconnected!";
+    _isReading = false;
     _socket.disconnectFromHost();
 }
