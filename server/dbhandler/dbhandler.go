@@ -3,6 +3,9 @@ package dbhandler
 import (
 	"database/sql"
 	"errors"
+	"crypto/rand"
+	"fmt"
+	"time"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
 	"../gamestruct/entity"
 )
@@ -10,7 +13,6 @@ import (
 var database = "root:1@tcp(localhost:3306)/server"
 
 func CheckLogin(request map[string]string) (entity.Player, error) {
-
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		return entity.Player{}, err
@@ -27,7 +29,10 @@ func CheckLogin(request map[string]string) (entity.Player, error) {
 		return entity.Player{}, errors.New("Database fail!")
 	}
 
-	err = setOnlineStatus(db, player.Name, true)
+	query := "UPDATE accounts SET hash = ?, expiration = ? WHERE username = ?"
+	token := generateToken()
+	expirationDate := time.Now().Add(time.Minute * 15).Format("2006-01-02 15:04:05")
+	_, err = db.Exec(query, token, expirationDate, player.Name)
 	if err != nil {
 		return entity.Player{}, errors.New("Player is already online!")
 	}
@@ -41,9 +46,11 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 	username := request["Username"]
 	password := request["Password"]
 
-	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND active=false"
+//	currentTime := time.Now().Local().Format("2006-01-02 15:04:05")
+	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND hash = ''"
 	var playerName string
 	err := db.QueryRow(query, username, password).Scan(&playerName)
+	fmt.Println(err)
 	return playerName, err
 }
 
@@ -88,14 +95,15 @@ func LogOut(player entity.Player) (error) {
 		return err
 	}
 
-	err = setOnlineStatus(db, player.Name, false)
+	query = "UPDATE accounts SET hash = '', expiration = '1000-01-01 00:00:00' WHERE username = ?"
+	_, err = db.Exec(query, player.Name)
 	return err
 }
 
-func setOnlineStatus(db *sql.DB, username string, isOnline bool) (error) {
-	query := "UPDATE accounts SET active = ? WHERE username = ?"
-	_, err := db.Exec(query, isOnline, username)
-	return err
+func generateToken() (string) {
+	b := make([]byte, 64)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)
 }
 
 // Resets the online indexes in the 'account' table to false for all players.
@@ -106,7 +114,7 @@ func ResetOnlineList() (error) {
 	}
 	defer db.Close()
 
-	query := "UPDATE accounts SET active=false"
+	query := "UPDATE accounts SET hash = '', expiration = '1000-01-01 00:00:00'"
 	_, err = db.Exec(query)
 
 	return err
