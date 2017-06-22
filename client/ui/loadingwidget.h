@@ -2,6 +2,7 @@
 #define LOADINGWIDGET_H
 
 #include "gameengine/gamestate.h"
+#include "external/json11/json11.hpp"
 
 namespace Ui {
     class LoadingWidget;
@@ -20,6 +21,8 @@ public:
 
 private:
     Ui::LoadingWidget *ui;
+
+    void parsePacket(const json11::Json &);
 };
 
 #endif // LOADINGWIDGET_H

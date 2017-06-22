@@ -83,7 +83,7 @@ void gamestruct::new_map(const Json & data, TargetWidget * targetWidget) {
     }
     assert(targetWidget->target() == target || !targetFound);
 
-    if (!targetFound) {
+    if (!targetFound && !targetWidget->target().empty()) {
         targetWidget->unselect_target();
         assert(targetWidget->target() == "");
     }

@@ -16,7 +16,6 @@
 #include <QMouseEvent>
 #include <utility>
 #include <cassert>
-#include <thread>
 
 using namespace json11;
 
@@ -44,13 +43,11 @@ void GameWidget::resume() {
     target_widget()->setVisible(false);
     setFocus();
     _isRunning = true;
-    connection::startReading();
 }
 
 void GameWidget::pause() {
     qInfo("Paused");
     _isRunning = false;
-    connection::disconnect();
     _movementController.clear();
 }
 
@@ -86,11 +83,8 @@ void GameWidget::processMouse() {
     }
 }
 
-typedef std::pair<QKeyEvent, bool> key_pair;
-
 void GameWidget::processKeyboard() {
-    for (const key_pair & e : _keyboardHandler.events()) {
-
+    for (const std::pair<QKeyEvent, bool> & e : _keyboardHandler.events()) {
         if (e.first.key() == Qt::Key_W) {
             if (e.second) {
                 _movementController.pushed('w');
@@ -127,10 +121,11 @@ void GameWidget::processKeyboard() {
 
 void GameWidget::processNetwork() {
 
-    for (const Json & data : connection::_inputHandler.events()) {
+    for (const Json & data : connection::read()) {
 
         const std::string type = data["Type"].string_value();
         if (type == "Disconnect") {
+            qDebug() << "Disconnect network packet recieved!";
             logout();
             break;
         }
@@ -159,7 +154,7 @@ void GameWidget::processNetwork() {
 
         // Unknown packet
         else {
-            qWarning("Unknown JSON Type recieved!");
+            qWarning() << "Unknown JSON Type recieved!";
         }
     }
 }

@@ -2,15 +2,16 @@
 #define CONNECTION_H
 
 #include "external/json11/json11.hpp"
-#include "game/eventhandler.h"
+
+#include <QTcpSocket>
+#include <vector>
 
 namespace connection {
-    extern EventHandler<json11::Json> _inputHandler;
-
-    bool output(const json11::Json);
-    void startReading();
-    std::string readPacket(const int);
+    void run(const std::string &);
+    void write(const json11::Json &);
+    std::vector<json11::Json> read();
     void disconnect();
+    std::string authenticate(const json11::Json &);
 }
 
 #endif

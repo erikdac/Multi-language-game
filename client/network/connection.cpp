@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "external/json11/json11.hpp"
+#include "game/eventhandler.h"
 
 #include <QtDebug>
 #include <QTcpSocket>
@@ -10,92 +11,132 @@ using namespace json11;
 static const QString IP = "192.168.1.91";
 static const int PORT = 1337;
 
-static const std::size_t READ_BUFFER_SIZE = 64 * 1024;
+static const std::size_t READ_BUFFER_SIZE = 128 * 1024;
 
-QTcpSocket _socket;
+EventHandler<json11::Json> _inputHandler;
+EventHandler<json11::Json> _outputHandler;
 
-EventHandler<json11::Json> connection::_inputHandler;
-bool _isReading = false;
+bool _isRunning = false;
 
-void connectToServer() {
-    if (_socket.isValid()) {
-        qWarning() << "Trying to set up a connection with an already existing one. ";
-        connection::disconnect();
-    }
-    _socket.connectToHost(IP, PORT);
-    if(!_socket.waitForConnected(10000)) {
-        qDebug() << "Could not connect to server: " << _socket.errorString();
-    } else {
+void connection::write(const Json & data) {
+    _outputHandler.addEvent(data);
+}
+
+std::vector<Json> connection::read() {
+    return _inputHandler.events();
+}
+
+void connection::disconnect() {
+    qDebug() << "Disconnected!";
+    _isRunning = false;
+}
+
+void connectToServer(QTcpSocket & socket, const QString & ip, const int port) {
+    qDebug() << "Attempting to connect to: " << ip << ":" << port;
+    socket.connectToHost(ip, port);
+    if(socket.waitForConnected(5000)) {
         qDebug() << "Successfully connected to server!";
+    } else {
+        qDebug() << "Could not connect to server: " << socket.errorString();
     }
 }
 
-bool connection::output(const Json object) {
-    const std::string data = object.dump() + '\n';
-    int res = _socket.write(data.c_str(), data.size());
-
-    if (res < 0) {
-        connectToServer();
-        if(_socket.isWritable()) {
-            res = _socket.write(data.c_str(), data.size());
-        } else {
-            qDebug() << "Could not reconnect to server: " << _socket.errorString();
+void writing(QTcpSocket & socket) {
+    for (const Json & object : _outputHandler.events()) {
+        qDebug() << object.dump().c_str();
+        const std::string data = object.dump() + '\n';
+        int res = socket.write(data.c_str(), data.size());
+        if (res < 0) {
+            qDebug() << "Was not able to send packet to server: " << socket.errorString();
+        } else if (res >= 0) {
+            socket.flush();
         }
     }
-
-    if (res > 0) {
-        _socket.flush();
-    }
-
-    return res > 0;
 }
 
-std::string connection::readPacket(const int timeout_ms) {
+std::string readPacket(QTcpSocket & socket, const int timeout_ms) {
     char readBuffer[READ_BUFFER_SIZE + 1];
     int received = 0;
+    int additional_timeout = 0;
 
-    while (_socket.waitForReadyRead(timeout_ms)) {
-        int res = _socket.readLine(readBuffer + received, READ_BUFFER_SIZE - received);
+    while (socket.waitForReadyRead(timeout_ms + additional_timeout)) {
+        int res = socket.readLine(readBuffer + received, READ_BUFFER_SIZE - received);
         received += res;
 
         if (res <= 0) {
-            return "Network read error: " + _socket.errorString().toStdString();
-        }
-
-        if (received > 0 && readBuffer[received-1] == '\n') {
+            return "Network read error: " + socket.errorString().toStdString();
+        } else if (received > 0 && readBuffer[received-1] == '\n') {
             break;
+        } else {
+            additional_timeout = 2 * timeout_ms;
         }
     }
     return std::string(readBuffer);
 }
 
-void connection::startReading() {
-    _isReading = true;
-    auto func = [&]() -> void {
-        qDebug() << "Starting to read from server!";
-        while (_isReading) {
-            std::string packet = connection::readPacket(10);
-            if (!packet.empty()) {
-                std::string error;
-                Json data = Json::parse(packet, error);
-                if (error.empty()) {
-                    _inputHandler.addEvent(data);
-                } else if (_isReading) {
-                    qWarning("Incorrect JSON format recieved!");
-                    data = Json::object {
-                        {"Type", "Disconnect"},
-                    };
-                    _inputHandler.addEvent(data);
-                    return;
+void reading(QTcpSocket & socket) {
+    std::string packet = readPacket(socket, 10);
+    if (!packet.empty()) {
+        std::string error;
+        Json data = Json::parse(packet, error);
+        if (error.empty()) {
+            _inputHandler.addEvent(data);
+        } else if (_isRunning) {
+            qWarning() << "Incorrect JSON format recieved: " << packet.c_str();
+            data = Json::object {
+                {"Type", "Disconnect"},
+            };
+            _inputHandler.addEvent(data);
+        }
+    }
+}
+
+void connection::run(const std::string & token) {
+    _isRunning = true;
+    _outputHandler.events(); // Clear it
+    auto func = [&](const std::string token) -> void {
+        QTcpSocket socket;
+        connectToServer(socket, IP, PORT + 1);
+        if (socket.isValid()) {
+            const Json packet = Json::object {
+                {"Type", "Token"},
+                {"Value", token}
+            };
+            const std::string data = packet.dump() + '\n';
+            int res = socket.write(data.c_str(), data.size());
+            if (res < 0) {
+                qWarning() << "Could not write authentication token to server.";
+                disconnect();
+            } else {
+                qDebug() << "Starting to communicate with the game server!";
+                while (_isRunning) {
+                    reading(socket);
+                    writing(socket);
                 }
+                socket.disconnectFromHost();
             }
         }
     };
-    std::thread(func).detach();
+    std::thread(func, token).detach();
 }
 
-void connection::disconnect() {
-    qDebug() << "Disconnected!";
-    _isReading = false;
-    _socket.disconnectFromHost();
+/**
+ * @brief connection::authenticate
+ * @param data
+ * @return The authentication token
+ */
+std::string connection::authenticate(const Json & object) {
+    QTcpSocket socket;
+    connectToServer(socket, IP, PORT);
+    if (socket.isValid()) {
+        const std::string data = object.dump() + '\n';
+        int res = socket.write(data.c_str(), data.size());
+        if (res > 0) {
+            qDebug() << "Authentication data sent to server.";
+            return readPacket(socket, 5000);
+        } else {
+            qWarning() << "Could not write any data to the server!";
+        }
+    }
+    return "";
 }

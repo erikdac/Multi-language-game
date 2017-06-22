@@ -25,7 +25,7 @@ public:
 private:
     bool sendLoginData(json11::Json);
     bool isConnected();
-    void checkResult();
+    void checkResult(const std::string &);
     void popupBox(const QString);
 
 private slots:
