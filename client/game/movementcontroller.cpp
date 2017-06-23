@@ -1,5 +1,4 @@
 #include "movementcontroller.h"
-#include "game/gamestruct.h"
 #include "config.h"
 
 #include <chrono>
