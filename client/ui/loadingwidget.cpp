@@ -46,6 +46,7 @@ void LoadingWidget::tick(float deltaTime) {
     if (_hasSelf && _hasMap) {
         dynamic_cast<Window *> (this->parentWidget())->setGameUi();
     } else {
+        qCritical() << "Did not recieve the required data!";
         dynamic_cast<Window *> (this->parentWidget())->setLoginUi();
     }
 }

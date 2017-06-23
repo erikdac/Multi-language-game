@@ -105,7 +105,7 @@ void connection::run(const std::string & token) {
             const std::string data = packet.dump() + '\n';
             int res = socket.write(data.c_str(), data.size());
             if (res < 0) {
-                qWarning() << "Could not write authentication token to server.";
+                qCritical() << "Could not write authentication token to server.";
                 disconnect();
             } else {
                 qDebug() << "Starting to communicate with the game server!";
