@@ -2,7 +2,6 @@
 #define GAMESTRUCT_H
 
 #include "entities/actor.h"
-#include "entities/player.h"
 #include "external/json11/json11.hpp"
 #include "ui/targetwidget.h"
 #include "entities/environment.h"

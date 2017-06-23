@@ -3,6 +3,7 @@
 #include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
 #include "entities/troll.h"
+#include "entities/player.h"
 #include "entities/environment.h"
 #include "parser.h"
 

@@ -62,7 +62,7 @@ void GameWidget::tick(float deltaTime) {
         }
         if (_isRunning) {
             assert(_isRunning);
-            _movementController.execute();
+            _movementController.execute(gamestruct::self());
             gamestruct::update_entities(deltaTime);
             _screenWidget->refresh();
         }
@@ -77,7 +77,7 @@ void GameWidget::processMouse() {
         if(actor) {
             target_widget()->select_target(actor);
         }
-        else {
+        else if (target_widget()->target() != ""){
             target_widget()->unselect_target();
         }
     }
