@@ -2,7 +2,6 @@
 #define GAMESTRUCT_H
 
 #include "entities/actor.h"
-#include "entities/player.h"
 #include "external/json11/json11.hpp"
 #include "ui/targetwidget.h"
 #include "entities/environment.h"
@@ -16,6 +15,7 @@ namespace gamestruct {
     std::vector<Actor *> actors();
     std::vector<Environment> environment();
     void clear();
+    void init_map(const json11::Json &);
     void new_map(const json11::Json &, TargetWidget *);
     void update_player(const json11::Json &, TargetWidget *);
     void update_creature(const json11::Json &, TargetWidget *);

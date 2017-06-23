@@ -5,7 +5,6 @@
 
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 
 Self::Self() {
 
@@ -105,5 +104,5 @@ void Self::sendMovement() const {
         {"ToX", std::to_string(_x)},
         {"ToY", std::to_string(_y)}
     };
-    connection::output(data);
+    connection::write(data);
 }

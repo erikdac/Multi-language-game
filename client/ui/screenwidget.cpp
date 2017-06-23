@@ -7,9 +7,9 @@
 #include "game/gamestruct.h"
 #include "gameengine/glwidget.h"
 
+#include <QtDebug>
 #include <QPainter>
 #include <QOpenGLTexture>
-#include <GL/glut.h>
 #include <QMouseEvent>
 
 ScreenWidget::ScreenWidget(QWidget *parent)

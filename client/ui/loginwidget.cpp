@@ -3,7 +3,6 @@
 #include "network/connection.h"
 #include "external/json11/json11.hpp"
 #include "window.h"
-#include "game/gamestruct.h"
 
 #include <QtDebug>
 #include <QLabel>
@@ -52,46 +51,31 @@ void LoginWidget::on_pushButton_clicked() {
     };
     password->clear();
 
-    if (isConnected()) {
-        if(connection::output(data) == false) {
-            popupBox("Connection failed!");
+    const std::string response = connection::authenticate(data);
+    checkResult(response);
+}
+
+void LoginWidget::checkResult(const std::string & response) {
+    if (response.empty()) {
+        popupBox("Connection failed!");
+    } else {
+        std::string error;
+        Json data = Json::parse(response, error);
+        if (!error.empty()) {
+            qWarning() << "Error in JSON recieved: " << error.c_str();
+            popupBox("Connection refused!");
+        } else if(data["Type"].string_value() == "Token") {
+            std::string token = data["Value"].string_value();
+            if (token == "") {
+                popupBox("Login failed!");
+            } else {
+                qDebug() << "Authentication token = " << token.c_str();
+                connection::run(token);
+                dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
+            }
         } else {
-            checkResult();
+            qWarning() << "Recieved incorrect authentication package!";
         }
-    }
-}
-
-/**
- * Needed to detect if the connection with the server is alive or not.
- *
- * @return True, if a connection exists.
- */
-bool LoginWidget::isConnected() {
-    if (connection::readPacket(1) != "") {
-        if (connection::connectToServer() == false) {
-            connection::disconnect();
-            return false;
-        }
-    }
-    return true;
-}
-
-void LoginWidget::checkResult() {
-    std::string input = connection::readPacket(5000);
-    std::string error;
-    Json data = Json::parse(input, error);
-    if (!error.empty()) {
-        popupBox("Connection refused!");
-        qWarning("Error in JSON recieved: %s",error.c_str());
-    }
-
-    if(data["Type"].string_value() == "Login_success") {
-        if(data["Success"].bool_value() == true) {
-            gamestruct::set_self(data);
-            dynamic_cast<Window *> (this->parentWidget())->setLoadingUi();
-        }
-        else
-            popupBox("Login failed!");
     }
 }
 

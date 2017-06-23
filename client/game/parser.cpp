@@ -1,7 +1,6 @@
 #include "parser.h"
 #include "external/pugixml/src/pugixml.hpp"
 #include "external/json11/json11.hpp"
-#include "graphics/polygon.h"
 
 #include <QtGlobal>
 #include <QtDebug>
@@ -23,10 +22,10 @@ static const std::string ENVIRONMENT_PATH = RESOURCE_PATH + "environments/";
 
 struct EnvironmentType {
 	bool _walkable;
-	std::vector<Polygon> _polygons;
+    std::vector<graphics::Polygon> _polygons;
 
 	EnvironmentType() {}
-	EnvironmentType(bool walkable, std::vector<Polygon> polygons) : _walkable(walkable), _polygons(polygons) {}
+    EnvironmentType(bool walkable, std::vector<graphics::Polygon> polygons) : _walkable(walkable), _polygons(polygons) {}
 };
 
 xml_node getXML(const std::string & path) {
@@ -49,43 +48,43 @@ xml_node getXML(const std::string & path) {
 	return doc.root().first_child();
 }
 
-Color XML_color(const xml_node & parent) {
+graphics::Color XML_color(const xml_node & parent) {
 	xml_node node = parent.child("color");
-	return Color(
+    return graphics::Color(
 		node.attribute("r").as_int(), 
 		node.attribute("g").as_int(),
 		node.attribute("b").as_int()
 	);
 }
 
-Vertex XML_vertex(const xml_node & node) {
-	return Vertex(
+graphics::Vertex XML_vertex(const xml_node & node) {
+    return graphics::Vertex(
         node.attribute("x").as_float(),
         node.attribute("y").as_float(),
         node.attribute("z").as_float()
 	);
 }
 
-std::vector<Vertex> XML_verticies(const xml_node & parent) {
-    std::vector<Vertex> verticies;
+std::vector<graphics::Vertex> XML_verticies(const xml_node & parent) {
+    std::vector<graphics::Vertex> verticies;
 	for (const xml_node & vert : parent.child("verticies").children()) {
         verticies.push_back(XML_vertex(vert));
     }
 	return verticies;
 }
 
-Polygon XML_polygon(const xml_node & parent) {
-	Color color = XML_color(parent);
-	std::vector<Vertex> verticies = XML_verticies(parent);
-	return Polygon(color, verticies);
+graphics::Polygon XML_polygon(const xml_node & parent) {
+    graphics::Color color = XML_color(parent);
+    std::vector<graphics::Vertex> verticies = XML_verticies(parent);
+    return graphics::Polygon(color, verticies);
 }
 
 EnvironmentType XML_environmentType(const xml_node & parent, const std::string & filename) {
     xml_text walkable = parent.child("walkable").text();
-    if (walkable.as_string() == "") {
+    if (std::string(walkable.as_string()) == "") {
         qCritical("'%s' has no element called 'walkable'", filename.c_str());
     }
-    std::vector<Polygon> polygons;
+    std::vector<graphics::Polygon> polygons;
     for (const xml_node & poly : parent.child("polygons").children()) {
 		polygons.push_back(XML_polygon(poly));
 	}

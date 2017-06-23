@@ -1,42 +1,43 @@
-#ifndef POLYGON_HPP
-#define POLYGON_HPP
+#ifndef POLYGON_H
+#define POLYGON_H
 
 #include <vector>
 
-class Vertex {
-	float _x;
-	float _y;
-    float _z;
+namespace graphics {
+    class Color {
+        int _r, _g, _b;
 
-public:
-    Vertex(float x, float y, float z);
+    public:
+        Color(int r, int g, int b);
 
-	float x() const;
-	float y() const;
-    float z() const;
-};
+        int r() const;
+        int g() const;
+        int b() const;
+    };
 
-class Color {
-	int _r, _g, _b;
+    class Vertex {
+        float _x;
+        float _y;
+        float _z;
 
-public:
-	Color(int r, int g, int b);
+    public:
+        Vertex(float x, float y, float z);
 
-	int r() const;
-	int g() const;
-	int b() const;
-};
+        float x() const;
+        float y() const;
+        float z() const;
+    };
 
-class Polygon {
+    class Polygon {
+        Color _color;
+        std::vector<Vertex> _verticies;
 
-	Color _color;
-    std::vector<Vertex> _verticies;
+    public:
+        Polygon(Color, std::vector<Vertex>);
 
-public:
-    Polygon(Color, std::vector<Vertex>);
-
-    Color color() const;
-    std::vector<Vertex> verticies() const;
-};
+        Color color() const;
+        std::vector<Vertex> verticies() const;
+    };
+}
 
 #endif

@@ -1,23 +1,21 @@
-#ifndef ENVIRONMENT_HPP
-#define ENVIRONMENT_HPP
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
 
 #include "graphics/graphics.h"
 #include "graphics/polygon.h"
 
 #include <vector>
 
-void initEnvironments();
-
-class Environment : public Graphics {
+class Environment : public graphics::Graphics {
 
     int _x;
     int _y;
     bool _walkable;
-    std::vector<Polygon> * _polygons;
+    std::vector<graphics::Polygon> * _polygons;
 
 public:
 	Environment();
-    Environment(int, int, bool, std::vector<Polygon> *);
+    Environment(int, int, bool, std::vector<graphics::Polygon> *);
     virtual ~Environment();
 
     int x() const;

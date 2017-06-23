@@ -2,6 +2,7 @@
 #define LOADINGWIDGET_H
 
 #include "gameengine/gamestate.h"
+#include "external/json11/json11.hpp"
 
 namespace Ui {
     class LoadingWidget;
@@ -9,6 +10,9 @@ namespace Ui {
 
 class LoadingWidget : public GameState {
     Q_OBJECT
+
+    bool _hasSelf = false;
+    bool _hasMap = false;
 
 public:
     explicit LoadingWidget(QWidget *);
@@ -20,6 +24,8 @@ public:
 
 private:
     Ui::LoadingWidget *ui;
+
+    void parsePacket(const json11::Json &);
 };
 
 #endif // LOADINGWIDGET_H

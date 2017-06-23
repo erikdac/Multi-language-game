@@ -27,6 +27,9 @@ protected:
 
 private:
     void stop_attack();
+
+signals:
+    void activate(bool);
 };
 
 #endif // TARGETWIDGET_H

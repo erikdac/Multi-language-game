@@ -28,7 +28,6 @@ class GameWidget : public GameState {
 
     EventHandler<QMouseEvent *> _mouseHandler;
     EventHandler<std::pair<QKeyEvent, bool>> _keyboardHandler;
-    EventHandler<json11::Json> _networkHandler;
 
     MovementController _movementController;
 

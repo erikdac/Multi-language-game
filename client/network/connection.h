@@ -3,13 +3,15 @@
 
 #include "external/json11/json11.hpp"
 
-using namespace json11;
+#include <QTcpSocket>
+#include <vector>
 
 namespace connection {
-    bool connectToServer();
-    bool output(const Json);
-    std::string readPacket(const int);
+    void run(const std::string &);
+    void write(const json11::Json &);
+    std::vector<json11::Json> read();
     void disconnect();
+    std::string authenticate(const json11::Json &);
 }
 
 #endif

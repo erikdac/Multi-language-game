@@ -16,7 +16,6 @@
 #include <QMouseEvent>
 #include <utility>
 #include <cassert>
-#include <thread>
 
 using namespace json11;
 
@@ -32,22 +31,22 @@ GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
 
 GameWidget::~GameWidget() {
     _isRunning = false;
+    connection::disconnect();
     gamestruct::clear();
     target_widget()->unselect_target();
     delete ui;
 }
 
 void GameWidget::resume() {
-    // qinfo("Resumed");
+    qInfo("Resumed");
     player_widget()->setPlayer(gamestruct::self());
     target_widget()->setVisible(false);
     setFocus();
     _isRunning = true;
-    std::thread(&GameWidget::networkReader, this).detach();
 }
 
 void GameWidget::pause() {
-    // qInfo("Paused");
+    qInfo("Paused");
     _isRunning = false;
     _movementController.clear();
 }
@@ -63,7 +62,7 @@ void GameWidget::tick(float deltaTime) {
         }
         if (_isRunning) {
             assert(_isRunning);
-            _movementController.execute();
+            _movementController.execute(gamestruct::self());
             gamestruct::update_entities(deltaTime);
             _screenWidget->refresh();
         }
@@ -72,23 +71,20 @@ void GameWidget::tick(float deltaTime) {
 
 void GameWidget::processMouse() {
     for (const QMouseEvent * e : _mouseHandler.events()) {
-        const double x = gamestruct::self()->x() - (VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (VIEW_WIDTH * 2)));
-        const double y = gamestruct::self()->y() - (VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (VIEW_HEIGHT * 2)));
+        const double x = gamestruct::self()->x() - (graphics::VIEW_WIDTH - 0.5) + (e->x() / (_screenWidget->width() / (graphics::VIEW_WIDTH * 2)));
+        const double y = gamestruct::self()->y() - (graphics::VIEW_HEIGHT - 0.5) + (e->y() / (_screenWidget->height() / (graphics::VIEW_HEIGHT * 2)));
         Actor * actor = gamestruct::actor_at_position(x, y);
         if(actor) {
             target_widget()->select_target(actor);
         }
-        else {
+        else if (target_widget()->target() != ""){
             target_widget()->unselect_target();
         }
     }
 }
 
-typedef std::pair<QKeyEvent, bool> key_pair;
-
 void GameWidget::processKeyboard() {
-    for (const key_pair & e : _keyboardHandler.events()) {
-
+    for (const std::pair<QKeyEvent, bool> & e : _keyboardHandler.events()) {
         if (e.first.key() == Qt::Key_W) {
             if (e.second) {
                 _movementController.pushed('w');
@@ -124,11 +120,10 @@ void GameWidget::processKeyboard() {
 }
 
 void GameWidget::processNetwork() {
-
-    for (const Json & data : _networkHandler.events()) {
-
+    for (const Json & data : connection::read()) {
         const std::string type = data["Type"].string_value();
         if (type == "Disconnect") {
+            qDebug() << "Disconnect network packet recieved!";
             logout();
             break;
         }
@@ -157,7 +152,7 @@ void GameWidget::processNetwork() {
 
         // Unknown packet
         else {
-            qWarning("Unknown JSON Type recieved!");
+            qWarning() << "Unknown JSON Type recieved!";
         }
     }
 }
@@ -186,27 +181,6 @@ void GameWidget::keyReleaseEvent(QKeyEvent * event) {
         std::pair<QKeyEvent, bool> p(*event, false);
         _keyboardHandler.addEvent(p);
     }
-}
-
-void GameWidget::networkReader() {
-    while (_isRunning) {
-        std::string packet = connection::readPacket(10);
-        if (!packet.empty()) {
-            std::string error;
-            Json data = Json::parse(packet, error);
-            if (error.empty()) {
-                _networkHandler.addEvent(data);
-            } else if (_isRunning) {
-                qWarning("Incorrect JSON format recieved!");
-                data = Json::object {
-                    {"Type", "Disconnect"},
-                };
-                _networkHandler.addEvent(data);
-                return;
-            }
-        }
-    }
-    assert(!_isRunning);
 }
 
 PlayerWidget * GameWidget::player_widget() const {

@@ -19,7 +19,7 @@ public:
 protected:
     bool _called_refresh = false;
 
-    void intitializeGL();
+    void initializeGL() override;
 
     virtual void paintGL() = 0;
 
