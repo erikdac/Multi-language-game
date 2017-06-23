@@ -52,6 +52,26 @@ void gamestruct::clear() {
     assert(_actors.empty());
 }
 
+void gamestruct::init_map(const Json & data) {
+    _environment.clear();
+    const Json::array environments = data["Environment"].array_items();
+    for (const Json & e : environments) {
+        _environment.push_back(parser::parseEnvironment(e));
+    }
+
+    clearActors();
+
+    const Json::array players = data["Players"].array_items();
+    for (const Json & p : players) {
+        _actors.push_back(parser::parsePlayer(p));
+    }
+
+    const Json::array creatures = data["Creatures"].array_items();
+    for (const Json & c : creatures) {
+        _actors.push_back(parser::parseTroll(c));
+    }
+}
+
 void gamestruct::new_map(const Json & data, TargetWidget * targetWidget) {
     _environment.clear();
     const Json::array environments = data["Environment"].array_items();

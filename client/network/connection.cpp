@@ -5,13 +5,12 @@
 #include <QtDebug>
 #include <QTcpSocket>
 #include <thread>
+#include <iostream>
 
 using namespace json11;
 
 static const QString IP = "192.168.1.91";
 static const int PORT = 1337;
-
-static const std::size_t READ_BUFFER_SIZE = 128 * 1024;
 
 EventHandler<json11::Json> _inputHandler;
 EventHandler<json11::Json> _outputHandler;
@@ -48,30 +47,31 @@ void writing(QTcpSocket & socket) {
         int res = socket.write(data.c_str(), data.size());
         if (res < 0) {
             qDebug() << "Was not able to send packet to server: " << socket.errorString();
-        } else if (res >= 0) {
+        } else {
             socket.flush();
         }
     }
 }
 
 std::string readPacket(QTcpSocket & socket, const int timeout_ms) {
-    char readBuffer[READ_BUFFER_SIZE + 1];
+    const std::size_t read_buffer_size = 128 * 1024;
+    char readBuffer[read_buffer_size + 1];
     int received = 0;
-    int additional_timeout = 0;
 
+    int additional_timeout = 0;
     while (socket.waitForReadyRead(timeout_ms + additional_timeout)) {
-        int res = socket.readLine(readBuffer + received, READ_BUFFER_SIZE - received);
+        int res = socket.readLine(readBuffer + received, read_buffer_size - received);
         received += res;
 
         if (res <= 0) {
             return "Network read error: " + socket.errorString().toStdString();
         } else if (received > 0 && readBuffer[received-1] == '\n') {
-            break;
+            return std::string(readBuffer);
         } else {
-            additional_timeout = 2 * timeout_ms;
+            additional_timeout = 4 * timeout_ms;
         }
     }
-    return std::string(readBuffer);
+    return "";
 }
 
 void reading(QTcpSocket & socket) {

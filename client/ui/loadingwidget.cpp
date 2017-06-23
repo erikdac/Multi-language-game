@@ -6,9 +6,9 @@
 #include "game/gamestruct.h"
 
 #include <QtDebug>
-
-#include <thread>
 #include <chrono>
+
+using namespace json11;
 
 LoadingWidget::LoadingWidget(QWidget *parent)
     : ui(new Ui::LoadingWidget)
@@ -27,27 +27,38 @@ void LoadingWidget::resume() {
 
 void LoadingWidget::pause() {
     qDebug("Paused");
+    _hasSelf = false;
+    _hasMap = false;
 }
 
 void LoadingWidget::tick(float deltaTime) {
-    // TODO: fix...
-    std::vector<json11::Json> input;
-    while (true) {
-        qDebug() << "WAITING!";
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        input = connection::read();
-        if(input.front()["Type"].string_value() == "Self") {
-            qDebug() << "Self player recieved!";
-            gamestruct::set_self(input.front());
-            break;
+    auto begin = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto delay = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    while ((!_hasSelf || !_hasMap) && delay < 30000) {
+        std::vector<Json> input = connection::read();
+        for (const Json & packet : input) {
+            parsePacket(packet);
         }
+        end = std::chrono::high_resolution_clock::now();
+        delay = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
     }
-    dynamic_cast<Window *> (this->parentWidget())->setGameUi();
+    if (_hasSelf && _hasMap) {
+        dynamic_cast<Window *> (this->parentWidget())->setGameUi();
+    } else {
+        dynamic_cast<Window *> (this->parentWidget())->setLoginUi();
+    }
 }
 
-void LoadingWidget::parsePacket(const json11::Json & packet) {
-    if(packet["Type"].string_value() == "Self") {
+void LoadingWidget::parsePacket(const Json & packet) {
+    const std::string type = packet["Type"].string_value();
+    if(type == "Self") {
         qDebug() << "Self player recieved!";
         gamestruct::set_self(packet);
+        _hasSelf = true;
+    } else if (type == "Map") {
+        qDebug() << "Init map recieved!";
+        gamestruct::init_map(packet);
+        _hasMap = true;
     }
 }

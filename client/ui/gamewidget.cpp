@@ -120,9 +120,7 @@ void GameWidget::processKeyboard() {
 }
 
 void GameWidget::processNetwork() {
-
     for (const Json & data : connection::read()) {
-
         const std::string type = data["Type"].string_value();
         if (type == "Disconnect") {
             qDebug() << "Disconnect network packet recieved!";

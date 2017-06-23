@@ -11,6 +11,9 @@ namespace Ui {
 class LoadingWidget : public GameState {
     Q_OBJECT
 
+    bool _hasSelf = false;
+    bool _hasMap = false;
+
 public:
     explicit LoadingWidget(QWidget *);
     ~LoadingWidget();
