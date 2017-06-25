@@ -5,10 +5,15 @@
 
 class MovementController {
 
-    int _activeKey;
-    int _previousKey;
+    int _activeKey = 0;
+    int _previousKey = 0;
+    bool _expensiveLast = false;
+    int _movement_delay_millis;
 
 public:
+    MovementController(const int);
+    ~MovementController();
+
     void execute(Self * const);
     void pushed(const int);
     void released(const int);

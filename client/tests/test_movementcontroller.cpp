@@ -19,41 +19,35 @@ private Q_SLOTS:
     void testSimpleMovement();
     void testDirectionalMovement();
     void testContradictoryMovement();
+    void testKeyChange();
+    void testClear();
 };
-
-void waitForReady() {
-    std::this_thread::sleep_for(std::chrono::milliseconds((int)(MOVEMENT_DELAY_MILLIS * std::sqrt(2))));
-}
 
 Self emptySelf() {
     return Self(Player("", 0, 0, 0, 0, 0));
 }
 
 void MovementControllerTest::testSimpleMovement() {
-    MovementController mc;
+    MovementController mc(0);
     Self self = emptySelf();
     QTRY_COMPARE(self.x(), 0);
     QTRY_COMPARE(self.y(), 0);
     mc.pushed(Qt::Key_S);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_S);
     QTRY_COMPARE(self.x(), 0);
     QTRY_COMPARE(self.y(), 1);
     mc.pushed(Qt::Key_D);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_D);
     QTRY_COMPARE(self.x(), 1);
     QTRY_COMPARE(self.y(), 1);
     mc.pushed(Qt::Key_W);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_W);
     QTRY_COMPARE(self.x(), 1);
     QTRY_COMPARE(self.y(), 0);
     mc.pushed(Qt::Key_A);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_A);
     QTRY_COMPARE(self.x(), 0);
@@ -61,13 +55,12 @@ void MovementControllerTest::testSimpleMovement() {
 }
 
 void MovementControllerTest::testDirectionalMovement() {
-    MovementController mc;
+    MovementController mc(0);
     Self self = emptySelf();
     QTRY_COMPARE(self.x(), 0);
     QTRY_COMPARE(self.y(), 0);
     mc.pushed(Qt::Key_S);
     mc.pushed(Qt::Key_D);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_S);
     mc.released(Qt::Key_D);
@@ -75,7 +68,6 @@ void MovementControllerTest::testDirectionalMovement() {
     QTRY_COMPARE(self.y(), 1);
     mc.pushed(Qt::Key_W);
     mc.pushed(Qt::Key_D);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_W);
     mc.released(Qt::Key_D);
@@ -83,7 +75,6 @@ void MovementControllerTest::testDirectionalMovement() {
     QTRY_COMPARE(self.y(), 0);
     mc.pushed(Qt::Key_S);
     mc.pushed(Qt::Key_A);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_S);
     mc.released(Qt::Key_A);
@@ -91,7 +82,6 @@ void MovementControllerTest::testDirectionalMovement() {
     QTRY_COMPARE(self.y(), 1);
     mc.pushed(Qt::Key_W);
     mc.pushed(Qt::Key_A);
-    waitForReady();
     mc.execute(&self);
     mc.released(Qt::Key_W);
     mc.released(Qt::Key_A);
@@ -100,7 +90,79 @@ void MovementControllerTest::testDirectionalMovement() {
 }
 
 void MovementControllerTest::testContradictoryMovement() {
+    MovementController mc(0);
+    Self self = emptySelf();
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
+    mc.pushed(Qt::Key_W);
+    mc.pushed(Qt::Key_S);
+    mc.execute(&self);
+    mc.released(Qt::Key_S);
+    mc.released(Qt::Key_W);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 1);
+    mc.pushed(Qt::Key_S);
+    mc.pushed(Qt::Key_W);
+    mc.execute(&self);
+    mc.released(Qt::Key_W);
+    mc.released(Qt::Key_S);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
+    mc.pushed(Qt::Key_A);
+    mc.pushed(Qt::Key_D);
+    mc.execute(&self);
+    mc.released(Qt::Key_D);
+    mc.released(Qt::Key_A);
+    QTRY_COMPARE(self.x(), 1);
+    QTRY_COMPARE(self.y(), 0);
+    mc.pushed(Qt::Key_D);
+    mc.pushed(Qt::Key_A);
+    mc.execute(&self);
+    mc.released(Qt::Key_A);
+    mc.released(Qt::Key_A);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
+}
 
+void MovementControllerTest::testKeyChange() {
+    MovementController mc(0);
+    Self self = emptySelf();
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
+    mc.pushed(Qt::Key_W);
+    mc.released(Qt::Key_W);
+    mc.pushed(Qt::Key_S);
+    mc.execute(&self);
+    mc.released(Qt::Key_S);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 1);
+    mc.pushed(Qt::Key_W);
+    mc.pushed(Qt::Key_S);
+    mc.pushed(Qt::Key_D);
+    mc.execute(&self);
+    mc.released(Qt::Key_S);
+    mc.released(Qt::Key_D);
+    QTRY_COMPARE(self.x(), 1);
+    QTRY_COMPARE(self.y(), 2);
+    mc.pushed(Qt::Key_A);
+    mc.execute(&self);
+    mc.released(Qt::Key_W);
+    mc.released(Qt::Key_A);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 2);
+}
+
+void MovementControllerTest::testClear() {
+    MovementController mc(0);
+    Self self = emptySelf();
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
+    mc.pushed(Qt::Key_D);
+    mc.pushed(Qt::Key_S);
+    mc.clear();
+    mc.execute(&self);
+    QTRY_COMPARE(self.x(), 0);
+    QTRY_COMPARE(self.y(), 0);
 }
 
 QTEST_MAIN(MovementControllerTest)

@@ -6,6 +6,7 @@
 #include "window.h"
 #include "game/entities/player.h"
 #include "game/gamestruct.h"
+#include "config.h"
 
 #include <QtDebug>
 #include <QGridLayout>
@@ -19,7 +20,11 @@
 
 using namespace json11;
 
-GameWidget::GameWidget(QWidget * parent) : ui(new Ui::GameWidget) {
+GameWidget::GameWidget(QWidget * parent)
+    : ui(new Ui::GameWidget)
+    , _movementController(MovementController(MOVEMENT_DELAY_MILLIS))
+{
+
     this->setParent(parent);
     ui->setupUi(this);
 
