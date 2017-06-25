@@ -1,5 +1,2 @@
-*~
-*.o
-build-client-*/
 **/build/
-**/client.pro.*
+**/*.pro.user
