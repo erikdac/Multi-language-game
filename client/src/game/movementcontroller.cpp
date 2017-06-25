@@ -4,9 +4,10 @@
 #include <chrono>
 #include <cmath>
 #include <vector>
+#include <QKeyEvent>
 
 bool newly_pushed = false;
-std::vector<char> saved_releases;
+std::vector<int> saved_releases;
 bool expensiveLast = false;
 
 void MovementController::execute(Self * const self) {
@@ -14,56 +15,56 @@ void MovementController::execute(Self * const self) {
         return;
     }
 
-    if ((_activeKey == 'w' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 'w')) {
+    if ((_activeKey == Qt::Key_W && _previousKey == Qt::Key_A) || (_activeKey == Qt::Key_A && _previousKey == Qt::Key_W)) {
         self->moveUpLeft();
         expensiveLast = true;
     }
-    else if ((_activeKey == 'w' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 'w')) {
+    else if ((_activeKey == Qt::Key_W && _previousKey == Qt::Key_D) || (_activeKey == Qt::Key_D && _previousKey == Qt::Key_W)) {
         self->moveUpRight();
         expensiveLast = true;
     }
-    else if ((_activeKey == 's' && _previousKey == 'a') || (_activeKey == 'a' && _previousKey == 's')) {
+    else if ((_activeKey == Qt::Key_S && _previousKey == Qt::Key_A) || (_activeKey == Qt::Key_A && _previousKey == Qt::Key_S)) {
         self->moveDownLeft();
         expensiveLast = true;
     }
-    else if ((_activeKey == 's' && _previousKey == 'd') || (_activeKey == 'd' && _previousKey == 's')) {
+    else if ((_activeKey == Qt::Key_S && _previousKey == Qt::Key_D) || (_activeKey == Qt::Key_D && _previousKey == Qt::Key_S)) {
         self->moveDownRight();
         expensiveLast = true;
     }
-    else if (_activeKey == 'w') {
+    else if (_activeKey == Qt::Key_W) {
         self->moveUp();
         expensiveLast = false;
     }
-    else if (_activeKey == 'a') {
+    else if (_activeKey == Qt::Key_A) {
         self->moveLeft();
         expensiveLast = false;
     }
-    else if (_activeKey == 's') {
+    else if (_activeKey == Qt::Key_S) {
         self->moveDown();
         expensiveLast = false;
     }
-    else if (_activeKey == 'd') {
+    else if (_activeKey == Qt::Key_D) {
         self->moveRight();
         expensiveLast = false;
     }
 
     if (newly_pushed) {
         newly_pushed = false;
-        for (const char & c : saved_releases) {
-            released(c);
+        for (const int k : saved_releases) {
+            released(k);
         }
         saved_releases.clear();
     }
 }
 
-void MovementController::pushed(const char key) {
+void MovementController::pushed(const int key) {
     _previousKey = _activeKey;
     _activeKey = key;
     newly_pushed = true;
 }
 
-void MovementController::released(const char key) {
-    if (newly_pushed && ((key == _activeKey && _previousKey) == 0 || (key == _previousKey))) {
+void MovementController::released(const int key) {
+    if (newly_pushed && ((key == _activeKey && _previousKey == 0) || (key == _previousKey))) {
         saved_releases.push_back(key);
         return;
     }
@@ -90,7 +91,7 @@ auto last = std::chrono::high_resolution_clock::now();
 bool MovementController::isReady() const {
     auto now = std::chrono::high_resolution_clock::now();
     float diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
-    if ((!expensiveLast && diff >= MOVEMENT_DELAY * 1000) || (expensiveLast && diff >= MOVEMENT_DELAY * 1000 * std::sqrt(2))) {
+    if ((!expensiveLast && diff >= MOVEMENT_DELAY_MILLIS) || (expensiveLast && diff >= MOVEMENT_DELAY_MILLIS * std::sqrt(2))) {
         last = now;
         return true;
     }

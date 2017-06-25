@@ -39,7 +39,7 @@ unsigned int Player::distance_to_player(const Player & p) const {
 }
 
 void Player::update(float deltaTime) {
-    float dist = deltaTime / MOVEMENT_DELAY;
+    float dist = (deltaTime * 1000) / MOVEMENT_DELAY_MILLIS;
     if (std::abs(_x - _visualX) < dist * 1.5) {
         _visualX = _x;
     } else if (_x < _visualX) {

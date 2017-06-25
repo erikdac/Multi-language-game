@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += testlib
-QT       -= gui
+QT       += testlib core network gui
 
 TARGET    = tests
 

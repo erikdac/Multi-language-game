@@ -5,13 +5,13 @@
 
 class MovementController {
 
-    char _activeKey;
-    char _previousKey;
+    int _activeKey;
+    int _previousKey;
 
 public:
     void execute(Self * const);
-    void pushed(const char);
-    void released(const char);
+    void pushed(const int);
+    void released(const int);
     void clear();
 
 private:

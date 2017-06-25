@@ -85,35 +85,15 @@ void GameWidget::processMouse() {
 
 void GameWidget::processKeyboard() {
     for (const std::pair<QKeyEvent, bool> & e : _keyboardHandler.events()) {
-        if (e.first.key() == Qt::Key_W) {
+        const int key = e.first.key();
+        if (key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D) {
             if (e.second) {
-                _movementController.pushed('w');
+                _movementController.pushed(key);
             } else {
-                _movementController.released('w');
+                _movementController.released(key);
             }
         }
-        else if (e.first.key() == Qt::Key_A) {
-            if (e.second) {
-                _movementController.pushed('a');
-            } else {
-                _movementController.released('a');
-            }
-        }
-        else if (e.first.key() == Qt::Key_S) {
-            if (e.second) {
-                _movementController.pushed('s');
-            } else {
-                _movementController.released('s');
-            }
-        }
-        else if (e.first.key() == Qt::Key_D) {
-            if (e.second) {
-                _movementController.pushed('d');
-            } else {
-                _movementController.released('d');
-            }
-        }
-        else if (e.first.key() == Qt::Key_Escape && e.second) {
+        else if (key == Qt::Key_Escape && e.second) {
             openMenu();
         }
     }

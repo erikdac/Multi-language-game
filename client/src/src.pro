@@ -19,6 +19,8 @@ include(../defaults.pri)
 TARGET = src
 TEMPLATE = lib
 
+CONFIG += -std=c++14 -O2 -pthread -Wall -isystem -Wconversion -pedantic
+
 SOURCES += \
     external/json11/json11.cpp \
     external/pugixml/src/pugixml.cpp \
@@ -80,9 +82,7 @@ FORMS += \
     ui/screenwidget.ui \
     ui/window.ui
 
-CONFIG += -std=c++11 -O2 -pthread -Wall -isystem -Wconversion -pedantic
-
-LIBS += -lglut -lopengl32
+LIBS += -lopengl32
 
 RESOURCES += \
     resources.qrc
