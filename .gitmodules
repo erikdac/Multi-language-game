@@ -1,6 +1,6 @@
-[submodule "client/external/json11"]
-	path = client/src/external/json11
+[submodule "client/lib/json11"]
+	path = client/lib/json11
 	url = https://github.com/dropbox/json11.git
-[submodule "client/external/pugixml"]
-	path = client/src/external/pugixml
+[submodule "client/lib/pugixml"]
+	path = client/lib/pugixml
 	url = https://github.com/zeux/pugixml.git

@@ -8,22 +8,12 @@ QT       += core network gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-CONFIG(debug, debug|release) {
-    DESTDIR = debug/
-} else {
-    DESTDIR = release/
-}
-
-include(../defaults.pri)
-
 TARGET = src
 TEMPLATE = lib
 
 CONFIG += -std=c++14 -O2 -pthread -Wall -isystem -Wconversion -pedantic
 
 SOURCES += \
-    external/json11/json11.cpp \
-    external/pugixml/src/pugixml.cpp \
     game/entities/actor.cpp \
     game/entities/environment.cpp \
     game/entities/player.cpp \
@@ -47,8 +37,6 @@ SOURCES += \
     ui/window.cpp
 
 HEADERS += \
-    external/json11/json11.hpp \
-    external/pugixml/src/pugixml.hpp \
     game/entities/actor.h \
     game/entities/environment.h \
     game/entities/player.h \
@@ -91,3 +79,10 @@ DISTFILES += \
     resources/environments/grass.xml \
     resources/environments/stone.xml \
     resources/environments/water.xml
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -llib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -llib
+else:unix: LIBS += -L$$OUT_PWD/../lib/ -llib
+
+INCLUDEPATH += $$PWD/../lib
+DEPENDPATH += $$PWD/../lib

@@ -1,7 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 #include "entities/environment.h"
 #include "entities/player.h"
 #include "entities/troll.h"

@@ -2,7 +2,7 @@
 #include "ui_loadingwidget.h"
 #include "window.h"
 #include "network/connection.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 #include "game/gamestruct.h"
 
 #include <QtDebug>

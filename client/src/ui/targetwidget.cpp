@@ -1,7 +1,7 @@
 #include "targetwidget.h"
 #include "playerwidget.h"
 #include "network/connection.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 
 #include <QWidget>
 

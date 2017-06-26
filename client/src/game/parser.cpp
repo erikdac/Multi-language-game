@@ -1,6 +1,6 @@
 #include "parser.h"
-#include "external/pugixml/src/pugixml.hpp"
-#include "external/json11/json11.hpp"
+#include "pugixml/src/pugixml.hpp"
+#include "json11/json11.hpp"
 
 #include <QtGlobal>
 #include <QtDebug>

@@ -7,7 +7,7 @@
 #include "screenwidget.h"
 #include "game/movementcontroller.h"
 #include "game/eventhandler.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 
 #include <QMouseEvent>
 #include <QKeyEvent>

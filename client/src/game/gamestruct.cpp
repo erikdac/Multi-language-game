@@ -1,5 +1,5 @@
 #include "gamestruct.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 #include "ui/gamewidget.h"
 #include "ui/loginwidget.h"
 #include "entities/troll.h"

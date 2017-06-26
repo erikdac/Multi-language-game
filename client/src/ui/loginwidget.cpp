@@ -1,7 +1,7 @@
 #include "ui_loginwidget.h"
 #include "loginwidget.h"
 #include "network/connection.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 #include "window.h"
 
 #include <QtDebug>

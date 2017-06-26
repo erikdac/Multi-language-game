@@ -1,5 +1,5 @@
 #include "connection.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 #include "game/eventhandler.h"
 
 #include <QtDebug>

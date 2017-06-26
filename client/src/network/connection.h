@@ -1,7 +1,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 
 #include <QTcpSocket>
 #include <vector>

@@ -2,7 +2,7 @@
 #define LOADINGWIDGET_H
 
 #include "gameengine/gamestate.h"
-#include "external/json11/json11.hpp"
+#include "json11/json11.hpp"
 
 namespace Ui {
     class LoadingWidget;
