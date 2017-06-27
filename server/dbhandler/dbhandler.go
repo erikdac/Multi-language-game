@@ -29,10 +29,8 @@ func CheckLogin(request map[string]string) (entity.Player, error) {
 		return entity.Player{}, errors.New("Database fail!")
 	}
 
-	query := "UPDATE accounts SET hash = ?, expiration = ? WHERE username = ?"
-	token := generateToken()
-	expirationDate := time.Now().Add(time.Minute * 15).Format("2006-01-02 15:04:05")
-	_, err = db.Exec(query, token, expirationDate, player.Name)
+	query := "UPDATE accounts SET active = true WHERE username = ?"
+	_, err = db.Exec(query, player.Name)
 	if err != nil {
 		return entity.Player{}, errors.New("Player is already online!")
 	}
@@ -43,14 +41,11 @@ func CheckLogin(request map[string]string) (entity.Player, error) {
 // Queries the database table 'account' with the username and password and get
 // the username back if it exists in the database.
 func queryAccount(request map[string]string, db *sql.DB) (string, error) {
-	username := request["Username"]
-	password := request["Password"]
+	token := request["Value"]
 
-//	currentTime := time.Now().Local().Format("2006-01-02 15:04:05")
-	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND hash = ''"
+	query := "SELECT username FROM accounts WHERE hash = ? AND active = false"
 	var playerName string
-	err := db.QueryRow(query, username, password).Scan(&playerName)
-	fmt.Println(err)
+	err := db.QueryRow(query, token).Scan(&playerName)
 	return playerName, err
 }
 
@@ -59,7 +54,6 @@ func queryAccount(request map[string]string, db *sql.DB) (string, error) {
 // a Player-struct and return it. If the database couldn't match it
 // has a database missmatch.
 func queryPlayer(db *sql.DB, name string) (entity.Player, error) {
-
 	query := "SELECT * FROM players WHERE name = ?"
 	rows, err := db.Query(query, name)
 	defer rows.Close()
@@ -95,15 +89,39 @@ func LogOut(player entity.Player) (error) {
 		return err
 	}
 
-	query = "UPDATE accounts SET hash = '', expiration = '1000-01-01 00:00:00' WHERE username = ?"
+	query = "UPDATE accounts SET active = false, hash = '', expiration = '1000-01-01 00:00:00' WHERE username = ?"
 	_, err = db.Exec(query, player.Name)
 	return err
 }
 
+func Authenticate(request map[string]string) (string, error) {
+	db, err := sql.Open("mysql", database)
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	username := request["Username"]
+	password := request["Password"]
+
+	query := "SELECT username FROM accounts WHERE username = ? AND password = ? AND active = false"
+	var playerName string
+	err = db.QueryRow(query, username, password).Scan(&playerName)
+	if err == nil {
+		token := generateToken()
+		expirationDate := time.Now().Add(time.Minute).Format("2006-01-02 15:04:05")
+		query = "UPDATE accounts SET hash = ?, expiration = ? WHERE username = ?"
+		_, err = db.Exec(query, token, expirationDate, username)
+		return token, err
+	}
+	return "", err
+}
+
 func generateToken() (string) {
-	b := make([]byte, 64)
+	length := 64
+	b := make([]byte, length)
 	rand.Read(b)
-	return fmt.Sprintf("%x", b)
+	return fmt.Sprintf("%x", b)[:length]
 }
 
 // Resets the online indexes in the 'account' table to false for all players.
@@ -114,7 +132,7 @@ func ResetOnlineList() (error) {
 	}
 	defer db.Close()
 
-	query := "UPDATE accounts SET hash = '', expiration = '1000-01-01 00:00:00'"
+	query := "UPDATE accounts SET active = false, hash = '', expiration = '1000-01-01 00:00:00'"
 	_, err = db.Exec(query)
 
 	return err

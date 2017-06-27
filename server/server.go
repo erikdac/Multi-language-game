@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -12,7 +11,7 @@ import (
 
 // The connection settings.
 const (
-	CONNECTION_PORT = "1337"
+	CONNECTION_PORT = "1338"
 	CONNECTION_TYPE = "tcp"
 )
 
@@ -22,38 +21,11 @@ func main() {
 		panic(err)
 	}
 
-	// Sets up the server.
-	socket, err := net.Listen(CONNECTION_TYPE, ":"+CONNECTION_PORT)
-	if err != nil {
-		panic("Error setting up the server!")
-	}
-
-	// Close the listener when the application closes.
-	defer socket.Close()
-
-	fmt.Println("Listening on " + "localhost" + ":" + CONNECTION_PORT)
-
-	go serverMenu()
+	go authenticationServer()
+	go gameServer()
 	go gameLoop()
 
-	// Listens for the incoming connections.
-	for {
-		connection, err := socket.Accept()
-		if err != nil {
-			fmt.Println("Error accepting: ", err.Error())
-		}
-
-		go newConnection(connection);
-	}
-}
-
-func newConnection(connection net.Conn) {
-	client := gamestruct.NewClient(connection)
-	if client.Login() == true {
-		newClients <- client
-	} else {
-		client.Disconnect()
-	}
+	serverMenu()
 }
 
 /**
@@ -98,7 +70,7 @@ func readKeyboard() string {
 }
 
 /**
- * Method for getting a list of all online clients. It goes through the 
+ * Method for getting a list of all online clients. It goes through the
  * gamestruct.NameToClient map and prints out the connections remote-adresses.
  */
 func onlineList() {

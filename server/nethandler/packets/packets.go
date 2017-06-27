@@ -5,14 +5,25 @@ import (
 	"../../gamestruct/entity"
 )
 
-func Login(success bool, player entity.Player) ([]byte, error) {
+func Token(token string) ([]byte, error) {
+	packet := struct {
+		Type 	string
+		Value 	string
+	} {
+		"Token",
+		token,
+	}
+
+	data, err := json.Marshal(packet)
+	return data, err
+}
+
+func Self(player entity.Player) ([]byte, error) {
 	packet := struct {
 		Type 		string
-		Success 	bool 
 		Player 		entity.Player
 	} {
-		"Login_success",
-		success,
+		"Self",
 		player,
 	}
 

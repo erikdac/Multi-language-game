@@ -24,28 +24,26 @@ func NewClient(connection net.Conn) *Client {
 }
 
 func (client *Client) Login() bool {
-	for {
-		input, err := client.net.ReadPacket()
-		if err != nil {
-			return false
-		}
+	input, err := client.net.ReadPacket()
+	if err != nil {
+		return false
+	}
 
-		data, errorResponse := parseJson(input)
-		if errorResponse != nil {
-			client.net.Write(errorResponse)
-			continue
-		}
+	data, errorResponse := nethandler.ParseJson(input)
+	if errorResponse != nil {
+		client.net.Write(errorResponse)
+		return false
+	}
 
-		player, err := dbhandler.CheckLogin(data)
-		if err != nil {
-			data,  _ := packets.Login(false, entity.Player{})
-			client.net.Write(data)
-		} else {
-			client.Player = player
-		    data, _ := packets.Login(true, player)
-			client.net.Write(data)
-			return true;
-		}
+	player, err := dbhandler.CheckLogin(data)
+	if err != nil {
+		data,  _ := packets.Self(entity.Player{})
+		client.sendPacket(data)
+	} else {
+		client.Player = player
+	    data, _ := packets.Self(player)
+		client.sendPacket(data)
+		return true;
 	}
 	return false
 }
@@ -64,7 +62,7 @@ func (client * Client) Reader() (error) {
 			break
 		}
 
-		json, errorResponse := parseJson(data)
+		json, errorResponse := nethandler.ParseJson(data)
 		if errorResponse != nil {
 			client.net.Write(errorResponse)
 		} else {
@@ -88,18 +86,6 @@ func (client *Client) HandleInput(data map[string]string) (error) {
 		return errors.New("Failed Package")
 	}
 	return nil
-}
-
-func parseJson(input []byte) (map[string]string, []byte) {
-	var data map[string]string
-	err := json.Unmarshal(input, &data)
-	if err != nil {
-		error := map[string]string {"Type:": "Error"}
-		errorResponse,  _ := json.Marshal(error)
-		return nil, errorResponse
-	}
-
-	return data, nil
 }
 
 func (client *Client) Info() (string) {

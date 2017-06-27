@@ -25,7 +25,8 @@ func ProcessCreature(creature *entity.Creature) {
 func deadCreature(creature *entity.Creature) {
 	if creature.Actor.CooldownMS("DEAD") > RESPAWN_TIME {
 		creature.Resurrect()
-		creatureMap[creature.X][creature.Y][creature.Name] = creature
+		secX, secY := sliceMap(creature.X, creature.Y)
+		creatureMap[secX][secY][creature.Name] = creature
 		sendCreatureUpdate(*creature)
 	}
 }
@@ -68,11 +69,11 @@ func move(creature *entity.Creature, newX int, newY int) {
 		if newSecY < oldSecY {
 			sendActorRemoved(creature.Actor, NORTH)
 		} else if newSecX > oldSecX {
-			sendActorRemoved(creature.Actor, EAST)			
+			sendActorRemoved(creature.Actor, EAST)
 		} else if newSecY > oldSecY {
 			sendActorRemoved(creature.Actor, SOUTH)
 		} else if newSecX < oldSecX {
-			sendActorRemoved(creature.Actor, WEST)			
+			sendActorRemoved(creature.Actor, WEST)
 		}
 		creature.X = newX
 		creature.Y = newY

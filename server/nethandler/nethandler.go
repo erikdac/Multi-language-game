@@ -3,6 +3,7 @@ package nethandler
 import (
 	"net"
 	"bufio"
+	"encoding/json"
 )
 
 type Nethandler struct {
@@ -35,7 +36,7 @@ func (handler *Nethandler) ReadPacket() ([]byte, error) {
  * 3. Sends the data.
  *
  * The message sent will look something like:
- * ['H', 'e', 'l', 'l', 'o', \0]
+ * ['H', 'e', 'l', 'l', 'o', \n]
  *
  */
 func (handler *Nethandler) Write(data []byte) {
@@ -49,4 +50,16 @@ func (handler *Nethandler) Disconnect() {
 
 func (handler *Nethandler) Ip() (string) {
 	return handler.connection.RemoteAddr().String()
+}
+
+func ParseJson(input []byte) (map[string]string, []byte) {
+	var data map[string]string
+	err := json.Unmarshal(input, &data)
+	if err != nil {
+		error := map[string]string {"Type:": "Error"}
+		errorResponse,  _ := json.Marshal(error)
+		return nil, errorResponse
+	}
+
+	return data, nil
 }
