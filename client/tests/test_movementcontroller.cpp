@@ -157,8 +157,10 @@ void MovementControllerTest::testClear() {
     Self self = emptySelf();
     QTRY_COMPARE(self.x(), 0);
     QTRY_COMPARE(self.y(), 0);
-    mc.pushed(Qt::Key_D);
+    mc.pushed(Qt::Key_W);
+    mc.pushed(Qt::Key_A);
     mc.pushed(Qt::Key_S);
+    mc.pushed(Qt::Key_D);
     mc.clear();
     mc.execute(&self);
     QTRY_COMPARE(self.x(), 0);
