@@ -21,7 +21,6 @@ SOURCES += \
     game/entities/troll.cpp \
     game/gamestruct.cpp \
     game/movementcontroller.cpp \
-    game/parser.cpp \
     graphics/graphics.cpp \
     graphics/polygon.cpp \
     network/connection.cpp \
@@ -34,7 +33,8 @@ SOURCES += \
     ui/playerwidget.cpp \
     ui/screenwidget.cpp \
     ui/targetwidget.cpp \
-    ui/window.cpp
+    ui/window.cpp \
+    game/parser.cpp
 
 HEADERS += \
     game/entities/actor.h \
@@ -45,7 +45,6 @@ HEADERS += \
     game/eventhandler.h \
     game/gamestruct.h \
     game/movementcontroller.h \
-    game/parser.h \
     graphics/graphics.h \
     graphics/polygon.h \
     network/connection.h \
@@ -60,7 +59,8 @@ HEADERS += \
     ui/screenwidget.h \
     ui/targetwidget.h \
     ui/window.h \
-    config.h
+    config.h \
+    game/parser.h
 
 FORMS += \
     ui/gamewidget.ui \

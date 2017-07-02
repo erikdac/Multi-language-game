@@ -2,11 +2,9 @@
 
 #include <chrono>
 #include <cmath>
-#include <vector>
 #include <QKeyEvent>
-
-bool newly_pushed = false;
-std::vector<int> saved_releases;
+#include <algorithm>
+#include <QtDebug>
 
 MovementController::MovementController(const int movement_delay_millis)
     : _movement_delay_millis(movement_delay_millis) {
@@ -18,79 +16,75 @@ MovementController::~MovementController() {
 }
 
 void MovementController::execute(Self * const self) {
-    if (!isReady() || _activeKey == 0) {
+    if (!isReady() || _pushedKeys.empty()) {
         return;
     }
 
-    if ((_activeKey == Qt::Key_W && _previousKey == Qt::Key_A) || (_activeKey == Qt::Key_A && _previousKey == Qt::Key_W)) {
+    int primeKey = _pushedKeys.back();
+    int secondaryKey = 0;
+    if (_pushedKeys.size() >= 2) {
+        secondaryKey = _pushedKeys[_pushedKeys.size() - 2];
+    }
+
+    if ((primeKey == Qt::Key_W && secondaryKey == Qt::Key_A) || (primeKey == Qt::Key_A && secondaryKey == Qt::Key_W)) {
         self->moveUpLeft();
         _expensiveLast = true;
     }
-    else if ((_activeKey == Qt::Key_W && _previousKey == Qt::Key_D) || (_activeKey == Qt::Key_D && _previousKey == Qt::Key_W)) {
+    else if ((primeKey == Qt::Key_W && secondaryKey == Qt::Key_D) || (primeKey == Qt::Key_D && secondaryKey == Qt::Key_W)) {
         self->moveUpRight();
         _expensiveLast = true;
     }
-    else if ((_activeKey == Qt::Key_S && _previousKey == Qt::Key_A) || (_activeKey == Qt::Key_A && _previousKey == Qt::Key_S)) {
+    else if ((primeKey == Qt::Key_S && secondaryKey == Qt::Key_A) || (primeKey == Qt::Key_A && secondaryKey == Qt::Key_S)) {
         self->moveDownLeft();
         _expensiveLast = true;
     }
-    else if ((_activeKey == Qt::Key_S && _previousKey == Qt::Key_D) || (_activeKey == Qt::Key_D && _previousKey == Qt::Key_S)) {
+    else if ((primeKey == Qt::Key_S && secondaryKey == Qt::Key_D) || (primeKey == Qt::Key_D && secondaryKey == Qt::Key_S)) {
         self->moveDownRight();
         _expensiveLast = true;
     }
-    else if (_activeKey == Qt::Key_W) {
+    else if (primeKey == Qt::Key_W) {
         self->moveUp();
         _expensiveLast = false;
     }
-    else if (_activeKey == Qt::Key_A) {
+    else if (primeKey == Qt::Key_A) {
         self->moveLeft();
         _expensiveLast = false;
     }
-    else if (_activeKey == Qt::Key_S) {
+    else if (primeKey == Qt::Key_S) {
         self->moveDown();
         _expensiveLast = false;
     }
-    else if (_activeKey == Qt::Key_D) {
+    else if (primeKey == Qt::Key_D) {
         self->moveRight();
         _expensiveLast = false;
+    } else {
+        qWarning() << "Unknown key combination!";
     }
 
-    if (newly_pushed) {
-        newly_pushed = false;
-        for (const int k : saved_releases) {
-            released(k);
-        }
-        saved_releases.clear();
+    _newlyPushed.clear();
+    for (const int key : _savedReleases) {
+        released(key);
     }
 }
 
 void MovementController::pushed(const int key) {
-    _previousKey = _activeKey;
-    _activeKey = key;
-    newly_pushed = true;
+    _pushedKeys.push_back(key);
+    _newlyPushed.push_back(key);
+    _savedReleases.erase(std::remove(_savedReleases.begin(), _savedReleases.end(), key), _savedReleases.end());
 }
 
 void MovementController::released(const int key) {
-    if (newly_pushed && ((key == _activeKey && _previousKey == 0) || (key == _previousKey))) {
-        saved_releases.push_back(key);
-        return;
-    }
-
-    if (key == _activeKey && _previousKey != 0) {
-        _activeKey = _previousKey;
-        _previousKey = 0;
-    }
-    else if (key == _activeKey) {
-        _activeKey = 0;
-    }
-    else if (key == _previousKey) {
-        _previousKey = 0;
+    if(std::find(_newlyPushed.begin(), _newlyPushed.end(), key) != _newlyPushed.end()) {
+        _savedReleases.push_back(key);
+    } else {
+        _pushedKeys.erase(std::remove(_pushedKeys.begin(), _pushedKeys.end(), key), _pushedKeys.end());
     }
 }
 
 void MovementController::clear() {
-    _activeKey = 0;
-    _previousKey = 0;
+    _pushedKeys.clear();
+    _newlyPushed.clear();
+    _savedReleases.clear();
 }
 
 auto last = std::chrono::high_resolution_clock::now();

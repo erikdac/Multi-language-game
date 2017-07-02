@@ -3,10 +3,13 @@
 
 #include "entities/self.h"
 
+#include <vector>
+
 class MovementController {
 
-    int _activeKey = 0;
-    int _previousKey = 0;
+    std::vector<int> _pushedKeys;
+    std::vector<int> _newlyPushed;
+    std::vector<int> _savedReleases;
     bool _expensiveLast = false;
     int _movement_delay_millis;
 
