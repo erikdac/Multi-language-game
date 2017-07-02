@@ -125,9 +125,9 @@ void connection::run(const std::string & token) {
  * @param data
  * @return The authentication token
  */
-std::string connection::authenticate(const Json & object) {
+std::string connection::authenticate(const std::string & ip, const int port, const Json & object) {
     QTcpSocket socket;
-    connectToServer(socket, IP, PORT);
+    connectToServer(socket, QString::fromStdString(ip), port);
     if (socket.isValid()) {
         const std::string data = object.dump() + '\n';
         int res = socket.write(data.c_str(), data.size());

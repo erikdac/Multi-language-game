@@ -5,13 +5,14 @@
 
 #include <QTcpSocket>
 #include <vector>
+#include <string>
 
 namespace connection {
     void run(const std::string &);
     void write(const json11::Json &);
     std::vector<json11::Json> read();
     void disconnect();
-    std::string authenticate(const json11::Json &);
+    std::string authenticate(const std::string &, const int, const json11::Json &);
 }
 
 #endif

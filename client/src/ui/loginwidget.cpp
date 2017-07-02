@@ -3,6 +3,7 @@
 #include "network/connection.h"
 #include "json11/json11.hpp"
 #include "window.h"
+#include "config.h"
 
 #include <QtDebug>
 #include <QLabel>
@@ -51,7 +52,7 @@ void LoginWidget::on_pushButton_clicked() {
     };
     password->clear();
 
-    const std::string response = connection::authenticate(data);
+    const std::string response = connection::authenticate(IP, PORT, data);
     checkResult(response);
 }
 

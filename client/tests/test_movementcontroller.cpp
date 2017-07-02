@@ -4,9 +4,6 @@
 
 #include <QtTest>
 #include <QKeyEvent>
-#include <thread>
-#include <chrono>
-#include <cmath>
 
 class MovementControllerTest : public QObject {
 
