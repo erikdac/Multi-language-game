@@ -1,25 +1,9 @@
+#include "test_movementcontroller.h"
 #include "game/movementcontroller.h"
 #include "game/entities/self.h"
-#include "config.h"
 
 #include <QtTest>
 #include <QKeyEvent>
-
-class MovementControllerTest : public QObject {
-
-    Q_OBJECT
-
-public:
-    MovementControllerTest() {}
-
-private Q_SLOTS:
-    void testSimpleMovement();
-    void testDirectionalMovement();
-    void testContradictoryMovement();
-    void testClear();
-    void testHoldingKeys();
-    void testMultiplyKeyPush();
-};
 
 Self emptySelf() {
     return Self(Player("", 0, 0, 0, 0, 0));
@@ -187,6 +171,3 @@ void MovementControllerTest::testMultiplyKeyPush() {
     QTRY_COMPARE(self.x(), 0);
     QTRY_COMPARE(self.y(), 0);
 }
-
-QTEST_MAIN(MovementControllerTest)
-#include "test_movementcontroller.moc"

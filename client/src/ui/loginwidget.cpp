@@ -52,7 +52,7 @@ void LoginWidget::on_pushButton_clicked() {
     };
     password->clear();
 
-    const std::string response = connection::authenticate(IP, PORT, data);
+    const std::string response = connection::authenticate(IP, AUTHENTICATION_PORT, data);
     checkResult(response);
 }
 
