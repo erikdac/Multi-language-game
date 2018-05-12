@@ -3,6 +3,8 @@ package main
 import (
 	"time"
 	"fmt"
+	"errors"
+	"./nethandler"
 	"./gamestruct"
 )
 
@@ -11,34 +13,36 @@ const (
 )
 
 var adminCommand = make(chan int)
-var newClients = make(chan *gamestruct.Client, 8)
-var disconnects = make(chan *gamestruct.Client, 8)
+var newClients = make(chan *nethandler.Client, 8)
+var disconnects = make(chan *nethandler.Client, 8)
 
-func gameLoop() {
+func gameLoop(state *gamestruct.GameState) {
+	nameToClient := make(map[string]*nethandler.Client) // Binds the player names to their clients.
 	runtime := int64((time.Second / time.Nanosecond) / MAX_TICK_RATE)
 	for {
 		start := time.Now()
-		processAdmin()
-		processClients()
-		processAi()
+		processAdmin(state, nameToClient)
+		processClients(state, nameToClient)
+		processAi(state)
+		processOutput(state, nameToClient)
 		elapsed := time.Since(start).Nanoseconds()
 		delay := time.Duration(runtime - elapsed)
 	    time.Sleep(delay)
 	}
 }
 
-func processAdmin() {
+func processAdmin(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	select {
 	case choice := <- adminCommand:
 		switch choice {
 		case 1:
-			onlineList()
+			onlineList(state, nameToClient)
 			break
 		case 2:
-			kickPlayer()
+			kickPlayer(state, nameToClient)
 			break
 		case 3:
-			shutdown()
+			shutdown(state, nameToClient)
 			break
 		default:
 			fmt.Println("Invalid input!")
@@ -48,24 +52,25 @@ func processAdmin() {
 	}
 }
 
-func processClients() {
-	processNewClients()
-	processInput()
-	processPlayers()
-	processDisconnects()
+func processClients(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
+	processNewClients(state, nameToClient)
+	processInput(state, nameToClient)
+	processPlayers(state, nameToClient)
+	processDisconnects(state, nameToClient)
 }
 
-func processAi() {
-	for _, creature := range gamestruct.CreatureList {
-		gamestruct.ProcessCreature(creature)
+func processAi(state *gamestruct.GameState) {
+	for _, creature := range state.CreatureList {
+		gamestruct.ProcessCreature(state, creature)
 	}
 }
 
-func processNewClients() {
+func processNewClients(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	lim := len(newClients)
 	for i := 0; i < lim; i++ {
 		client := <- newClients
-		gamestruct.AddClient(client)
+		gamestruct.AddClient(state, &client.Player)
+		nameToClient[client.Player.Name] = client
 		go func() {
 			err := client.Reader()
 			if err != nil {
@@ -76,12 +81,12 @@ func processNewClients() {
 	}
 }
 
-func processInput() {
-	for _, c := range gamestruct.NameToClient {
+func processInput(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
+	for _, c := range nameToClient {
 		lim := len(c.Input)
 		for i := 0; i < lim; i++ {
 			data := <- c.Input
-			err := c.HandleInput(data)
+			err := handleClientInput(state, c, data)
 			if err != nil {
 				fmt.Println("FAILED PACKAGE: ", data)
 			}
@@ -89,25 +94,49 @@ func processInput() {
 	}
 }
 
-func processPlayers() {
-	var deadPlayers []*gamestruct.Client
-	for _, c := range gamestruct.NameToClient {
-		gamestruct.ProcessPlayer(&c.Player)
+func processPlayers(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
+	var deadPlayers []*nethandler.Client
+	for _, c := range nameToClient {
+		gamestruct.ProcessPlayer(state, &c.Player)
 		if c.Player.Health <= 0 {
 			deadPlayers = append(deadPlayers, c)
 		}
 	}
 
 	for _, c := range deadPlayers {
-		gamestruct.DeadPlayer(&c.Player)
-		c.Kick()
+		gamestruct.DeadPlayer(state, &c.Player)
+		disconnectClient(state, nameToClient, c)
 	}
 }
 
-func processDisconnects() {
+func processDisconnects(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	lim := len(disconnects)
 	for i := 0; i < lim; i++ {
 		client := <- disconnects
-		client.Disconnect()
+		disconnectClient(state, nameToClient, client)
 	}
+}
+
+func processOutput(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
+	for name, list := range state.GetAndClearNetPackets() {
+		for _, data := range list {
+			nameToClient[name].SendPacket(data)
+		}
+	}
+}
+
+// Function used to handle whatever data the server has recieved from the user.
+func handleClientInput(state *gamestruct.GameState, client *nethandler.Client, data map[string]string) (error) {
+	if data["Type"] == "Movement" {
+		gamestruct.Movement(state, &client.Player, data)
+	} else if data["Type"] == "Attack" {
+		if data["Condition"] == "Start" {
+			client.Player.SetTarget(data["Victim"])
+		} else if data["Condition"] == "Stop" {
+			client.Player.SetTarget(data[""])
+		}
+	} else {
+		return errors.New("Failed Package")
+	}
+	return nil
 }

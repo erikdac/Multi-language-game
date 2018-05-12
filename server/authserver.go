@@ -29,7 +29,7 @@ func authenticationServer() {
 }
 
 func handleAuthentication(connection net.Conn) {
-	netHandler := nethandler.New(connection)
+	netHandler := nethandler.NewNethandler(connection)
 	input, err := netHandler.ReadPacket()
 	if err != nil {
 		return

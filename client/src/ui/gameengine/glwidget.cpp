@@ -24,7 +24,7 @@ void GLWidget::initializeGL() {
     glClearColor(255, 255, 255, 1);
 }
 
-std::chrono::high_resolution_clock::time_point last_refresh = std::chrono::high_resolution_clock::now();
+auto last_refresh = std::chrono::high_resolution_clock::now();
 
 void GLWidget::refresh() {
     auto now = std::chrono::high_resolution_clock::now();

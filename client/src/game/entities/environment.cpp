@@ -49,7 +49,7 @@ void Environment::draw() const {
                 pos[0] + (vertex.x() / graphics::VIEW_WIDTH),
                 pos[1] + (vertex.y() / graphics::VIEW_HEIGHT),
                 vertex.z()
-    		);
+            );
 	    }
 	}
     glEnd();

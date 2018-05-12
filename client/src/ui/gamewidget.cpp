@@ -62,11 +62,9 @@ void GameWidget::tick(float deltaTime) {
         processKeyboard();
 
         if (_isRunning) {
-            assert(_isRunning);
             processNetwork();
         }
         if (_isRunning) {
-            assert(_isRunning);
             _movementController.execute(gamestruct::self());
             gamestruct::update_entities(deltaTime);
             _screenWidget->refresh();

@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-CONFIG += ordered
+CONFIG += ordered -std=c++14 -O2 -Wall -Wconversion -pedantic
 
 SUBDIRS = \
     lib \

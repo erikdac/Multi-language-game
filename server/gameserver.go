@@ -2,6 +2,8 @@ package main
 
 import (
 	"net"
+    "./dbhandler"
+    "./nethandler"
 	"./gamestruct"
 )
 
@@ -27,10 +29,19 @@ func gameServer() {
 }
 
 func newConnection(connection net.Conn) {
-    client := gamestruct.NewClient(connection)
+    client := nethandler.NewClient(connection)
     if client.Login() == true {
         newClients <- client
     } else {
         client.Disconnect()
+    }
+}
+
+func disconnectClient(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client, client *nethandler.Client) {
+    client.Disconnect()
+    if &client.Player != nil {
+        gamestruct.RemoveClient(state, &client.Player)
+        delete(nameToClient, client.Player.Name)
+        dbhandler.LogOut(client.Player)
     }
 }

@@ -44,7 +44,7 @@ void ScreenWidget::paintGL() {
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (Environment & e : gamestruct::environment()) {
+    for (auto & e : gamestruct::environment()) {
         e.draw();
     }
 

@@ -12,6 +12,7 @@ public:
 
 private Q_SLOTS:
     void testAutenticate();
+    void testHighLatency();
 };
 
 #endif // TEST_CONNECTION_H

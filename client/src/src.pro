@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 TARGET = src
 TEMPLATE = lib
 
-CONFIG += -std=c++14 -O2 -pthread -Wall -isystem -Wconversion -pedantic
+CONFIG += -pthread -isystem
 
 SOURCES += \
     game/entities/actor.cpp \

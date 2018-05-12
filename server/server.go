@@ -6,33 +6,28 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"./dbhandler"
+	"./nethandler"
 	"./gamestruct"
 )
 
-// The connection settings.
-const (
-	CONNECTION_PORT = "1338"
-	CONNECTION_TYPE = "tcp"
-)
-
 func main() {
-	err := gamestruct.InitiateGame()
+	err := dbhandler.ResetOnlineList()
+	if err != nil {
+		panic("Was not able to reset database online list!")
+	}	
+	state, err := gamestruct.InitiateGame()
 	if err != nil {
 		panic(err)
 	}
 
 	go authenticationServer()
 	go gameServer()
-	go gameLoop()
+	go gameLoop(state)
 
 	serverMenu()
 }
 
-/**
- * The menu that the server-user see. It is used to manage the server during runtime.
- * It uses the readKeyboard()-method to read from the keyboard and converts the choice
- * to an integer.
- */
 func serverMenu() {
 	printMenu()
 	for {
@@ -50,10 +45,6 @@ func printMenu() {
 	fmt.Println("(1) Online clients, (2) Kick player, (3) Exit")
 }
 
-/**
- * Method used to read from the keyboard. It will remove all unnecessary whitespace
- * and make sure that the input isn't empty. The input will be returned as a string.
- */
 func readKeyboard() string {
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -69,33 +60,29 @@ func readKeyboard() string {
 	return ""
 }
 
-/**
- * Method for getting a list of all online clients. It goes through the
- * gamestruct.NameToClient map and prints out the connections remote-adresses.
- */
-func onlineList() {
+func onlineList(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	fmt.Println("IP-address:\t\tPlayer name:")
-	for _, c := range gamestruct.NameToClient {
-		fmt.Println(c.Info())
+	for name, c := range nameToClient {
+		fmt.Println(c.Info() + "\t\t" + name)
 	}
 }
 
-func kickPlayer() {
+func kickPlayer(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	fmt.Print("Player name: ")
 	name := readKeyboard()
-	client, exists := gamestruct.NameToClient[name]
+	client, exists := nameToClient[name]
 	if exists == true {
-		client.Kick()
+		disconnectClient(state, nameToClient, client)
 		fmt.Println(name, " has been successfully kicked from server.")
 	} else {
 		fmt.Println("Player does not exists.")
 	}
 }
 
-func shutdown() {
+func shutdown(state *gamestruct.GameState, nameToClient map[string]*nethandler.Client) {
 	fmt.Println("SHUTTING DOWN!")
-	for _, c := range gamestruct.NameToClient {
-		c.Kick()
+	for _, c := range nameToClient {
+		disconnectClient(state, nameToClient, c)
 	}
 	os.Exit(0)
 }

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"time"
 	_ "github.com/go-sql-driver/mysql" // Using go-sql-driver
-	"../gamestruct/entity"
+	"../entity"
 )
 
-var database = "root:1@tcp(localhost:3306)/server"
+var database = "root:1@tcp(localhost:3306)/game_server"
 
 func CheckLogin(request map[string]string) (entity.Player, error) {
 	db, err := sql.Open("mysql", database)

@@ -7,10 +7,10 @@ import (
 )
 
 type Nethandler struct {
-	connection 		net.Conn
+	connection net.Conn
 }
 
-func New(connection net.Conn) (Nethandler) {
+func NewNethandler(connection net.Conn) (Nethandler) {
 	var handler Nethandler
 	handler.connection = connection
 	return handler

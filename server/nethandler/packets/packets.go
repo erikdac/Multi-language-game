@@ -2,7 +2,7 @@ package packets
 
 import (
 	"encoding/json"
-	"../../gamestruct/entity"
+	"../../entity"
 )
 
 func Token(token string) ([]byte, error) {
